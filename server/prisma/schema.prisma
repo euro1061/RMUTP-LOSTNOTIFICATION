@@ -1,0 +1,319 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  stuId String @unique
+  email String @unique
+  hash  String
+
+  firstName   String?
+  lastName    String?
+  phone       String?
+  lineId      String?
+  facebookUrl String?
+  urlPicture  String?
+
+  Prefix                  Prefix?              @relation(fields: [prefix_id], references: [id])
+  prefix_id               Int?
+  Role                    Role                 @relation(fields: [role_id], references: [id])
+  role_id                 Int                  @default(6)
+  Department              Department?          @relation(fields: [department_id], references: [id])
+  department_id           Int?
+  missingItem             MissingItem[]        @relation("userMissingItem_id")
+  userMissingItemReceived MissingItem[]        @relation("userMissingItemReceived_id")
+  userMissingItemDrop     MissingItem[]        @relation("userMissingItemDrop_id")
+  MessageMissingItem      MessageMissingItem[]
+  LosingItem              LosingItem[]         @relation("userId")
+  LosingItemReceived      LosingItem[]         @relation("userReceivedId")
+  LosingItemDrop          LosingItem[]         @relation("userDropId")
+  MessageLosingItem       MessageLosingItem[]
+
+  @@map("users")
+}
+
+model Department {
+  id           Int      @id @default(autoincrement())
+  departmentTh String
+  departmentEn String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  User         User[]
+
+  @@map("departments")
+}
+
+model Prefix {
+  id        Int      @id @default(autoincrement())
+  prefixTh  String   @unique
+  prefixEn  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User[]
+
+  @@map("prefixs")
+}
+
+model Campus {
+  id                Int           @id @default(autoincrement())
+  campusTh          String        @unique
+  campusEn          String?
+  descriptionCampus String?
+  imageCampus       String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+  Building          Building[]
+  MissingItem       MissingItem[]
+  LosingItem        LosingItem[]
+
+  @@map("campus")
+}
+
+model Building {
+  id                  Int      @id @default(autoincrement())
+  buildingTh          String
+  buildingEn          String?
+  descriptionBuilding String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  Room                Room[]
+
+  Campus      Campus        @relation(fields: [campus_id], references: [id])
+  campus_id   Int
+  LosingItem  LosingItem[]
+  MissingItem MissingItem[]
+
+  @@map("buildings")
+}
+
+model Room {
+  id        Int      @id @default(autoincrement())
+  roomTh    String
+  roomEn    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Building    Building      @relation(fields: [building_id], references: [id])
+  building_id Int
+  LosingItem  LosingItem[]
+  MissingItem MissingItem[]
+
+  @@map("rooms")
+}
+
+model StatusMissingItem {
+  id          Int           @id @default(autoincrement())
+  statusTh    String
+  statusEn    String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  missingItem MissingItem[]
+
+  @@map("statusMissingItems")
+}
+
+model MissingItem {
+  id            Int      @id @default(autoincrement())
+  title         String
+  description   String?
+  imageItem     String
+  buildingOther String?
+  roomOther     String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  User                       User                      @relation("userMissingItem_id", fields: [user_id], references: [id])
+  user_id                    Int
+  userMissingItemReceived    User?                     @relation("userMissingItemReceived_id", fields: [userMissingItemReceived_id], references: [id])
+  userMissingItemReceived_id Int?
+  userMissingItemDrop        User?                     @relation("userMissingItemDrop_id", fields: [userMissingItemDrop_id], references: [id])
+  userMissingItemDrop_id     Int?
+  StatusMissingItem          StatusMissingItem         @relation(fields: [statusMissing_id], references: [id])
+  statusMissing_id           Int
+  Campus                     Campus                    @relation(fields: [campus_id], references: [id])
+  campus_id                  Int
+  MessageMissingItem         MessageMissingItem[]
+  MessageMissingItemGuest    MessageMissingItemGuest[]
+  UserMissingItemDrop        UserMissingItemDrop[]
+  UserMissingItemReceived    UserMissingItemReceived[]
+
+  Building    Building? @relation(fields: [building_id], references: [id])
+  building_id Int?
+  Room        Room?     @relation(fields: [room_id], references: [id])
+  room_id     Int?
+
+  @@map("missingItems")
+}
+
+model UserMissingItemDrop {
+  id          Int     @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  phone       String
+  lineId      String?
+  facebookUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  MissingItem    MissingItem @relation(fields: [missingItem_id], references: [id])
+  missingItem_id Int
+
+  @@map("userMissingItemDrops")
+}
+
+model UserMissingItemReceived {
+  id          Int     @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  phone       String
+  lineId      String?
+  facebookUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  MissingItem    MissingItem @relation(fields: [missingItem_id], references: [id])
+  missingItem_id Int
+
+  @@map("userMissingItemReceiveds")
+}
+
+model MessageMissingItem {
+  id          Int      @id @default(autoincrement())
+  textMessage String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  User           User        @relation(fields: [user_id], references: [id])
+  user_id        Int
+  MissingItem    MissingItem @relation(fields: [missingItem_id], references: [id])
+  missingItem_id Int
+
+  @@map("messageMissingItems")
+}
+
+model MessageMissingItemGuest {
+  id          Int      @id @default(autoincrement())
+  textMessage String
+  fullName    String
+  phone       String
+  email       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  MissingItem    MissingItem @relation(fields: [missingItem_id], references: [id])
+  missingItem_id Int
+
+  @@map("messageMissingItemGuests")
+}
+
+model StatusLosingItem {
+  id         Int          @id @default(autoincrement())
+  statusTh   String
+  statusEn   String?
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
+  LosingItem LosingItem[]
+
+  @@map("statusLosingItems")
+}
+
+model LosingItem {
+  id          Int     @id @default(autoincrement())
+  title       String
+  description String?
+  imageItem   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  StatusLosingItem       StatusLosingItem         @relation(fields: [statusLosingItem_id], references: [id])
+  statusLosingItem_id    Int
+  Campus                 Campus                   @relation(fields: [campus_id], references: [id])
+  campus_id              Int
+  LosingItem             User                     @relation("userId", fields: [user_id], references: [id])
+  user_id                Int
+  LosingItemReceived     User?                    @relation("userReceivedId", fields: [user_received_id], references: [id])
+  user_received_id       Int?
+  MessageLosingItem      MessageLosingItem[]
+  MessageLosingItemGuest MessageLosingItemGuest[]
+  LosingItemDrop         User?                    @relation("userDropId", fields: [userDrop_id], references: [id])
+  userDrop_id            Int?
+  UserLosingItemDrop     UserLosingItemDrop[]
+  Building               Building                 @relation(fields: [building_id], references: [id])
+  building_id            Int
+  Room                   Room                     @relation(fields: [room_id], references: [id])
+  room_id                Int
+
+  @@map("losingItem")
+}
+
+model UserLosingItemDrop {
+  id          Int     @id @default(autoincrement())
+  firstName   String
+  lastName    String
+  phone       String
+  lineId      String?
+  facebookUrl String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  LosingItem    LosingItem @relation(fields: [losingItem_id], references: [id])
+  losingItem_id Int
+
+  @@map("userLosingItemDrops")
+}
+
+model MessageLosingItem {
+  id            Int        @id @default(autoincrement())
+  textMessage   String
+  User          User       @relation(fields: [user_id], references: [id])
+  user_id       Int
+  LosingItem    LosingItem @relation(fields: [losingItem_id], references: [id])
+  losingItem_id Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("messageLosingItems")
+}
+
+model MessageLosingItemGuest {
+  id            Int        @id @default(autoincrement())
+  textMessage   String
+  fullName      String
+  phone         String
+  email         String
+  LosingItem    LosingItem @relation(fields: [losingItem_id], references: [id])
+  losingItem_id Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("messageLosingItemGuests")
+}
+
+model Role {
+  id        Int      @id @default(autoincrement())
+  role_en   String   @unique
+  role_th   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User[]
+
+  @@map("roles")
+}

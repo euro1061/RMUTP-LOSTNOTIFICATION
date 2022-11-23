@@ -1,0 +1,82 @@
+import { ForbiddenException, Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import { AuthDto, SignupDto } from './dto';
+import * as argon from 'argon2';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
+import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+
+@Injectable()
+export class AuthService {
+    constructor(private prismaService: PrismaService, private jwtService: JwtService, private config: ConfigService) { }
+    async signup(dto: SignupDto) {
+        let response = {}
+        const hash = await argon.hash(dto.password)
+
+        try {
+            const user = await this.prismaService.user.create({
+                data: {
+                    email: dto.email,
+                    stuId: dto.stuId,
+                    hash,
+                    firstName: dto.firstName,
+                    lastName: dto.lastName,
+                    phone: dto.phone,
+                    lineId: dto.lineId,
+                    facebookUrl: dto.facebookUrl,
+                    role_id: dto.role_id
+                }
+            })
+            if(user) {
+                response = {
+                    isSuccess: true,
+                    message: "สร้างข้อมูลสำเร็จ",
+                }
+            }else {
+                response = {
+                    isSuccess: false,
+                    message: "สร้างข้อมูลไม่สำเร็จ",
+                }
+            }
+            return response
+        } catch (error) {
+            if (error instanceof PrismaClientKnownRequestError) {
+                if (error.code === "P2002") {
+                    throw new ForbiddenException("Credentials takens")
+                }
+            }
+            throw error
+        }
+    }
+
+    async signin(dto: AuthDto) {
+        const user = await this.prismaService.user.findUnique({
+            where: {
+                stuId: dto.stuId
+            }
+        })
+
+        if (!user) throw new ForbiddenException('ไม่พบข้อมูลผู้ใช้ในระบบ')
+
+        const pwMatch = await argon.verify(user.hash, dto.password)
+
+        if (!pwMatch) throw new ForbiddenException('รหัสผ่านไม่ถูกต้อง')
+        return this.signToken(user.id, user.email)
+    }
+
+    async signToken(userId: number, email: string): Promise<{access_token: string}> {
+        const payload = {
+            sub: userId,
+            email
+        }
+        const token = await this.jwtService.signAsync(payload, {
+            // expiresIn: '2h',
+            secret: this.config.get('JWT_SECRET')
+        })
+
+        return {
+            access_token: token
+        }
+    }
+}
+
