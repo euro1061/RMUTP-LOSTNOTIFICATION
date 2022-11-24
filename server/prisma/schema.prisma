@@ -162,6 +162,7 @@ model UserMissingItemDrop {
   firstName   String
   lastName    String
   phone       String
+  email       String
   lineId      String?
   facebookUrl String?
 

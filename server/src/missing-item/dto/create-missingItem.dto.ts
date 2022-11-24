@@ -67,4 +67,28 @@ export class createMissingItem {
     })
     @IsOptional()
     room_id?: number
+
+    @IsString()
+    @IsOptional()
+    firstNameDrop?: string
+    
+    @IsString()
+    @IsOptional()
+    lastNameDrop?: string
+    
+    @IsString()
+    @IsOptional()
+    phoneDrop?: string
+
+    @IsString()
+    @IsOptional()
+    emailDrop?: string
+
+    @IsString()
+    @IsOptional()
+    lineIdDrop?: string
+    
+    @IsString()
+    @IsOptional()
+    facebookUrlDrop?: string
 }
