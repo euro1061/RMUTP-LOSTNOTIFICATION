@@ -46,11 +46,11 @@ async function main() {
     //     })
     // }
 
-    /* for(let department of departments) {
-        await prisma.department.create({
-            data: department
-        })
-    } */
+    // for(let department of departments) {
+    //     await prisma.department.create({
+    //         data: department
+    //     })
+    // }
 }
 
 main().catch(e => {

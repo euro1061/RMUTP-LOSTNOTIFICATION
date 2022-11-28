@@ -71,7 +71,7 @@ export default function Topbar() {
 
     return (
         <header className='bg-primaryTheme p-6'>
-            <nav className='mx-auto w-12/12 lg:w-10/12 xl:w-10/12 flex justify-between items-baseline'>
+            <nav className='mx-auto w-12/12 lg:w-10/12 xl:w-10/12 flex justify-between items-center'>
                 <div className='text-2xl font-bold text-white'>
                     RMUTP LOGO
                 </div>

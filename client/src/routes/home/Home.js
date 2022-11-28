@@ -32,6 +32,10 @@ export default function Home() {
             <BannerHeader />
 
             <HomeList testData={testData} testData2={testData2}/>
+
+            <div className='bg-primaryTheme w-100 p-5 mt-10 text-center text-white'>
+                Copyright 2022 © All Rights Reserved
+            </div>
         </div>
     )
 }

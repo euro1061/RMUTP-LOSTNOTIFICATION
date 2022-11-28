@@ -59,8 +59,9 @@ export default function AddListMissingItem() {
   const [userInfo, setUserInfo] = useState(null);
   const [nameOrStuId, setNameOrStuId] = useState(null);
   const [listSearchStudent, setListSearchStudent] = useState([]);
-  const [loadingListSearchStudent, setLoadingListSearchStudent] =
-    useState(false);
+  const [loadingListSearchStudent, setLoadingListSearchStudent] = useState(false);
+  const [lodaingSaveMissing, setLodaingSaveMissing] = useState(false);
+  useState(false);
   const [disabledDepositorForm, setDisabledDepositorForm] = useState(false);
   const [userMissingItemDrop, setUserMissingItemDrop] = useState(null);
 
@@ -173,6 +174,7 @@ export default function AddListMissingItem() {
 
   const onFinishMissingItem = async (dataInform) => {
     // console.log(dataInform)
+    setLodaingSaveMissing(true);
     const data = formMissingItem.getFieldValue();
     const request = {
       ...data,
@@ -181,26 +183,34 @@ export default function AddListMissingItem() {
       statusMissing_id: "1",
       buildingOther: data.building_id === "9999" ? data.buildingOther : null,
       roomOther: data.room_id === "9999" ? data.roomOther : null,
+      userMissingItemDrop_id: userMissingItemDrop
     };
 
-    if (request.building_id === "9999" || request.building_id === null)
-      delete request.building_id;
-    if (request.room_id === "9999" || request.room_id === null)
-      delete request.room_id;
+    if (request.building_id === "9999" || request.building_id === null) delete request.building_id;
+    if (request.room_id === "9999" || request.room_id === null) delete request.room_id;
 
     console.log(request);
 
-    // const resSave = await axios.post(
-    //   `${process.env.REACT_APP_DOMAINENDPOINT}/api/missing-item`,
-    //   request,
-    //   {
-    //     headers: {
-    //       "Content-Type": "multipart/form-data",
-    //     },
-    //   }
-    // );
+    const resSave = await axios.post(
+      `${process.env.REACT_APP_DOMAINENDPOINT}/api/missing-item`,
+      request,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
 
-    // console.log(resSave);
+    if (resSave) {
+      notification["success"]({
+        message: "บันทึกข้อมูล",
+        description: "บันทึกข้อมูลสำเร็จ!",
+        placement: "bottomRight",
+      });
+    }
+
+    setLodaingSaveMissing(false)
+    console.log(resSave);
   };
 
   return (
@@ -367,6 +377,8 @@ export default function AddListMissingItem() {
               <Button
                 size="large"
                 type="primary"
+                loading={lodaingSaveMissing}
+                disabled={!authReducer.isLoggedIn}
                 onClick={() => {
                   formMissingItem.submit();
                 }}
@@ -587,380 +599,395 @@ export default function AddListMissingItem() {
                   </Col>
                 ) : null}
                 <Col xl={24}>
-                  <Collapse>
-                    <Panel
-                      key="1"
-                      showArrow={false}
-                      header={
-                        <label className="text-purple-800">ข้อมูลผู้ฝาก</label>
-                      }
-                    >
-                      {/* <Button type="primary" onClick={() => {
-                                                console.log("asdasd")
-                                                showModal()
-                                            }} icon={<SearchOutlined style={{ display: "inline-grid" }} />}>ค้นหาข้อมูลนักศึกษา</Button> */}
-                      <Row gutter={[8, 8]}>
-                        <Col xl={7}>
-                          <Search
-                            placeholder="ค้นหาด้วยชื่อหรือรหัสนักศึกษา"
-                            enterButton="ค้นหา"
-                            onChange={(e) => {
-                              setNameOrStuId(e.target.value);
-                            }}
-                            value={nameOrStuId}
-                            onSearch={(e) => {
-                              if (nameOrStuId === null || nameOrStuId === "") {
-                                notification["warning"]({
-                                  message: "ค้นหาไม่สำเร็จ",
-                                  description: "กรุณากรอกข้อมูลก่อนค้นหา",
+                  {authReducer.isLoggedIn ?
+                    <Collapse>
+                      <Panel
+                        key="1"
+                        showArrow={false}
+                        header={
+                          <label className="text-purple-800">ข้อมูลผู้ฝาก (Optional)</label>
+                        }
+                      >
+                        {/* <Button type="primary" onClick={() => {
+                                              console.log("asdasd")
+                                              showModal()
+                                          }} icon={<SearchOutlined style={{ display: "inline-grid" }} />}>ค้นหาข้อมูลนักศึกษา</Button> */}
+                        <Row gutter={[8, 8]}>
+                          <Col xl={7}>
+                            <Search
+                              placeholder="ค้นหาด้วยชื่อหรือรหัสนักศึกษา"
+                              enterButton="ค้นหา"
+                              onChange={(e) => {
+                                setNameOrStuId(e.target.value);
+                              }}
+                              value={nameOrStuId}
+                              onSearch={(e) => {
+                                if (nameOrStuId === null || nameOrStuId === "") {
+                                  notification["warning"]({
+                                    message: "ค้นหาไม่สำเร็จ",
+                                    description: "กรุณากรอกข้อมูลก่อนค้นหา",
+                                    placement: "topRight"
+                                  });
+                                } else {
+                                  // console.log("nameOrStuId", e)
+                                  getStudentByNameOrStuId(e);
+                                  showModal();
+                                }
+                              }}
+                            />
+                          </Col>
+                          <Col xl={3}>
+                            <Button
+                              onClick={() => {
+                                formMissingItem.setFieldsValue({
+                                  firstNameDrop: null,
+                                  lastNameDrop: null,
+                                  phoneDrop: null,
+                                  emailDrop: null,
+                                  lineIdDrop: null,
+                                  facebookUrlDrop: null,
                                 });
-                              } else {
-                                // console.log("nameOrStuId", e)
-                                getStudentByNameOrStuId(e);
-                                showModal();
+                                setDisabledDepositorForm(false);
+                                setDepositorImg(null);
+                                setNameOrStuId(null);
+                                setUserMissingItemDrop(null);
+                              }}
+                              icon={
+                                <ClearOutlined
+                                  style={{ display: "inline-grid" }}
+                                />
                               }
-                            }}
-                          />
-                        </Col>
-                        <Col xl={3}>
-                          <Button
-                            onClick={() => {
-                              formMissingItem.setFieldsValue({
-                                firstNameDrop: null,
-                                lastNameDrop: null,
-                                phoneDrop: null,
-                                emailDrop: null,
-                                lineIdDrop: null,
-                                facebookUrlDrop: null,
-                              });
-                              setDisabledDepositorForm(false);
-                              setDepositorImg(null);
-                              setNameOrStuId(null);
-                              setUserMissingItemDrop(null);
-                            }}
-                            icon={
-                              <ClearOutlined
-                                style={{ display: "inline-grid" }}
-                              />
-                            }
-                          >
-                            ล้างข้อมูล
-                          </Button>
-                        </Col>
-                      </Row>
+                            >
+                              ล้างข้อมูล
+                            </Button>
+                          </Col>
+                        </Row>
 
-                      <div className="mb-4"></div>
-                      <Row gutter={[0, 6]}>
-                        <Col xl={2}>
-                          {depositorImg ? (
-                            <Avatar
-                              size={80}
-                              src={depositorImg}
-                              icon={
-                                <i className="fa-solid fa-user-astronaut"></i>
-                              }
-                            />
-                          ) : (
-                            <Avatar
-                              size={80}
-                              icon={
-                                <i className="fa-solid fa-user-astronaut"></i>
-                              }
-                            />
-                          )}
-                        </Col>
-                        <Col xl={22}>
-                          <Row gutter={[6, 6]}>
-                            <Col xl={8}>
-                              <Form.Item
-                                style={{ marginBottom: 5 }}
-                                name="firstNameDrop"
-                              >
-                                <Input
-                                  placeholder="ชื่อ"
-                                  disabled={disabledDepositorForm}
-                                />
-                              </Form.Item>
-                            </Col>
-                            <Col xl={8}>
-                              <Form.Item
-                                style={{ marginBottom: 5 }}
-                                name="lastNameDrop"
-                              >
-                                <Input
-                                  placeholder="นามสกุล"
-                                  disabled={disabledDepositorForm}
-                                />
-                              </Form.Item>
-                            </Col>
-                            <Col xl={8}>
-                              <Form.Item
-                                style={{ marginBottom: 5 }}
-                                name="phoneDrop"
-                              >
-                                <Input
-                                  prefix={
-                                    <i className="fa-solid fa-phone text-green-500"></i>
-                                  }
-                                  placeholder="เบอร์โทร"
-                                  disabled={disabledDepositorForm}
-                                />
-                              </Form.Item>
-                            </Col>
-                            <Col xl={8}>
-                              <Form.Item name="emailDrop">
-                                <Input
-                                  placeholder="Email"
-                                  disabled={disabledDepositorForm}
-                                />
-                              </Form.Item>
-                            </Col>
-                            <Col xl={8}>
-                              <Form.Item name="lineIdDrop">
-                                <Input
-                                  prefix={
-                                    <i className="fa-brands fa-line text-green-400"></i>
-                                  }
-                                  placeholder="Line (ใส่หรือไม่ก็ได้)"
-                                  disabled={disabledDepositorForm}
-                                />
-                              </Form.Item>
-                            </Col>
-                            <Col xl={8}>
-                              <Form.Item name="facebookUrlDrop">
-                                <Input
-                                  prefix={
-                                    <i className="fa-brands fa-facebook text-blue-400"></i>
-                                  }
-                                  placeholder="Facebook (ใส่หรือไม่ก็ได้)"
-                                  disabled={disabledDepositorForm}
-                                />
-                              </Form.Item>
-                            </Col>
-                          </Row>
-                        </Col>
-                      </Row>
-                    </Panel>
-                  </Collapse>
+                        <div className="mb-4"></div>
+                        <Row gutter={[0, 6]}>
+                          <Col xl={2}>
+                            {depositorImg ? (
+                              <Avatar
+                                size={80}
+                                src={depositorImg}
+                                icon={
+                                  <i className="fa-solid fa-user-astronaut"></i>
+                                }
+                              />
+                            ) : (
+                              <Avatar
+                                size={80}
+                                icon={
+                                  <i className="fa-solid fa-user-astronaut"></i>
+                                }
+                              />
+                            )}
+                          </Col>
+                          <Col xl={22}>
+                            <Row gutter={[6, 6]}>
+                              <Col xl={8}>
+                                <Form.Item
+                                  style={{ marginBottom: 5 }}
+                                  name="firstNameDrop"
+                                >
+                                  <Input
+                                    placeholder="ชื่อ"
+                                    disabled={disabledDepositorForm}
+                                  />
+                                </Form.Item>
+                              </Col>
+                              <Col xl={8}>
+                                <Form.Item
+                                  style={{ marginBottom: 5 }}
+                                  name="lastNameDrop"
+                                >
+                                  <Input
+                                    placeholder="นามสกุล"
+                                    disabled={disabledDepositorForm}
+                                  />
+                                </Form.Item>
+                              </Col>
+                              <Col xl={8}>
+                                <Form.Item
+                                  style={{ marginBottom: 5 }}
+                                  name="phoneDrop"
+                                >
+                                  <Input
+                                    // prefix={
+                                    //   <i className="fa-solid fa-phone text-green-500"></i>
+                                    // }
+                                    placeholder="เบอร์โทร"
+                                    disabled={disabledDepositorForm}
+                                  />
+                                </Form.Item>
+                              </Col>
+                              <Col xl={8}>
+                                <Form.Item name="emailDrop">
+                                  <Input
+                                    placeholder="Email"
+                                    disabled={disabledDepositorForm}
+                                  />
+                                </Form.Item>
+                              </Col>
+                              <Col xl={8}>
+                                <Form.Item name="lineIdDrop">
+                                  <Input
+                                    // prefix={
+                                    //   <i className="fa-brands fa-line text-green-400"></i>
+                                    // }
+                                    placeholder="Line (ใส่หรือไม่ก็ได้)"
+                                    disabled={disabledDepositorForm}
+                                  />
+                                </Form.Item>
+                              </Col>
+                              <Col xl={8}>
+                                <Form.Item name="facebookUrlDrop">
+                                  <Input
+                                    // prefix={
+                                    //   <i className="fa-brands fa-facebook text-blue-400"></i>
+                                    // }
+                                    placeholder="Facebook (ใส่หรือไม่ก็ได้)"
+                                    disabled={disabledDepositorForm}
+                                  />
+                                </Form.Item>
+                              </Col>
+                            </Row>
+                          </Col>
+                        </Row>
+                      </Panel>
+                    </Collapse>
+                    : null}
+
                 </Col>
                 <Col xl={24}>
-                  <Card>
-                    <Row gutter={[8,8]}>
-                      <Col xl={12} style={{ marginTop: 10 }}>
-                        <Row gutter={[0, 0]}>
-                          <Col xl={24}>
-                            <Form.Item
-                              name="title"
-                              label={
-                                <label className="text-purple-600 font-bold">
-                                  ชื่อประกาศ
-                                </label>
-                              }
-                              labelCol={{ span: 24 }}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "กรุณากรอกชื่อประกาศ",
-                                },
-                              ]}
-                            >
-                              <Input
-                                style={{ width: "100%" }}
-                                size="large"
-                                placeholder="ชื่อประกาศ"
-                              />
-                            </Form.Item>
-                          </Col>
+                  {authReducer.isLoggedIn ?
+                    <Card>
+                      <Row gutter={[8, 8]}>
+                        <Col xl={12} style={{ marginTop: 10 }}>
+                          <Row gutter={[0, 0]}>
+                            <Col xl={24}>
+                              <Form.Item
+                                name="title"
+                                label={
+                                  <label className="text-purple-600 font-bold">
+                                    ชื่อประกาศ
+                                  </label>
+                                }
+                                labelCol={{ span: 24 }}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "กรุณากรอกชื่อประกาศ",
+                                  },
+                                ]}
+                              >
+                                <Input
+                                  style={{ width: "100%" }}
+                                  size="large"
+                                  placeholder="ชื่อประกาศ"
+                                />
+                              </Form.Item>
+                            </Col>
 
-                          <Col xl={24}>
-                            <Form.Item
-                              name="campus_id"
-                              style={{ marginBottom: 5 }}
-                              label={
-                                <label className="text-purple-600 font-bold">
-                                  สถานที่พบ
-                                </label>
-                              }
-                              labelCol={{ span: 24 }}
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "กรุณาเลือกวิทยาเขตที่พบ",
-                                },
-                              ]}
-                            >
-                              <Select
-                                size="large"
-                                placeholder="เลือกวิทยาเขต"
-                                onChange={(value) => {
-                                  getBuildingByCampusId(value);
-                                  formMissingItem.setFieldsValue({
-                                    building_id: null,
-                                    room_id: null,
-                                  });
-                                  setIsCampusSelected(true);
-                                }}
+                            <Col xl={24}>
+                              <Form.Item
+                                name="campus_id"
+                                style={{ marginBottom: 5 }}
+                                label={
+                                  <label className="text-purple-600 font-bold">
+                                    สถานที่พบ
+                                  </label>
+                                }
+                                labelCol={{ span: 24 }}
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "กรุณาเลือกวิทยาเขตที่พบ",
+                                  },
+                                ]}
                               >
-                                {campus?.map((item) => (
-                                  <Option value={item.id} key={item.id}>
-                                    {item.campusTh}
-                                  </Option>
-                                ))}
-                              </Select>
-                            </Form.Item>
-                          </Col>
-                          <Col xl={24}>
-                            <Form.Item
-                              style={{ marginBottom: 5 }}
-                              labelCol={{ span: 24 }}
-                              name="building_id"
-                            >
-                              <Select
-                                disabled={!isCampusSelected}
-                                size="large"
-                                placeholder="เลือกอาคาร"
-                                onChange={(value) => {
-                                  getRoomByBuildingId(value);
-                                  formMissingItem.setFieldsValue({
-                                    room_id: null,
-                                  });
-                                  setIsBuildingSelected(true);
-                                  setReload(!reload);
-                                }}
-                              >
-                                {building?.map((item) => (
-                                  <Option value={item.id} key={item.id}>
-                                    {item.buildingTh}
-                                  </Option>
-                                ))}
-                                <Option value="9999">อื่น ๆ ระบุเอง</Option>
-                              </Select>
-                            </Form.Item>
-                          </Col>
-                          {formMissingItem.getFieldValue().building_id ===
-                          "9999" ? (
+                                <Select
+                                  size="large"
+                                  placeholder="เลือกวิทยาเขต"
+                                  onChange={(value) => {
+                                    getBuildingByCampusId(value);
+                                    formMissingItem.setFieldsValue({
+                                      building_id: null,
+                                      room_id: null,
+                                    });
+                                    setIsCampusSelected(true);
+                                  }}
+                                >
+                                  {campus?.map((item) => (
+                                    <Option value={item.id} key={item.id}>
+                                      {item.campusTh}
+                                    </Option>
+                                  ))}
+                                </Select>
+                              </Form.Item>
+                            </Col>
                             <Col xl={24}>
                               <Form.Item
                                 style={{ marginBottom: 5 }}
                                 labelCol={{ span: 24 }}
-                                name="buildingOther"
-                                rules={[
-                                  {
-                                    required:
-                                      formMissingItem.getFieldValue()
-                                        .building_id === "9999",
-                                    message: "กรุณาระบุสถานที่พบ",
-                                  },
-                                ]}
+                                name="building_id"
                               >
-                                <Input size="large" placeholder="โปรดระบุ" />
-                              </Form.Item>
-                            </Col>
-                          ) : null}
-                          {formMissingItem.getFieldValue().building_id !==
-                            "9999" && (
-                            <Col xl={24}>
-                              <Form.Item labelCol={{ span: 24 }} name="room_id">
                                 <Select
+                                  disabled={!isCampusSelected}
                                   size="large"
-                                  disabled={!isBuildingSelected}
-                                  placeholder="เลือกห้อง"
-                                  onChange={() => {
+                                  placeholder="เลือกอาคาร"
+                                  onChange={(value) => {
+                                    getRoomByBuildingId(value);
+                                    formMissingItem.setFieldsValue({
+                                      room_id: null,
+                                    });
+                                    setIsBuildingSelected(true);
                                     setReload(!reload);
                                   }}
                                 >
-                                  {room?.map((item) => (
+                                  {building?.map((item) => (
                                     <Option value={item.id} key={item.id}>
-                                      {item.roomTh}
+                                      {item.buildingTh}
                                     </Option>
                                   ))}
                                   <Option value="9999">อื่น ๆ ระบุเอง</Option>
                                 </Select>
                               </Form.Item>
                             </Col>
-                          )}
+                            {formMissingItem.getFieldValue().building_id ===
+                              "9999" ? (
+                              <Col xl={24}>
+                                <Form.Item
+                                  style={{ marginBottom: 5 }}
+                                  labelCol={{ span: 24 }}
+                                  name="buildingOther"
+                                  rules={[
+                                    {
+                                      required:
+                                        formMissingItem.getFieldValue()
+                                          .building_id === "9999",
+                                      message: "กรุณาระบุสถานที่พบ",
+                                    },
+                                  ]}
+                                >
+                                  <Input size="large" placeholder="โปรดระบุ" />
+                                </Form.Item>
+                              </Col>
+                            ) : null}
+                            {formMissingItem.getFieldValue().building_id !==
+                              "9999" && (
+                                <Col xl={24}>
+                                  <Form.Item labelCol={{ span: 24 }} name="room_id">
+                                    <Select
+                                      size="large"
+                                      disabled={!isBuildingSelected}
+                                      placeholder="เลือกห้อง"
+                                      onChange={() => {
+                                        setReload(!reload);
+                                      }}
+                                    >
+                                      {room?.map((item) => (
+                                        <Option value={item.id} key={item.id}>
+                                          {item.roomTh}
+                                        </Option>
+                                      ))}
+                                      <Option value="9999">อื่น ๆ ระบุเอง</Option>
+                                    </Select>
+                                  </Form.Item>
+                                </Col>
+                              )}
 
-                          {formMissingItem.getFieldValue().room_id ===
-                            "9999" && (
+                            {formMissingItem.getFieldValue().room_id ===
+                              "9999" && (
+                                <Col xl={24}>
+                                  <Form.Item
+                                    style={{ marginBottom: 5 }}
+                                    labelCol={{ span: 24 }}
+                                    name="roomOther"
+                                    rules={[
+                                      {
+                                        required:
+                                          formMissingItem.getFieldValue()
+                                            .room_id === "9999",
+                                        message: "กรุณาระบุสถานที่พบ",
+                                      },
+                                    ]}
+                                  >
+                                    <Input size="large" placeholder="โปรดระบุ" />
+                                  </Form.Item>
+                                </Col>
+                              )}
+
                             <Col xl={24}>
                               <Form.Item
-                                style={{ marginBottom: 5 }}
-                                labelCol={{ span: 24 }}
-                                name="roomOther"
+                                name="file"
                                 rules={[
                                   {
-                                    required:
-                                      formMissingItem.getFieldValue()
-                                        .room_id === "9999",
-                                    message: "กรุณาระบุสถานที่พบ",
+                                    required: true,
+                                    message: "กรุณาเลือกรูปภาพ",
                                   },
                                 ]}
+                                labelCol={{ span: 24 }}
+                                label={
+                                  <label className="text-purple-600 font-bold">
+                                    อัพโหลดรูปภาพ
+                                  </label>
+                                }
                               >
-                                <Input size="large" placeholder="โปรดระบุ" />
+                                <Upload
+                                  multiple={false}
+                                  maxCount={1}
+                                  listType={"picture"}
+                                  accept=".png,.jpeg,.jpg,.gif"
+                                  beforeUpload={(file) => {
+                                    return false;
+                                  }}
+                                >
+                                  <Button icon={<UploadOutlined />}>
+                                    อัพโหลดรูปภาพ
+                                  </Button>
+                                </Upload>
                               </Form.Item>
                             </Col>
-                          )}
-
-                          <Col xl={24}>
-                            <Form.Item
-                              name="file"
-                              rules={[
-                                {
-                                  required: true,
-                                  message: "กรุณาเลือกรูปภาพ",
-                                },
-                              ]}
-                              labelCol={{ span: 24 }}
-                              label={
-                                <label className="text-purple-600 font-bold">
-                                  อัพโหลดรูปภาพ
-                                </label>
-                              }
-                            >
-                              <Upload
-                                multiple={false}
-                                fileList={[]}
-                                maxCount={1}
-                                listType={"picture"}
-                                accept=".png,.jpeg,.jpg,.gif"
-                                beforeUpload={(file) => {
-                                  return false;
-                                }}
+                          </Row>
+                        </Col>
+                        <Col xl={12} style={{ marginTop: 10 }}>
+                          <Row>
+                            <Col xl={24}>
+                              <Form.Item
+                                label={
+                                  <label className="text-purple-600 font-bold">
+                                    รายละเอียด
+                                  </label>
+                                }
+                                labelCol={{ span: 24 }}
+                                name="description"
                               >
-                                <Button icon={<UploadOutlined />}>
-                                  อัพโหลดรูปภาพ
-                                </Button>
-                              </Upload>
-                            </Form.Item>
-                          </Col>
-                        </Row>
-                      </Col>
-                      <Col xl={12} style={{ marginTop: 10 }}>
-                        <Row>
-                          <Col xl={24}>
-                            <Form.Item
-                              label={
-                                <label className="text-purple-600 font-bold">
-                                  รายละเอียด
-                                </label>
-                              }
-                              labelCol={{ span: 24 }}
-                              name="description"
-                            >
-                              <TextArea
-                                placeholder="รายละเอียด"
-                                autoSize={{
-                                  minRows: 13,
-                                  maxRows: 15,
-                                }}
-                                size="large"
-                              />
-                            </Form.Item>
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </Card>
+                                <TextArea
+                                  placeholder="รายละเอียด"
+                                  autoSize={{
+                                    minRows: 13,
+                                    maxRows: 15,
+                                  }}
+                                  size="large"
+                                />
+                              </Form.Item>
+                            </Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                    </Card>
+                    :
+                    <div className="flex justify-center backdrop-blur-lg bg-purple-300/50 p-10 rounded-lg relative overflow-hidden">
+                      <div className="flex flex-col items-center">
+                        <img src="https://cdn-icons-png.flaticon.com/512/473/473704.png" width="150" />
+                        <h1 className="text-[23px] text-center mt-8">ไม่สามารถทำรายการได้</h1>
+                        <p className="mt-3 text-xl">กรุณาเข้าสู่ระบบก่อน! <a href="#">เข้าสู่ระบบ</a></p>
+                      </div>
+                      <img src={`${process.env.PUBLIC_URL}/lgoho.png`} className="absolute top-5 right-5 opacity-20" width="250"/>
+                    </div>
+                  }
+
                 </Col>
               </Row>
             </Form>

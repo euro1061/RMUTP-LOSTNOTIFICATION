@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { searchStudent, UserProfileEdit } from './dto';
 import { AuthService } from '../auth/auth.service';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class UserService {
@@ -80,7 +81,7 @@ export class UserService {
         }
     }
 
-    async searchStudents(dto: searchStudent) {
+    async searchStudents(dto: searchStudent, user: User) {
         try {
             let response = {}
             const students = await this.prismaService.user.findMany({
@@ -101,7 +102,10 @@ export class UserService {
                                 contains: `${dto.nameOrStuId}`
                             }
                         }
-                    ]
+                    ],
+                    NOT: {
+                        id: user.id
+                    }
                 },
                 include: {
                     Department: {

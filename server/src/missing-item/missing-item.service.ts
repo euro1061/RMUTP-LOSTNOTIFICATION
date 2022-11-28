@@ -16,20 +16,59 @@ export class MissingItemService {
             let resUploadImage = await this.cloudinary.uploadImage(file).catch(() => {
                 throw new BadRequestException('Invalid file type.')
             })
+
+            const dtoMissingItem = {
+                title: dto.title,
+                description: dto.description,
+                campus_id: dto.campus_id,
+                building_id: dto.building_id,
+                room_id: dto.room_id,
+                buildingOther: dto.buildingOther,
+                roomOther: dto.roomOther,
+                user_id: dto.user_id,
+                statusMissing_id: dto.statusMissing_id,
+                userMissingItemDrop_id: dto.userMissingItemDrop_id ? dto.userMissingItemDrop_id : null,
+            }
+
+            
+
             const urlImage = resUploadImage.url
             const dataMissingItem = {
-                ...dto,
+                ...dtoMissingItem,
                 imageItem: urlImage
             }
 
             const resSave = await this.prismaService.missingItem.create({
                 data: dataMissingItem
             })
+            // console.log(dto)
+            console.log(resSave)
+
+            const dtoUserMissingItemDrop = {
+                firstName: dto.firstNameDrop,
+                lastName: dto.lastNameDrop,
+                phone: dto.phoneDrop,
+                email: dto.emailDrop,
+                lineId: dto.lineIdDrop,
+                facebookUrl: dto.facebookUrlDrop,
+                missingItem_id: resSave.id
+            }
 
             if (resSave) {
-                response = {
-                    isSuccess: true,
-                    message: "บันทึกข้อมูลสำเร็จ"
+                const resSaveUserDrop = await this.prismaService.userMissingItemDrop.create({
+                    data: dtoUserMissingItemDrop
+                })
+
+                if(resSaveUserDrop) {
+                    response = {
+                        isSuccess: true,
+                        message: "บันทึกข้อมูลสำเร็จ"
+                    }
+                }else{
+                    response = {
+                        isSuccess: false,
+                        message: "บันทึกข้อมูลไม่สำเร็จ"
+                    }
                 }
             } else {
                 response = {
@@ -108,5 +147,35 @@ export class MissingItemService {
         }
 
         return response
+    }
+
+    async getAllMissingItem() {
+        const res = await this.prismaService.missingItem.findMany({
+            include: {
+                Campus: {
+                    select: {
+                        campusTh: true
+                    }
+                },
+                Building: {
+                    select: {
+                        buildingTh: true
+                    }
+                },
+                Room: {
+                    select: {
+                        roomTh: true
+                    }
+                },
+                StatusMissingItem: {
+                    select: {
+                        statusTh: true
+                    }
+                },
+                User: true
+            }
+        })
+
+        return res
     }
 }

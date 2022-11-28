@@ -9,7 +9,7 @@ import { UserService } from './user.service';
 @UseGuards(AuthGuard('jwt'))
 @Controller('users')
 export class UserController {
-    constructor(private userService: UserService) {}
+    constructor(private userService: UserService) { }
 
     @Get('me')
     getMe(@GetUser() user: User) {
@@ -19,7 +19,7 @@ export class UserController {
     @Patch('editProfile')
     @UseInterceptors(FileInterceptor('file'))
     userEditProfile(
-        @Body() dto: UserProfileEdit, 
+        @Body() dto: UserProfileEdit,
         @GetUser('id') userId: Number,
         @UploadedFile() file: Express.Multer.File,
 
@@ -28,7 +28,7 @@ export class UserController {
     }
 
     @Post('searchStudents')
-    searchStudents(@Body() dto: searchStudent) {
-        return this.userService.searchStudents(dto)
+    searchStudents(@Body() dto: searchStudent, @GetUser() user: User) {
+        return this.userService.searchStudents(dto, user)
     }
 }
