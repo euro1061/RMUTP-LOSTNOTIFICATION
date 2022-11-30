@@ -12,6 +12,7 @@ import { MissingItemModule } from './missing-item/missing-item.module';
 import { CampusModule } from './campus/campus.module';
 import { BuildingModule } from './building/building.module';
 import { RoomModule } from './room/room.module';
+import { DepartmentModule } from './department/department.module';
 
 @Module({
   imports: [
@@ -21,7 +22,7 @@ import { RoomModule } from './room/room.module';
     TodoModule, 
     AuthModule, 
     UserModule,
-    PrismaModule, PrefixModule, RoleModule, MissingItemModule, CampusModule, BuildingModule, RoomModule
+    PrismaModule, PrefixModule, RoleModule, MissingItemModule, CampusModule, BuildingModule, RoomModule, DepartmentModule
   ],
   controllers: [AppController],
   providers: [AppService],

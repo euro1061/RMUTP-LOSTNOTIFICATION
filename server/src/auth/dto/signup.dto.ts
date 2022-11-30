@@ -2,8 +2,7 @@ import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString } from "class-validato
 import { Type } from "class-transformer"
 import { ApiProperty } from "@nestjs/swagger";
 export class SignupDto {
-    @IsEmail()
-    @IsNotEmpty()
+    @IsOptional()
     @ApiProperty({type: String, description: "อีเมล"})
     email: string;
 
@@ -48,7 +47,7 @@ export class SignupDto {
         message: "prefixId ต้องเป็นตัวเลขเท่านั้น"
     })
     @IsOptional()
-    @ApiProperty({type: String, description: "รหัสคำนำหน้า"})
+    @ApiProperty({type: Number, description: "รหัสคำนำหน้า"})
     prefix_id: number
 
     @Type(() => Number)
@@ -56,6 +55,18 @@ export class SignupDto {
         message: "roleId ต้องเป็นตัวเลขเท่านั้น"
     })
     @IsOptional()
-    @ApiProperty({type: String, description: "รหัส Role"})
+    @ApiProperty({type: Number, description: "รหัส Role"})
     role_id: number
+
+    @Type(() => Number)
+    @IsInt({
+        message: "departmetId ต้องเป็นตัวเลขเท่านั้น"
+    })
+    @IsOptional()
+    @ApiProperty({type: Number, description: "รหัส Department"})
+    department_id: number
+
+    @IsString()
+    @IsOptional()
+    urlPicture: string;
 }

@@ -88,7 +88,10 @@ export default function Topbar() {
                                 <Dropdown overlay={menu} placement="bottomRight" trigger={['click']}>
                                     <span type='link'>
                                         <Space>
-                                            <label className='text-white'><Avatar size={25} icon={<i className="fa-solid fa-user-gear"></i>} /></label>
+                                            <label className='text-white'>
+                                                {userInfo?.urlPicture ? <Avatar src={userInfo?.urlPicture} /> : <Avatar size={25} icon={<i className="fa-solid fa-user-gear"></i>} />} 
+                                                
+                                                </label>
                                             {userInfo?.firstName}
                                             <i className="fa-solid fa-caret-down text-white"></i>
                                         </Space>

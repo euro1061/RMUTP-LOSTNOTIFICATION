@@ -61,7 +61,6 @@ export default function AddListMissingItem() {
   const [listSearchStudent, setListSearchStudent] = useState([]);
   const [loadingListSearchStudent, setLoadingListSearchStudent] = useState(false);
   const [lodaingSaveMissing, setLodaingSaveMissing] = useState(false);
-  useState(false);
   const [disabledDepositorForm, setDisabledDepositorForm] = useState(false);
   const [userMissingItemDrop, setUserMissingItemDrop] = useState(null);
 
@@ -369,7 +368,7 @@ export default function AddListMissingItem() {
               </Breadcrumb>
             </div>
           </div>
-          <section className="p-6 bg-white shadow-xl rounded-lg  ">
+          <section className="p-6 bg-white shadow-md rounded-lg  ">
             <div className="flex flex-col xl:flex-row lg:flex-row lg:justify-between xl:justify-between">
               <h1 className="text-3xl m-0 text-center mb-5 lg:mb-0 xl:mb-0">
                 เพิ่มรายการแจ้งพบเห็นของหาย
