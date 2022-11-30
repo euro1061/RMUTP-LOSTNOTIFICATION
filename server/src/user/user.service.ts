@@ -191,16 +191,19 @@ export class UserService {
                     include: {
                         Prefix: {
                             select: {
+                                id: true,
                                 prefixTh: true
                             }
                         },
                         Department: {
                             select: {
+                                id: true,
                                 departmentTh: true
                             }
                         },
                         Role: {
                             select: {
+                                id: true,
                                 role_th: true
                             }
                         }
