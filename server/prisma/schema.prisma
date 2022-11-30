@@ -16,7 +16,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   stuId String @unique
-  email String @unique
+  email String? @unique
   hash  String
 
   firstName   String?
@@ -26,11 +26,11 @@ model User {
   facebookUrl String?
   urlPicture  String?
 
-  Prefix                  Prefix?              @relation(fields: [prefix_id], references: [id])
+  Prefix                  Prefix?              @relation(fields: [prefix_id], references: [id], onDelete: Cascade)
   prefix_id               Int?
-  Role                    Role                 @relation(fields: [role_id], references: [id])
+  Role                    Role                 @relation(fields: [role_id], references: [id], onDelete: Cascade)
   role_id                 Int                  @default(6)
-  Department              Department?          @relation(fields: [department_id], references: [id])
+  Department              Department?          @relation(fields: [department_id], references: [id], onDelete: Cascade)
   department_id           Int?
   missingItem             MissingItem[]        @relation("userMissingItem_id")
   userMissingItemReceived MissingItem[]        @relation("userMissingItemReceived_id")
@@ -134,11 +134,11 @@ model MissingItem {
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
-  User                       User                      @relation("userMissingItem_id", fields: [user_id], references: [id])
+  User                       User                      @relation("userMissingItem_id", fields: [user_id], references: [id], onDelete: Cascade)
   user_id                    Int
-  userMissingItemReceived    User?                     @relation("userMissingItemReceived_id", fields: [userMissingItemReceived_id], references: [id])
+  userMissingItemReceived    User?                     @relation("userMissingItemReceived_id", fields: [userMissingItemReceived_id], references: [id], onDelete: Cascade)
   userMissingItemReceived_id Int?
-  userMissingItemDrop        User?                     @relation("userMissingItemDrop_id", fields: [userMissingItemDrop_id], references: [id])
+  userMissingItemDrop        User?                     @relation("userMissingItemDrop_id", fields: [userMissingItemDrop_id], references: [id], onDelete: Cascade)
   userMissingItemDrop_id     Int?
   StatusMissingItem          StatusMissingItem         @relation(fields: [statusMissing_id], references: [id])
   statusMissing_id           Int

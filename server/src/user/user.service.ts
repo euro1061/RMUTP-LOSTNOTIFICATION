@@ -19,7 +19,7 @@ export class UserService {
             let urlImage = null
             if (file) {
                 let resUploadImage
-                if(dto.urlPicture !== null && dto.urlPicture !== "") {
+                if (dto.urlPicture !== null && dto.urlPicture !== "") {
                     const oldPicture = dto.urlPicture.split('/').pop().split('.')[0]
                     let resDeleteImage = await this.cloudinary.deleteImage(oldPicture)
                     if (resDeleteImage.result === "ok") {
@@ -27,10 +27,10 @@ export class UserService {
                             throw new BadRequestException('Invalid file type.')
                         })
                         urlImage = resUploadImage.url
-                    }else {
+                    } else {
                         urlImage = null
                     }
-                }else{
+                } else {
                     resUploadImage = await this.cloudinary.uploadImage(file).catch(() => {
                         throw new BadRequestException('Invalid file type.')
                     })
@@ -127,6 +127,98 @@ export class UserService {
                     responseData: null
                 }
             }
+            return response
+        } catch (error) {
+            return error
+        }
+    }
+
+    async getAllUsers(search: string) {
+        try {
+            let response = {}
+            if (search !== "xx456789") {
+                const users = await this.prismaService.user.findMany({
+                    where: {
+                        OR: [
+                            {
+                                firstName: {
+                                    contains: `${search}`
+                                },
+                            },
+                            {
+                                lastName: {
+                                    contains: `${search}`
+                                }
+                            },
+                            {
+                                stuId: {
+                                    contains: `${search}`
+                                }
+                            }
+                        ],
+                    },
+                    include: {
+                        Prefix: {
+                            select: {
+                                prefixTh: true
+                            }
+                        },
+                        Department: {
+                            select: {
+                                departmentTh: true
+                            }
+                        },
+                        Role: {
+                            select: {
+                                role_th: true
+                            }
+                        }
+                    }
+                })
+                if (users) {
+                    response = {
+                        isSuccess: true,
+                        responseData: users
+                    }
+                } else {
+                    response = {
+                        isSuccess: false,
+                        responseData: null
+                    }
+                }
+            } else {
+                const users = await this.prismaService.user.findMany({
+                    include: {
+                        Prefix: {
+                            select: {
+                                prefixTh: true
+                            }
+                        },
+                        Department: {
+                            select: {
+                                departmentTh: true
+                            }
+                        },
+                        Role: {
+                            select: {
+                                role_th: true
+                            }
+                        }
+                    }
+                })
+                if (users) {
+                    response = {
+                        isSuccess: true,
+                        responseData: users
+                    }
+                } else {
+                    response = {
+                        isSuccess: false,
+                        responseData: null
+                    }
+                }
+            }
+
             return response
         } catch (error) {
             return error

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, UseGuards, Post, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Body, Controller, Get, Patch, UseGuards, Post, UseInterceptors, UploadedFile, ParseIntPipe, Param } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from '@prisma/client';
@@ -30,5 +30,12 @@ export class UserController {
     @Post('searchStudents')
     searchStudents(@Body() dto: searchStudent, @GetUser() user: User) {
         return this.userService.searchStudents(dto, user)
+    }
+
+    @Get(':search')
+    getAllUsers(
+        @Param('search') search: string,
+    ) {
+        return this.userService.getAllUsers(search)
     }
 }

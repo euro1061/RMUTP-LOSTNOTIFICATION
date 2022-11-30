@@ -86,7 +86,7 @@ export default function HomeList(props) {
                     <section className='p-6 bg-white shadow-xl rounded-lg  '>
                         <div className='flex flex-col xl:flex-row lg:flex-row lg:justify-between xl:justify-between'>
                             <h1 className='text-3xl m-0 text-center mb-5 lg:mb-0 xl:mb-0'>รายการแจ้งพบเห็นของหาย 
-                                <small className='text-sm text-primaryTheme'>({testData.length} รายการ)</small>
+                                <small className='text-sm text-primaryTheme'> ({missingItem.length} รายการ)</small>
                             </h1>
                             <div className='flex flex-col lg:flex-row xl:flex-row justify-center gap-3'>
                                 <Form.Item

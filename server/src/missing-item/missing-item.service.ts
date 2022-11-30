@@ -151,6 +151,11 @@ export class MissingItemService {
 
     async getAllMissingItem() {
         const res = await this.prismaService.missingItem.findMany({
+            orderBy: [
+                {
+                    createdAt: 'desc'
+                }
+            ],
             include: {
                 Campus: {
                     select: {

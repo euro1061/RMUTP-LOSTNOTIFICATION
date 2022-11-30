@@ -5,41 +5,59 @@ import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { BadRequestException } from '@nestjs/common/exceptions';
 
 @Injectable()
 export class AuthService {
-    constructor(private prismaService: PrismaService, private jwtService: JwtService, private config: ConfigService) { }
-    async signup(dto: SignupDto) {
+    constructor(
+        private prismaService: PrismaService,
+        private jwtService: JwtService,
+        private config: ConfigService,
+        private cloudinary: CloudinaryService
+    ) { }
+    async signup(dto: SignupDto, file: Express.Multer.File) {
         let response = {}
         const hash = await argon.hash(dto.password)
+        let urlImage = null
+        if (file) {
+            let resUploadImage
+            resUploadImage = await this.cloudinary.uploadImage(file).catch(() => {
+                throw new BadRequestException('Invalid file type.')
+            })
+            urlImage = resUploadImage.url
+        }
 
         try {
             const user = await this.prismaService.user.create({
                 data: {
-                    email: dto.email,
+                    email: dto.email || null,
                     stuId: dto.stuId,
                     hash,
                     firstName: dto.firstName,
                     lastName: dto.lastName,
-                    phone: dto.phone,
-                    lineId: dto.lineId,
-                    facebookUrl: dto.facebookUrl,
-                    role_id: dto.role_id
+                    phone: dto.phone || null,
+                    lineId: dto.lineId || null,
+                    facebookUrl: dto.facebookUrl || null,
+                    role_id: dto.role_id,
+                    prefix_id: dto.prefix_id,
+                    department_id: dto.department_id,
+                    urlPicture: urlImage
                 }
             })
-            if(user) {
+            if (user) {
                 response = {
                     isSuccess: true,
                     message: "สร้างข้อมูลสำเร็จ",
                 }
-            }else {
+            } else {
                 response = {
                     isSuccess: false,
                     message: "สร้างข้อมูลไม่สำเร็จ",
                 }
             }
             return response
-        } catch (error) {
+        } catch(error) {
             if (error instanceof PrismaClientKnownRequestError) {
                 if (error.code === "P2002") {
                     throw new ForbiddenException("Credentials takens")
@@ -64,7 +82,7 @@ export class AuthService {
         return this.signToken(user.id, user.email)
     }
 
-    async signToken(userId: number, email: string): Promise<{access_token: string}> {
+    async signToken(userId: number, email: string): Promise<{ access_token: string }> {
         const payload = {
             sub: userId,
             email
