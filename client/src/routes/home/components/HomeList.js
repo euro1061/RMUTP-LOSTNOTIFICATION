@@ -164,7 +164,7 @@ export default function HomeList(props) {
                                                     setItemModal(item)
                                                     showModal()
                                                 }}>
-                                                    <img className="rounded-t-lg hover:brightness-75 ease-in-out duration-300" src={`${item.imageItem}`} alt="" />
+                                                    <img width="100%" className="rounded-t-lg hover:brightness-75 ease-in-out duration-300" src={`${item.imageItem}`} alt="" />
                                                 </button>
                                                 <div className="p-3">
                                                     <a href="/#">
