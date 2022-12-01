@@ -15,6 +15,8 @@ export class UserService {
 
     async userEditProfile(dto: UserProfileEdit, userId: Number, file: Express.Multer.File) {
         try {
+            console.log(dto)
+            console.log(file)
             let response = {}
             let urlImage = null
             if (file) {
