@@ -31,7 +31,6 @@ export default function AdminUser() {
     };
 
     const showModalEdit = (record) => {
-        console.log(record)
         setIsModalVisibleEdit(true);
         setUserImgEdit(record.urlPicture)
         setUserImgOldEdit(record.urlPicture)
@@ -278,6 +277,7 @@ export default function AdminUser() {
                                                 showUploadList={false}
                                                 accept={".jpg,.jpeg,.png"}
                                                 beforeUpload={(file) => {
+                                                    
                                                     const reader = new FileReader();
 
                                                     reader.onload = (e) => {

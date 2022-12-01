@@ -59,7 +59,8 @@ export default function AddListMissingItem() {
   const [userInfo, setUserInfo] = useState(null);
   const [nameOrStuId, setNameOrStuId] = useState(null);
   const [listSearchStudent, setListSearchStudent] = useState([]);
-  const [loadingListSearchStudent, setLoadingListSearchStudent] = useState(false);
+  const [loadingListSearchStudent, setLoadingListSearchStudent] =
+    useState(false);
   const [lodaingSaveMissing, setLodaingSaveMissing] = useState(false);
   const [disabledDepositorForm, setDisabledDepositorForm] = useState(false);
   const [userMissingItemDrop, setUserMissingItemDrop] = useState(null);
@@ -182,11 +183,13 @@ export default function AddListMissingItem() {
       statusMissing_id: "1",
       buildingOther: data.building_id === "9999" ? data.buildingOther : null,
       roomOther: data.room_id === "9999" ? data.roomOther : null,
-      userMissingItemDrop_id: userMissingItemDrop
+      userMissingItemDrop_id: userMissingItemDrop,
     };
 
-    if (request.building_id === "9999" || request.building_id === null) delete request.building_id;
-    if (request.room_id === "9999" || request.room_id === null) delete request.room_id;
+    if (request.building_id === "9999" || request.building_id === null)
+      delete request.building_id;
+    if (request.room_id === "9999" || request.room_id === null)
+      delete request.room_id;
 
     console.log(request);
 
@@ -208,7 +211,7 @@ export default function AddListMissingItem() {
       });
     }
 
-    setLodaingSaveMissing(false)
+    setLodaingSaveMissing(false);
     console.log(resSave);
   };
 
@@ -598,13 +601,15 @@ export default function AddListMissingItem() {
                   </Col>
                 ) : null}
                 <Col xl={24}>
-                  {authReducer.isLoggedIn ?
+                  {authReducer.isLoggedIn ? (
                     <Collapse>
                       <Panel
                         key="1"
                         showArrow={false}
                         header={
-                          <label className="text-purple-800">ข้อมูลผู้ฝาก (Optional)</label>
+                          <label className="text-purple-800">
+                            ข้อมูลผู้ฝาก (Optional)
+                          </label>
                         }
                       >
                         {/* <Button type="primary" onClick={() => {
@@ -621,11 +626,14 @@ export default function AddListMissingItem() {
                               }}
                               value={nameOrStuId}
                               onSearch={(e) => {
-                                if (nameOrStuId === null || nameOrStuId === "") {
+                                if (
+                                  nameOrStuId === null ||
+                                  nameOrStuId === ""
+                                ) {
                                   notification["warning"]({
                                     message: "ค้นหาไม่สำเร็จ",
                                     description: "กรุณากรอกข้อมูลก่อนค้นหา",
-                                    placement: "topRight"
+                                    placement: "topRight",
                                   });
                                 } else {
                                   // console.log("nameOrStuId", e)
@@ -755,11 +763,10 @@ export default function AddListMissingItem() {
                         </Row>
                       </Panel>
                     </Collapse>
-                    : null}
-
+                  ) : null}
                 </Col>
                 <Col xl={24}>
-                  {authReducer.isLoggedIn ?
+                  {authReducer.isLoggedIn ? (
                     <Card>
                       <Row gutter={[8, 8]}>
                         <Col xl={12} style={{ marginTop: 10 }}>
@@ -854,7 +861,7 @@ export default function AddListMissingItem() {
                               </Form.Item>
                             </Col>
                             {formMissingItem.getFieldValue().building_id ===
-                              "9999" ? (
+                            "9999" ? (
                               <Col xl={24}>
                                 <Form.Item
                                   style={{ marginBottom: 5 }}
@@ -875,47 +882,50 @@ export default function AddListMissingItem() {
                             ) : null}
                             {formMissingItem.getFieldValue().building_id !==
                               "9999" && (
-                                <Col xl={24}>
-                                  <Form.Item labelCol={{ span: 24 }} name="room_id">
-                                    <Select
-                                      size="large"
-                                      disabled={!isBuildingSelected}
-                                      placeholder="เลือกห้อง"
-                                      onChange={() => {
-                                        setReload(!reload);
-                                      }}
-                                    >
-                                      {room?.map((item) => (
-                                        <Option value={item.id} key={item.id}>
-                                          {item.roomTh}
-                                        </Option>
-                                      ))}
-                                      <Option value="9999">อื่น ๆ ระบุเอง</Option>
-                                    </Select>
-                                  </Form.Item>
-                                </Col>
-                              )}
+                              <Col xl={24}>
+                                <Form.Item
+                                  labelCol={{ span: 24 }}
+                                  name="room_id"
+                                >
+                                  <Select
+                                    size="large"
+                                    disabled={!isBuildingSelected}
+                                    placeholder="เลือกห้อง"
+                                    onChange={() => {
+                                      setReload(!reload);
+                                    }}
+                                  >
+                                    {room?.map((item) => (
+                                      <Option value={item.id} key={item.id}>
+                                        {item.roomTh}
+                                      </Option>
+                                    ))}
+                                    <Option value="9999">อื่น ๆ ระบุเอง</Option>
+                                  </Select>
+                                </Form.Item>
+                              </Col>
+                            )}
 
                             {formMissingItem.getFieldValue().room_id ===
                               "9999" && (
-                                <Col xl={24}>
-                                  <Form.Item
-                                    style={{ marginBottom: 5 }}
-                                    labelCol={{ span: 24 }}
-                                    name="roomOther"
-                                    rules={[
-                                      {
-                                        required:
-                                          formMissingItem.getFieldValue()
-                                            .room_id === "9999",
-                                        message: "กรุณาระบุสถานที่พบ",
-                                      },
-                                    ]}
-                                  >
-                                    <Input size="large" placeholder="โปรดระบุ" />
-                                  </Form.Item>
-                                </Col>
-                              )}
+                              <Col xl={24}>
+                                <Form.Item
+                                  style={{ marginBottom: 5 }}
+                                  labelCol={{ span: 24 }}
+                                  name="roomOther"
+                                  rules={[
+                                    {
+                                      required:
+                                        formMissingItem.getFieldValue()
+                                          .room_id === "9999",
+                                      message: "กรุณาระบุสถานที่พบ",
+                                    },
+                                  ]}
+                                >
+                                  <Input size="large" placeholder="โปรดระบุ" />
+                                </Form.Item>
+                              </Col>
+                            )}
 
                             <Col xl={24}>
                               <Form.Item
@@ -939,6 +949,29 @@ export default function AddListMissingItem() {
                                   listType={"picture"}
                                   accept=".png,.jpeg,.jpg,.gif"
                                   beforeUpload={(file) => {
+                                    if (file) {
+                                      const isJpgOrPng =
+                                        file.type === "image/jpeg" ||
+                                        file.type === "image/png";
+                                      if (!isJpgOrPng) {
+                                        notification["error"]({
+                                          message: "อัพโหลดรูปภาพไม่สำเร็จ",
+                                          description:
+                                            "กรุณาเลือกไฟล์รูปภาพเท่านั้น",
+                                        });
+                                        return true;
+                                      }
+                                      const isLt2M =
+                                        file.size / 1024 / 1024 < 2;
+                                      if (!isLt2M) {
+                                        notification["error"]({
+                                          message: "อัพโหลดรูปภาพไม่สำเร็จ",
+                                          description:
+                                            "ขนาดไฟล์รูปภาพต้องไม่เกิน 2MB",
+                                        });
+                                        return true;
+                                      }
+                                    }
                                     return false;
                                   }}
                                 >
@@ -976,17 +1009,27 @@ export default function AddListMissingItem() {
                         </Col>
                       </Row>
                     </Card>
-                    :
+                  ) : (
                     <div className="flex justify-center backdrop-blur-lg bg-purple-300/50 p-10 rounded-lg relative overflow-hidden">
                       <div className="flex flex-col items-center">
-                        <img src="https://cdn-icons-png.flaticon.com/512/473/473704.png" width="150" />
-                        <h1 className="text-[23px] text-center mt-8">ไม่สามารถทำรายการได้</h1>
-                        <p className="mt-3 text-xl">กรุณาเข้าสู่ระบบก่อน! <a href="#">เข้าสู่ระบบ</a></p>
+                        <img
+                          src="https://cdn-icons-png.flaticon.com/512/473/473704.png"
+                          width="150"
+                        />
+                        <h1 className="text-[23px] text-center mt-8">
+                          ไม่สามารถทำรายการได้
+                        </h1>
+                        <p className="mt-3 text-xl">
+                          กรุณาเข้าสู่ระบบก่อน! <a href="#">เข้าสู่ระบบ</a>
+                        </p>
                       </div>
-                      <img src={`${process.env.PUBLIC_URL}/lgoho.png`} className="absolute top-5 right-5 opacity-20" width="250"/>
+                      <img
+                        src={`${process.env.PUBLIC_URL}/lgoho.png`}
+                        className="absolute top-5 right-5 opacity-20"
+                        width="250"
+                      />
                     </div>
-                  }
-
+                  )}
                 </Col>
               </Row>
             </Form>
