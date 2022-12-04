@@ -9,10 +9,8 @@ import {
   Col,
   Collapse,
   Divider,
-  Empty,
   Form,
   Input,
-  Modal,
   notification,
   Row,
   Select,
@@ -22,7 +20,6 @@ import {
 import TextArea from "antd/lib/input/TextArea";
 import {
   ClearOutlined,
-  SearchOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
@@ -35,13 +32,12 @@ import {
   getAllCampusAPI,
   getBuildingByCampusIdAPI,
   getRoomByBuildingIdAPI,
-  getStudentByNameOrStuId,
   getStudentByNameOrStuIdAPI,
 } from "./API/AddListMissingItem";
+import SearchStudent from "./Components/SearchStudent";
 const { Option } = Select;
 const { Panel } = Collapse;
 const { Search } = Input;
-const { Meta } = Card;
 
 export default function AddListMissingItem() {
   const [formCurrentUser] = Form.useForm();
@@ -80,6 +76,10 @@ export default function AddListMissingItem() {
   const [depositorImg, setDepositorImg] = useState(null);
   const [userImg, setUserImg] = useState(null);
   const [oldImg, setOldImg] = useState(null);
+
+  const types = ["image/png", "image/jpeg", "image/jpg"];
+  const [fileList, setFileList] = useState([]);
+  const [fileProfile, setFileProfile] = useState([]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -145,12 +145,15 @@ export default function AddListMissingItem() {
   const onFinishCurrentUser = async () => {
     setIsLoadingProfile(true);
     const dataForm = formCurrentUser.getFieldValue();
+    let fileUpload = null;
+    if (dataForm?.file?.file?.type === "image/jpeg" || dataForm?.file?.file?.type === "image/png" || dataForm?.file?.file?.type === "image/jpg") {
+      fileUpload = dataForm.file.file
+    }
     const dataSend = {
       ...dataForm,
-      file: dataForm.file ? dataForm.file.file : null,
+      file: fileUpload,
       urlPicture: oldImg,
     };
-    console.log(dataSend);
     const { status, data } = await axios.patch(
       `${process.env.REACT_APP_DOMAINENDPOINT}/api/users/editProfile`,
       dataSend,
@@ -172,26 +175,32 @@ export default function AddListMissingItem() {
     }
   };
 
-  const onFinishMissingItem = async (dataInform) => {
+  const onFinishMissingItem = async () => {
     // console.log(dataInform)
     setLodaingSaveMissing(true);
     const data = formMissingItem.getFieldValue();
+    let fileUpload = null;
+    if (data?.file?.file?.type === "image/jpeg" || data?.file?.file?.type === "image/png" || data?.file?.file?.type === "image/jpg") {
+      fileUpload = data.file.file
+    }
     const request = {
       ...data,
       user_id: userInfo.id,
-      file: data.file.file,
+      file: fileUpload,
       statusMissing_id: "1",
       buildingOther: data.building_id === "9999" ? data.buildingOther : null,
       roomOther: data.room_id === "9999" ? data.roomOther : null,
       userMissingItemDrop_id: userMissingItemDrop,
     };
 
+    // console.log(request)
+
     if (request.building_id === "9999" || request.building_id === null)
       delete request.building_id;
     if (request.room_id === "9999" || request.room_id === null)
       delete request.room_id;
 
-    console.log(request);
+    // console.log(request);
 
     const resSave = await axios.post(
       `${process.env.REACT_APP_DOMAINENDPOINT}/api/missing-item`,
@@ -212,137 +221,26 @@ export default function AddListMissingItem() {
     }
 
     setLodaingSaveMissing(false);
-    console.log(resSave);
+    navigate('/profileNotification')
   };
 
   return (
     <div>
       <Topbar />
-      <Modal
-        title="ค้นหาข้อมูลนักศึกษา"
-        visible={isModalOpen}
-        width={900}
-        footer={null}
-        onCancel={handleCancel}
-      >
-        <Search
-          placeholder="ค้นหาด้วยชื่อหรือรหัสนักศึกษา"
-          enterButton="ค้นหา"
-          onChange={(e) => {
-            setNameOrStuId(e.target.value);
-          }}
-          value={nameOrStuId}
-          onSearch={(e) => {
-            if (nameOrStuId === null || nameOrStuId === "") {
-              notification["warning"]({
-                message: "ค้นหาไม่สำเร็จ",
-                description: "กรุณากรอกข้อมูลก่อนค้นหา",
-              });
-            } else {
-              getStudentByNameOrStuId(e);
-            }
-          }}
-        />
-        <div className="mb-5"></div>
-        <Spin tip="กำลังค้นหา..." spinning={loadingListSearchStudent}>
-          <Row gutter={[8, 8]}>
-            {listSearchStudent.length > 0 ? (
-              listSearchStudent.map((item) => (
-                <Col xl={6} key={item.id}>
-                  <Card
-                    bodyStyle={{
-                      border: "2px solid #e8e8e8",
-                    }}
-                    hoverable
-                    onClick={() => {
-                      formMissingItem.setFieldsValue({
-                        firstNameDrop: item.firstName,
-                        lastNameDrop: item.lastName,
-                        phoneDrop: item.phone,
-                        emailDrop: item.email,
-                        lineIdDrop: item.lineId,
-                        facebookUrlDrop: item.facebookUrl,
-                      });
-                      setDisabledDepositorForm(true);
-                      setDepositorImg(item.urlPicture);
-                      setNameOrStuId(item.stuId);
-                      setUserMissingItemDrop(item.id);
-                      setIsModalOpen(false);
-                    }}
-                    cover={
-                      <div style={{ height: "190px" }}>
-                        <img
-                          alt="example"
-                          style={{
-                            height: "100%",
-                            width: "100%",
-                            borderTop: "2px solid #e8e8e8",
-                            borderLeft: "2px solid #e8e8e8",
-                            borderRight: "2px solid #e8e8e8",
-                          }}
-                          src={
-                            item.urlPicture
-                              ? item.urlPicture
-                              : "https://i.pinimg.com/originals/46/5e/0d/465e0db3e6f531eb2f05987a013a23ad.jpg"
-                          }
-                        />
-                      </div>
-                    }
-                  >
-                    <Meta
-                      title={`${item.firstName} ${item.lastName}`}
-                      description={
-                        <div>
-                          <div>
-                            <span className="font-bold">รหัสนักศึกษา</span>
-                            <br /> {item.stuId}
-                          </div>
-                          <div>
-                            <span className="font-bold">คณะที่กำลังศึกษา</span>
-                            <br />{" "}
-                            {item.Department?.departmentTh
-                              ? item.Department?.departmentTh
-                              : "ไม่มีข้อมูล"}
-                          </div>
-                        </div>
-                      }
-                    />
-                  </Card>
-                </Col>
-              ))
-            ) : (
-              <Col xl={24}>
-                <Empty description={`ไม่พบข้อมูลการค้นหา`} />
-              </Col>
-            )}
-
-            {/* <Col xl={6}>
-                        <Card
-                            hoverable
-                            cover={<img alt="example" src="https://i.pinimg.com/originals/46/5e/0d/465e0db3e6f531eb2f05987a013a23ad.jpg" />}
-                        >
-                            <Meta title="นายประหยัด จันอังคาร"
-                                description={<div>
-                                    <div><span className='font-bold'>รหัสนักศึกษา</span><br /> 05625002154-0</div>
-                                    <div><span className='font-bold'>คณะที่กำลังศึกษา</span><br /> วิทยาศาสตร์และเทคโนโลยี</div>
-                                </div>} />
-                        </Card>
-                    </Col>
-                    <Col xl={6}>
-                        <Card
-                            hoverable
-                            cover={<img alt="example" src="https://i.pinimg.com/originals/46/5e/0d/465e0db3e6f531eb2f05987a013a23ad.jpg" />}
-                        >
-                            <Meta title="นายยิ่งใหญ่ จันอังคาร"
-                                description={<div>
-                                    <div><span className='font-bold'>รหัสนักศึกษา</span><br /> 05625002154-0</div>
-                                    <div><span className='font-bold'>คณะที่กำลังศึกษา</span><br /> วิทยาศาสตร์และเทคโนโลยี</div>
-                                </div>} />
-                        </Card>
-                    </Col> */}
-          </Row>
-        </Spin>
-      </Modal>
+      <SearchStudent
+        form={formMissingItem}
+        setNameOrStuId={setNameOrStuId}
+        nameOrStuId={nameOrStuId}
+        setIsModalOpen={setIsModalOpen}
+        isModalOpen={isModalOpen}
+        setDepositorImg={setDepositorImg}
+        setUserMissingItemDrop={setUserMissingItemDrop}
+        setDisabledDepositorForm={setDisabledDepositorForm}
+        listSearchStudent={listSearchStudent}
+        setListSearchStudent={setListSearchStudent}
+        loadingListSearchStudent={loadingListSearchStudent}
+        setLoadingListSearchStudent={setLoadingListSearchStudent}
+      />
       <motion.div
         initial={{ opacity: 0, y: 100 }}
         animate={{ opacity: 1, y: 0 }}
@@ -363,10 +261,10 @@ export default function AddListMissingItem() {
               <Breadcrumb>
                 <Breadcrumb.Item>หน้าแรก</Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  <a href="/#">รายการแจ้งพบเห็นของหาย</a>
+                  <span>รายการแจ้งพบเห็นของหาย</span>
                 </Breadcrumb.Item>
                 <Breadcrumb.Item>
-                  <a href="/#">เพิ่มรายการแจ้งพบเห็นของหาย</a>
+                  <span>เพิ่มรายการแจ้งพบเห็นของหาย</span>
                 </Breadcrumb.Item>
               </Breadcrumb>
             </div>
@@ -456,9 +354,23 @@ export default function AddListMissingItem() {
                                       multiple={false}
                                       maxCount={1}
                                       showUploadList={false}
+                                      fileList={fileProfile}
                                       accept={".jpg,.jpeg,.png"}
                                       beforeUpload={(file) => {
-                                        console.log(file);
+                                        if (file) {
+                                          const isJpgOrPng =
+                                            file.type === "image/jpeg" ||
+                                            file.type === "image/png" ||
+                                            file.type === "image/jpg";
+                                          if (!isJpgOrPng) {
+                                            notification["error"]({
+                                              message: "อัพโหลดรูปภาพไม่สำเร็จ",
+                                              description:
+                                                "กรุณาเลือกไฟล์รูปภาพเท่านั้น",
+                                            });
+                                            return true;
+                                          }
+                                        }
                                         const reader = new FileReader();
 
                                         reader.onload = (e) => {
@@ -468,6 +380,17 @@ export default function AddListMissingItem() {
 
                                         // Prevent upload
                                         return false;
+                                      }}
+                                      onChange={(res) => {
+                                        let addFiles = true;
+                                        for (let i = 0; i < res.fileList.length; i++) {
+                                          if (!types.includes(res.fileList[i].type)) {
+                                            addFiles = false;
+                                          }
+                                        }
+                                        if (addFiles) {
+                                          setFileProfile(res.fileList);
+                                        }
                                       }}
                                     >
                                       {userImg ? (
@@ -861,7 +784,7 @@ export default function AddListMissingItem() {
                               </Form.Item>
                             </Col>
                             {formMissingItem.getFieldValue().building_id ===
-                            "9999" ? (
+                              "9999" ? (
                               <Col xl={24}>
                                 <Form.Item
                                   style={{ marginBottom: 5 }}
@@ -882,50 +805,50 @@ export default function AddListMissingItem() {
                             ) : null}
                             {formMissingItem.getFieldValue().building_id !==
                               "9999" && (
-                              <Col xl={24}>
-                                <Form.Item
-                                  labelCol={{ span: 24 }}
-                                  name="room_id"
-                                >
-                                  <Select
-                                    size="large"
-                                    disabled={!isBuildingSelected}
-                                    placeholder="เลือกห้อง"
-                                    onChange={() => {
-                                      setReload(!reload);
-                                    }}
+                                <Col xl={24}>
+                                  <Form.Item
+                                    labelCol={{ span: 24 }}
+                                    name="room_id"
                                   >
-                                    {room?.map((item) => (
-                                      <Option value={item.id} key={item.id}>
-                                        {item.roomTh}
-                                      </Option>
-                                    ))}
-                                    <Option value="9999">อื่น ๆ ระบุเอง</Option>
-                                  </Select>
-                                </Form.Item>
-                              </Col>
-                            )}
+                                    <Select
+                                      size="large"
+                                      disabled={!isBuildingSelected}
+                                      placeholder="เลือกห้อง"
+                                      onChange={() => {
+                                        setReload(!reload);
+                                      }}
+                                    >
+                                      {room?.map((item) => (
+                                        <Option value={item.id} key={item.id}>
+                                          {item.roomTh}
+                                        </Option>
+                                      ))}
+                                      <Option value="9999">อื่น ๆ ระบุเอง</Option>
+                                    </Select>
+                                  </Form.Item>
+                                </Col>
+                              )}
 
                             {formMissingItem.getFieldValue().room_id ===
                               "9999" && (
-                              <Col xl={24}>
-                                <Form.Item
-                                  style={{ marginBottom: 5 }}
-                                  labelCol={{ span: 24 }}
-                                  name="roomOther"
-                                  rules={[
-                                    {
-                                      required:
-                                        formMissingItem.getFieldValue()
-                                          .room_id === "9999",
-                                      message: "กรุณาระบุสถานที่พบ",
-                                    },
-                                  ]}
-                                >
-                                  <Input size="large" placeholder="โปรดระบุ" />
-                                </Form.Item>
-                              </Col>
-                            )}
+                                <Col xl={24}>
+                                  <Form.Item
+                                    style={{ marginBottom: 5 }}
+                                    labelCol={{ span: 24 }}
+                                    name="roomOther"
+                                    rules={[
+                                      {
+                                        required:
+                                          formMissingItem.getFieldValue()
+                                            .room_id === "9999",
+                                        message: "กรุณาระบุสถานที่พบ",
+                                      },
+                                    ]}
+                                  >
+                                    <Input size="large" placeholder="โปรดระบุ" />
+                                  </Form.Item>
+                                </Col>
+                              )}
 
                             <Col xl={24}>
                               <Form.Item
@@ -947,32 +870,36 @@ export default function AddListMissingItem() {
                                   multiple={false}
                                   maxCount={1}
                                   listType={"picture"}
+                                  fileList={fileList}
                                   accept=".png,.jpeg,.jpg,.gif"
                                   beforeUpload={(file) => {
                                     if (file) {
                                       const isJpgOrPng =
                                         file.type === "image/jpeg" ||
-                                        file.type === "image/png";
+                                        file.type === "image/png" ||
+                                        file.type === "image/jpg";
                                       if (!isJpgOrPng) {
                                         notification["error"]({
                                           message: "อัพโหลดรูปภาพไม่สำเร็จ",
                                           description:
                                             "กรุณาเลือกไฟล์รูปภาพเท่านั้น",
                                         });
-                                        return true;
-                                      }
-                                      const isLt2M =
-                                        file.size / 1024 / 1024 < 2;
-                                      if (!isLt2M) {
-                                        notification["error"]({
-                                          message: "อัพโหลดรูปภาพไม่สำเร็จ",
-                                          description:
-                                            "ขนาดไฟล์รูปภาพต้องไม่เกิน 2MB",
-                                        });
+                                        setFileList([])
                                         return true;
                                       }
                                     }
                                     return false;
+                                  }}
+                                  onChange={(res) => {
+                                    let addFiles = true;
+                                    for (let i = 0; i < res.fileList.length; i++) {
+                                      if (!types.includes(res.fileList[i].type)) {
+                                        addFiles = false;
+                                      }
+                                    }
+                                    if (addFiles) {
+                                      setFileList(res.fileList);
+                                    }
                                   }}
                                 >
                                   <Button icon={<UploadOutlined />}>
@@ -1013,6 +940,7 @@ export default function AddListMissingItem() {
                     <div className="flex justify-center backdrop-blur-lg bg-purple-300/50 p-10 rounded-lg relative overflow-hidden">
                       <div className="flex flex-col items-center">
                         <img
+                          alt="test"
                           src="https://cdn-icons-png.flaticon.com/512/473/473704.png"
                           width="150"
                         />
@@ -1020,13 +948,14 @@ export default function AddListMissingItem() {
                           ไม่สามารถทำรายการได้
                         </h1>
                         <p className="mt-3 text-xl">
-                          กรุณาเข้าสู่ระบบก่อน! <a href="#">เข้าสู่ระบบ</a>
+                          กรุณาเข้าสู่ระบบก่อน! <span className="text-purple-600 cursor-pointer" onClick={() => navigate('/login')}>เข้าสู่ระบบ</span>
                         </p>
                       </div>
                       <img
                         src={`${process.env.PUBLIC_URL}/lgoho.png`}
                         className="absolute top-5 right-5 opacity-20"
                         width="250"
+                        alt="test"
                       />
                     </div>
                   )}

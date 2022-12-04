@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { response } from 'express';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { createMissingItem } from './dto';
+import { createMissingItem, updateStatus } from './dto';
 
 @Injectable()
 export class MissingItemService {
@@ -174,6 +175,7 @@ export class MissingItemService {
                 },
                 StatusMissingItem: {
                     select: {
+                        id: true,
                         statusTh: true
                     }
                 },
@@ -182,5 +184,97 @@ export class MissingItemService {
         })
 
         return res
+    }
+
+    async getMissingItemByUserId(userId: number) {
+        let response = {}
+        const res = await this.prismaService.missingItem.findMany({
+            where: {
+                user_id: userId
+            },
+            orderBy: [
+                {
+                    createdAt: 'desc'
+                }
+            ],
+            include: {
+                Campus: {
+                    select: {
+                        campusTh: true
+                    }
+                },
+                Building: {
+                    select: {
+                        buildingTh: true
+                    }
+                },
+                Room: {
+                    select: {
+                        roomTh: true
+                    }
+                },
+                StatusMissingItem: {
+                    select: {
+                        id: true,
+                        statusTh: true
+                    }
+                },
+                User: true
+            }
+        })
+        if(res) {
+            response = {
+                isSuccess: true,
+                message: "ดึงข้อมูลสำเร็จ",
+                responseData: res,
+                countTotal: res.length
+            }
+        }else{
+            response = {
+                isSuccess: false,
+                message: "ไม่พบข้อมูล"
+            }
+        }
+        return response
+    }
+
+    async updateStatusMissingItem(dto: updateStatus) {
+        let response = {}
+        const res = await this.prismaService.missingItem.update({
+            where: {
+                id: dto.missingItem_id
+            },
+            data: {
+                statusMissing_id: 2,
+                userMissingItemReceived_id: dto.userMissingItemReceive
+            }
+        })
+
+        const dtoUserMissingItemDrop = {
+            firstName: dto.firstName,
+            lastName: dto.lastName,
+            phone: dto.phone,
+            email: dto.email,
+            lineId: dto.lineId,
+            facebookUrl: dto.facebookUrl,
+            missingItem_id: dto.missingItem_id
+        }
+
+        if(res) {
+            await this.prismaService.userMissingItemReceived.create({
+                data: dtoUserMissingItemDrop
+            })
+            response = {
+                isSuccess: true,
+                message: "อัพเดทสถานะสำเร็จ"
+            }
+        }else{
+            response = {
+                isSuccess: false,
+                message: "อัพเดทสถานะไม่สำเร็จ"
+            }
+        }
+
+        return response
     }
 }

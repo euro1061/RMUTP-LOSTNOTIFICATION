@@ -7,7 +7,7 @@ export class CloudinaryService {
     file: Express.Multer.File,
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return new Promise((resolve, reject) => {
-      const upload = v2.uploader.upload_stream((error, result) => {
+      const upload = v2.uploader.upload_stream({ folder: "RMUTP" },(error, result) => {
         if (error) return reject(error);
         resolve(result);
       });

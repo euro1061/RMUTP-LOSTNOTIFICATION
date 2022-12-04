@@ -85,7 +85,7 @@ export default function HomeList(props) {
                 {page === 1 ?
                     <section className='p-6 bg-white shadow-xl rounded-lg  '>
                         <div className='flex flex-col xl:flex-row lg:flex-row lg:justify-between xl:justify-between'>
-                            <h1 className='text-3xl m-0 text-center mb-5 lg:mb-0 xl:mb-0'>รายการแจ้งพบเห็นของหาย 
+                            <h1 className='text-3xl m-0 text-center mb-5 lg:mb-0 xl:mb-0'>รายการแจ้งพบเห็นของหาย
                                 <small className='text-sm text-primaryTheme'> ({missingItem.length} รายการ)</small>
                             </h1>
                             <div className='flex flex-col lg:flex-row xl:flex-row justify-center gap-3'>
@@ -101,10 +101,16 @@ export default function HomeList(props) {
                                     style={{ margin: 0 }}
                                 >
                                     <Select
+                                        style={{ width: "200px" }}
                                         size='large'
                                         placeholder="วิทยาเขต"
                                     >
                                         <Option value="test">ทั้งหมด</Option>
+                                        <Option value="1">วิทยาเขตเทเวศร์</Option>
+                                        <Option value="2">วิทยาเขตโชติเวช</Option>
+                                        <Option value="3">วิทยาเขตพณิชยการพระนคร</Option>
+                                        <Option value="4">วิทยาเขตชุมพรเขตรอุดมศักดิ์</Option>
+                                        <Option value="5">วิทยาเขตพระนครเหนือ</Option>
                                     </Select>
                                 </Form.Item>
                                 <Button size='large' type='primary'>ค้นหา</Button>
@@ -164,7 +170,9 @@ export default function HomeList(props) {
                                                     setItemModal(item)
                                                     showModal()
                                                 }}>
-                                                    <img width="100%" className="rounded-t-lg hover:brightness-75 ease-in-out duration-300" src={`${item.imageItem}`} alt="" />
+                                                    <div className='relative w-full h-56 overflow-hidden'>
+                                                        <img className="rounded-t-lg w-full h-fit hover:brightness-75 ease-in-out duration-300" src={`${item.imageItem}`} alt="" />
+                                                    </div>
                                                 </button>
                                                 <div className="p-3">
                                                     <a href="/#">

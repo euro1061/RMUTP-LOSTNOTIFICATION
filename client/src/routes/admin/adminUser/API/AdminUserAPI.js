@@ -35,3 +35,12 @@ export const getAllUsers = async (search) => {
         return error
     }
 }
+
+export const deleteUserAPI = async (userId) => {
+    try {
+        const res = await axios.delete(`${process.env.REACT_APP_DOMAINENDPOINT}/api/users/${userId}`)
+        return (res.data)
+    } catch (error) {
+        return error
+    }
+}
