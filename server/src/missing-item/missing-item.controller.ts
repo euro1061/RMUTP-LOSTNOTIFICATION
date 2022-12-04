@@ -1,6 +1,6 @@
-import { Body, Controller, Post, UseInterceptors, UploadedFile, Patch, Param, ParseIntPipe, Get } from '@nestjs/common';
+import { Body, Controller, Post, UseInterceptors, UploadedFile, Patch, Param, ParseIntPipe, Get, Put } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { createMissingItem } from './dto';
+import { createMissingItem, updateStatus } from './dto';
 import { MissingItemService } from './missing-item.service'
 
 @Controller('missing-item')
@@ -29,8 +29,21 @@ export class MissingItemController {
         return this.missingItemService.updateMissingItem(dto, file, missingItemId)
     }
 
+    @Put('updateStatus')
+    updateStatusMissingItem(
+        @Body() dto: updateStatus,
+    ) {
+        // console.log("sadasd")
+        return this.missingItemService.updateStatusMissingItem(dto)
+    }
+
     @Get()
     getAllMissingItem() {
         return this.missingItemService.getAllMissingItem()
+    }
+
+    @Get('user/:id')
+    getMissingItemByUserId(@Param('id', ParseIntPipe) userId: number) {
+        return this.missingItemService.getMissingItemByUserId(userId)
     }
 }

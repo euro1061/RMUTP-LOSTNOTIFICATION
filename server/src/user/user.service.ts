@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { searchStudent, UserProfileEdit } from './dto';
+import { searchStudent, UserProfileEdit, UserProfileEditAdmin } from './dto';
 import { AuthService } from '../auth/auth.service';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { User } from '@prisma/client';
@@ -15,8 +15,6 @@ export class UserService {
 
     async userEditProfile(dto: UserProfileEdit, userId: Number, file: Express.Multer.File) {
         try {
-            console.log(dto)
-            console.log(file)
             let response = {}
             let urlImage = null
             if (file) {
@@ -83,6 +81,71 @@ export class UserService {
         }
     }
 
+    async userEditProfileAdmin(dto: UserProfileEditAdmin, file: Express.Multer.File) {
+        try {
+            let response = {}
+            let urlImage = null
+            if (file) {
+                let resUploadImage
+                if (dto.urlPicture !== null && dto.urlPicture !== "") {
+                    const oldPicture = dto.urlPicture.split('/').pop().split('.')[0]
+                    let resDeleteImage = await this.cloudinary.deleteImage(oldPicture)
+                    if (resDeleteImage.result === "ok") {
+                        resUploadImage = await this.cloudinary.uploadImage(file).catch(() => {
+                            throw new BadRequestException('Invalid file type.')
+                        })
+                        urlImage = resUploadImage.url
+                    } else {
+                        urlImage = null
+                    }
+                } else {
+                    resUploadImage = await this.cloudinary.uploadImage(file).catch(() => {
+                        throw new BadRequestException('Invalid file type.')
+                    })
+                    urlImage = resUploadImage.url
+                }
+                urlImage = resUploadImage.url
+            } else {
+                urlImage = dto.urlPicture
+            }
+            const userId = dto.userId;
+            delete dto.userId
+            const userUpdate = await this.prismaService.user.update({
+                data: {
+                    ...dto,
+                    urlPicture: urlImage
+                },
+                where: {
+                    id: Number(userId),
+                },
+            })
+            if (userUpdate) {
+                response = {
+                    isSuccess: true,
+                    message: 'บันทึกข้อมูลสำเร็จ',
+                }
+            } else {
+                response = {
+                    isSuccess: false,
+                    message: 'บันทึกไม่ข้อมูลสำเร็จ',
+                }
+            }
+            return response
+        } catch (error) {
+            if (error.code === "P2002") {
+                return {
+                    isSuccess: false,
+                    message: `${error.meta.target.join(',')} ซ้ำกับในระบบ`,
+                }
+            } else if (error.code === "P2003") {
+                return {
+                    isSuccess: false,
+                    message: `${error.meta.field_name} ไม่มีอยู่ในระบบ`,
+                }
+            }
+        }
+    }
+
     async searchStudents(dto: searchStudent, user: User) {
         try {
             let response = {}
@@ -135,7 +198,7 @@ export class UserService {
         }
     }
 
-    async getAllUsers(search: string) {
+    async getAllUsers(search: string, user: User) {
         try {
             let response = {}
             if (search !== "xx456789") {
@@ -158,6 +221,9 @@ export class UserService {
                                 }
                             }
                         ],
+                        NOT: {
+                            id: user.id
+                        }
                     },
                     include: {
                         Prefix: {
@@ -175,7 +241,12 @@ export class UserService {
                                 role_th: true
                             }
                         }
-                    }
+                    },
+                    orderBy: [
+                        {
+                            updatedAt: 'desc'
+                        }
+                    ],
                 })
                 if (users) {
                     response = {
@@ -209,7 +280,17 @@ export class UserService {
                                 role_th: true
                             }
                         }
-                    }
+                    },
+                    where:{
+                        NOT: {
+                            id: user.id
+                        }
+                    },
+                    orderBy: [
+                        {
+                            updatedAt: 'desc'
+                        }
+                    ],
                 })
                 if (users) {
                     response = {
@@ -224,6 +305,46 @@ export class UserService {
                 }
             }
 
+            return response
+        } catch (error) {
+            return error
+        }
+    }
+
+    async deleteUserAdmin(id: number) {
+        try {
+            let response = {}
+            const findUser = await this.prismaService.user.findUnique({
+                where: {
+                    id: id
+                }
+            })
+            let next = true
+            console.log(findUser.urlPicture)
+            if (findUser.urlPicture !== null && findUser.urlPicture !== "") {
+                next = false
+                console.log("asdsads")
+                const oldPicture = "RMUTP/"+findUser.urlPicture.split('/').pop().split('.')[0]
+                console.log(oldPicture)
+                let resDeleteImage = await this.cloudinary.deleteImage(oldPicture)
+                if (resDeleteImage.result === "ok") next = true
+            }
+            const userDelete = await this.prismaService.user.delete({
+                where: {
+                    id: Number(id)
+                }
+            })
+            if (userDelete) {
+                response = {
+                    isSuccess: true,
+                    message: 'ลบข้อมูลสำเร็จ',
+                }
+            } else {
+                response = {
+                    isSuccess: false,
+                    message: 'ลบข้อมูลไม่สำเร็จ',
+                }
+            }
             return response
         } catch (error) {
             return error

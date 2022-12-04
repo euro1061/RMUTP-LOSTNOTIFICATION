@@ -1,8 +1,8 @@
 
 import { ClearOutlined, CloudUploadOutlined, IdcardOutlined, LockOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Card, Layout, Input, Table, Modal, Avatar, Divider, Row, Col, Form, Select, Upload, notification, Spin, Tag } from 'antd';
+import { Button, Card, Layout, Input, Table, Modal, Avatar, Divider, Row, Col, Form, Select, Upload, notification, Spin, Tag, Popconfirm } from 'antd';
 import React, { useEffect, useState } from 'react'
-import { getAllDepartment, getAllPrefix, getAllRole, getAllUsers } from './API/AdminUserAPI';
+import { deleteUserAPI, getAllDepartment, getAllPrefix, getAllRole, getAllUsers } from './API/AdminUserAPI';
 import axios from 'axios';
 
 const { Content } = Layout;
@@ -45,6 +45,7 @@ export default function AdminUser() {
             role_id: `${record.role_id}`,
             lineId: record.lineId,
             facebookUrl: record.facebookUrl,
+            userId: `${record.id}`
         })
     };
 
@@ -56,7 +57,8 @@ export default function AdminUser() {
     };
 
     const handleOkEdit = () => {
-        setIsModalVisibleEdit(false)
+        formUserEdit.submit()
+        // setIsModalVisibleEdit(false)
     };
     const handleCancelEdit = () => {
         setIsModalVisibleEdit(false);
@@ -156,45 +158,70 @@ export default function AdminUser() {
     }
 
     const onFinishUserEdit = async () => {
-        // setSaveLoading(true)
+        setSaveLoadingEdit(true)
         const data = formUserEdit.getFieldValue();
-        console.log(data);
-        // const request = {
-        //     ...data,
-        //     file: data?.file?.file,
-        // }
-        // try {
-        //     const resSave = await axios.post(
-        //         `${process.env.REACT_APP_DOMAINENDPOINT}/api/auth/signup`,
-        //         request,
-        //         {
-        //             headers: {
-        //                 "Content-Type": "multipart/form-data",
-        //             },
-        //         }
-        //     );
+        // console.log(data);
+        const request = {
+            ...data,
+            file: data?.file?.file,
+            urlPicture: userImgOldEdit,
+        }
+        try {
+            const { data } = await axios.patch(
+                `${process.env.REACT_APP_DOMAINENDPOINT}/api/users/editProfileAdmin`,
+                request,
+                {
+                    headers: {
+                        "Content-Type": "multipart/form-data",
+                    },
+                }
+            );
+            const { isSuccess, message } = data;
+            if (isSuccess) {
+                setIsModalVisibleEdit(false)
+                notification['success']({
+                    message: 'บันทึกข้อมูลสำเร็จ',
+                    description: 'บันทึกข้อมูลสำเร็จ',
+                })
+                GetAllUsers("")
+                setSaveLoadingEdit(false)
+                formUserEdit.resetFields()
+                setUserImgEdit(null)
+                setUserImgOldEdit(null)
+            } else {
+                notification['error']({
+                    message: 'บันทึกข้อมูลไม่สำเร็จ',
+                    description: message,
+                })
+                setSaveLoadingEdit(false)
+            }
+        } catch (error) {
+            const { data } = error.response
+            if (data.statusCode === 403) {
+                notification['error']({
+                    message: "บันทึกไม่สำเร็จ",
+                    description: "มีข้อมูลผู้ใช้งานนี้อยู่ในระบบแล้ว"
+                })
+            }
+            setSaveLoading(false)
+        }
+    }
 
-        //     if (resSave) {
-        //         setIsModalOpen(false)
-        //         notification['success']({
-        //             message: 'บันทึกข้อมูลสำเร็จ',
-        //             description: 'บันทึกข้อมูลสำเร็จ',
-        //         })
-        //         GetAllUsers("")
-        //         setSaveLoading(false)
-        //         formUser.resetFields()
-        //         setUserImg(null)
-        //     }
-        // } catch (error) {
-        //     const { data } = error.response
-        //     if (data.statusCode === 403) {
-        //         notification['error']({
-        //             message: "บันทึกไม่สำเร็จ",
-        //             description: "มีข้อมูลผู้ใช้งานนี้อยู่ในระบบแล้ว"
-        //         })
-        //     }
-        //     setSaveLoading(false)
-        // }
+    const onDeleteUser = async (record) => {
+        const res = await deleteUserAPI(record.id)
+        const { isSuccess } = res
+        if(isSuccess) {
+            GetAllUsers("")
+            notification['success']({
+                message: 'ลบข้อมูลสำเร็จ',
+                description: 'ลบข้อมูลสำเร็จ',
+            })
+        }else{
+            notification['error']({
+                message: 'ลบข้อมูลไม่สำเร็จ',
+                description: 'ลบข้อมูลไม่สำเร็จ',
+            })
+        }
     }
 
     useEffect(() => {
@@ -212,9 +239,9 @@ export default function AdminUser() {
                     extra={
                         <>
                             <div className='flex'>
-                                <Search 
+                                <Search
                                     allowClear
-                                    placeholder="ค้นหาด้วยชื่อหรือรหัสนักศึกษา" 
+                                    placeholder="ค้นหาด้วยชื่อหรือรหัสนักศึกษา"
                                     enterButton
                                     onSearch={(v) => {
                                         GetAllUsers(v)
@@ -277,7 +304,7 @@ export default function AdminUser() {
                                                 showUploadList={false}
                                                 accept={".jpg,.jpeg,.png"}
                                                 beforeUpload={(file) => {
-                                                    
+
                                                     const reader = new FileReader();
 
                                                     reader.onload = (e) => {
@@ -643,6 +670,7 @@ export default function AdminUser() {
                                         </Form.Item>
                                         <Divider />
                                         <Button
+                                            disabled
                                             loading={saveLoadingEdit}
                                             onClick={() => {
                                                 formUserEdit.resetFields()
@@ -819,6 +847,12 @@ export default function AdminUser() {
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
+                                                    rules={[
+                                                        {
+                                                            type: 'email',
+                                                            message: 'รูปแบบอีเมลไม่ถูกต้อง',
+                                                        }
+                                                    ]}
                                                 >
                                                     <Input
                                                         type='email'
@@ -925,7 +959,10 @@ export default function AdminUser() {
                                     >
                                         แก้ไข
                                     </Button>
-                                    <Button type="danger">ลบ</Button>
+                                    <Popconfirm placement="top" title={"คุณต้องการลบข้อมูลจริงหรือไม่?"} onConfirm={() => onDeleteUser(record)} okText="ใช่" cancelText="ไม่">
+                                        <Button type="danger">ลบ</Button>
+                                    </Popconfirm>
+                                    
                                 </div>
                             </>)}
                         />

@@ -16,7 +16,7 @@ model User {
   updatedAt DateTime @updatedAt
 
   stuId String @unique
-  email String? @unique
+  email String?
   hash  String
 
   firstName   String?
@@ -177,16 +177,17 @@ model UserMissingItemDrop {
 
 model UserMissingItemReceived {
   id          Int     @id @default(autoincrement())
-  firstName   String
-  lastName    String
-  phone       String
+  firstName   String?
+  lastName    String?
+  phone       String?
   lineId      String?
   facebookUrl String?
+  email       String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  MissingItem    MissingItem @relation(fields: [missingItem_id], references: [id])
+  MissingItem    MissingItem @relation(fields: [missingItem_id], references: [id], onDelete: Cascade)
   missingItem_id Int
 
   @@map("userMissingItemReceiveds")

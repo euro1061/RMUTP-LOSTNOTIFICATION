@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react'
 import { Avatar, Divider, Image, Tabs, Row, Col, Button, Tooltip, Empty } from 'antd'
 import ModalItem from '../../../components/ModalItem';
 import { Link } from 'react-router-dom'
+import moment from 'moment';
+import { getUserCurrentAPI } from "../../../util/Functions/userFunction";
 
 export default function ProfileList(props) {
-    const { testData } = props
+    const { dataList, user, GetUserCurrent } = props
     const [itemModal, setItemModal] = useState({})
 
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -23,6 +25,8 @@ export default function ProfileList(props) {
         console.log(key);
     };
 
+
+
     useEffect(() => {
         document.body.style.background = "#f7f7f7"
     }, [])
@@ -40,14 +44,14 @@ export default function ProfileList(props) {
                         src={
                             <Image
                                 width={50}
-                                src="https://images.generated.photos/Cu7Uk2u06qGpVLO6AkzPCgLYuqZ3WbkmbNK4Y0ol2E4/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/NTkzNDczLmpwZw.jpg"
+                                src={user?.urlPicture}
                             />
                         }
                     />
                 </div>
                 <div className='flex flex-col'>
-                    <p className='text-xl font-bold mb-1'>พิชญ์ พิสิฐฏ์เสฏ</p>
-                    <span><i className="fa-solid fa-envelope text-red-600"></i> email@example.com</span>
+                    <p className='text-xl font-bold mb-1'>{user?.firstName} {user?.lastName}</p>
+                    <span><i className="fa-solid fa-envelope text-red-600"></i> {user?.email}</span>
                 </div>
             </div>
             <Divider />
@@ -60,11 +64,11 @@ export default function ProfileList(props) {
                         centered={true}
                         tabBarGutter={50}
                     >
-                        <TabPane tab="รายการแจ้งพบเห็นของราย" key="1">
+                        <TabPane tab="รายการแจ้งพบเห็นของรายของฉัน" key="1">
                             <Row gutter={[8, 8]} align="middle">
                                 {
-                                    testData.map((item, index) => (
-                                        <Col xl={4} xs={12} key={index}>
+                                    dataList.map((item, index) => (
+                                        <Col xl={6} xs={12} key={index}>
                                             <Tooltip
                                                 zIndex={1}
                                                 title={
@@ -78,13 +82,13 @@ export default function ProfileList(props) {
                                                                         width={26}
                                                                         height={26}
                                                                         preview={false}
-                                                                        src="https://images.generated.photos/Cu7Uk2u06qGpVLO6AkzPCgLYuqZ3WbkmbNK4Y0ol2E4/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/czM6Ly9pY29uczgu/Z3Bob3Rvcy1wcm9k/LnBob3Rvcy92M18w/NTkzNDczLmpwZw.jpg"
+                                                                        src={item.User.urlPicture}
                                                                     />
                                                                     <div className="font-light text-xs dark:text-white">
-                                                                        <Link to="/test" className='hover:text-gray-500'>สหัสวรรษ บุญชิต</Link>
+                                                                        <Link to="/profileNotification" className='hover:text-gray-500'>{item.User.firstName} {item.User.lastName}</Link>
                                                                     </div>
                                                                 </div>
-                                                                <div className="text-slate-900 font-light text-xs dark:text-white">วันที่แจ้ง : 12/8/2022</div>
+                                                                <div className="text-slate-900 font-light text-xs dark:text-white">วันที่แจ้ง : {moment(item.updatedAt).format("DD/MM/YYYY")}</div>
                                                             </div>
                                                             <Divider style={{ margin: 5 }} />
                                                             <div className='title text-black text-base font-bold'>
@@ -92,7 +96,7 @@ export default function ProfileList(props) {
                                                             </div>
 
                                                             <Divider style={{ margin: 5 }} />
-                                                            <p className='text-black line-clamp-2'>ซิม คาราโอเกะเซ็นเซอร์ จีดีพีมัฟฟินต้าอ่วยบัตเตอร์เพลซ ซัมเมอร์สเตเดียมทาวน์เฮาส์บอกซ์ บร็อกโคลีแฟนตาซีสถาปัตย์สังโฆ </p>
+                                                            <p className='text-black line-clamp-2'>รายละเอียด : {item.description}</p>
                                                             <Divider style={{ margin: 0 }} />
                                                             <div className='flex justify-between'>
                                                                 <Button type="primary"
@@ -105,15 +109,18 @@ export default function ProfileList(props) {
                                                         </div>
                                                     </>
                                                 }
-                                                placement='right'
+                                                placement='top'
                                                 color='#f7f7f7'
                                             >
-                                                <div className="max-w-sm bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                                                <div
+                                                    className="max-w-sm bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
                                                     <button onClick={() => {
                                                         setItemModal(item)
                                                         showModal()
                                                     }}>
-                                                        <img className="rounded-t-lg hover:brightness-75 ease-in-out duration-300" src={`${process.env.PUBLIC_URL}/${item.image}`} alt="" />
+                                                        <div className='relative w-full h-56 overflow-hidden'>
+                                                            <img className="rounded-t-lg w-full h-fit hover:brightness-75 ease-in-out duration-300" src={`${item.imageItem}`} alt="" />
+                                                        </div>
                                                     </button>
                                                     <div className="p-3">
                                                         <a href="/#">
@@ -130,7 +137,7 @@ export default function ProfileList(props) {
                                 }
                             </Row>
                         </TabPane>
-                        <TabPane tab="รายการประกาศตามหาของหาย" key="2">
+                        <TabPane tab="รายการประกาศตามหาของหายของฉัน" key="2">
                             <Empty description="ไม่มีข้อมูล" style={{ marginTop: 10 }} />
                         </TabPane>
                     </Tabs>
@@ -140,6 +147,8 @@ export default function ProfileList(props) {
                 handleCancel={handleCancel}
                 isModalVisible={isModalVisible}
                 itemModal={itemModal}
+                GetUserCurrent={GetUserCurrent}
+                setIsModalVisible={setIsModalVisible}
             />
         </section>
     )
