@@ -6,6 +6,7 @@ import { buildings } from './buildings';
 import { rooms } from './rooms';
 import { statusMissingItems } from './statusMissingItems';
 import { departments } from './department';
+import { statusLosingItems } from './statusLosingItem';
 
 const prisma = new PrismaClient();
 
@@ -49,6 +50,12 @@ async function main() {
     // for(let department of departments) {
     //     await prisma.department.create({
     //         data: department
+    //     })
+    // }
+
+    // for(let statusLosingItem of statusLosingItems) {
+    //     await prisma.statusLosingItem.create({
+    //         data: statusLosingItem
     //     })
     // }
 }

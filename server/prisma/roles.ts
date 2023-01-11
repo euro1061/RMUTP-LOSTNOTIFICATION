@@ -1,9 +1,5 @@
 export const roles = [
     {
-        role_en: "SuperAdmin",
-        role_th: "ซุปเปอร์แอดมิน"
-    },
-    {
         role_en: "Admin",
         role_th: "แอดมิน"
     },

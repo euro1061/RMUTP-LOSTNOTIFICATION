@@ -3,6 +3,7 @@ import BannerHeader from '../../components/BannerHeader';
 import Topbar from '../../components/Topbar';
 import HomeList from './components/HomeList';
 import './style/Home.css'
+import Footer from '../../components/Footer';
 
 const testData = [
     {
@@ -33,9 +34,7 @@ export default function Home() {
 
             <HomeList testData={testData} testData2={testData2}/>
 
-            <div className='bg-primaryTheme w-100 p-5 mt-10 text-center text-white'>
-                Copyright 2022 © All Rights Reserved
-            </div>
+            <Footer />
         </div>
     )
 }

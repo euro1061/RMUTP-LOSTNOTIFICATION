@@ -28,6 +28,7 @@ import { getUserCurrentAPI } from "../../util/Functions/userFunction";
 import { authSelector, login } from "../../store/slices/authSlice";
 import { useState } from "react";
 import axios from "axios";
+import Footer from '../../components/Footer';
 import {
   getAllCampusAPI,
   getBuildingByCampusIdAPI,
@@ -38,6 +39,7 @@ import SearchStudent from "./Components/SearchStudent";
 const { Option } = Select;
 const { Panel } = Collapse;
 const { Search } = Input;
+
 
 export default function AddListMissingItem() {
   const [formCurrentUser] = Form.useForm();
@@ -299,7 +301,7 @@ export default function AddListMissingItem() {
                       <Panel
                         showArrow={false}
                         header={
-                          <label className="text-purple-800">
+                          <label className="text-primaryTheme">
                             ข้อมูลผู้ประกาศ
                           </label>
                         }
@@ -530,7 +532,7 @@ export default function AddListMissingItem() {
                         key="1"
                         showArrow={false}
                         header={
-                          <label className="text-purple-800">
+                          <label className="text-primaryTheme">
                             ข้อมูลผู้ฝาก (Optional)
                           </label>
                         }
@@ -698,7 +700,7 @@ export default function AddListMissingItem() {
                               <Form.Item
                                 name="title"
                                 label={
-                                  <label className="text-purple-600 font-bold">
+                                  <label className="text-primaryTheme font-bold">
                                     ชื่อประกาศ
                                   </label>
                                 }
@@ -723,7 +725,7 @@ export default function AddListMissingItem() {
                                 name="campus_id"
                                 style={{ marginBottom: 5 }}
                                 label={
-                                  <label className="text-purple-600 font-bold">
+                                  <label className="text-primaryTheme font-bold">
                                     สถานที่พบ
                                   </label>
                                 }
@@ -861,7 +863,7 @@ export default function AddListMissingItem() {
                                 ]}
                                 labelCol={{ span: 24 }}
                                 label={
-                                  <label className="text-purple-600 font-bold">
+                                  <label className="text-primaryTheme font-bold">
                                     อัพโหลดรูปภาพ
                                   </label>
                                 }
@@ -915,7 +917,7 @@ export default function AddListMissingItem() {
                             <Col xl={24}>
                               <Form.Item
                                 label={
-                                  <label className="text-purple-600 font-bold">
+                                  <label className="text-primaryTheme font-bold">
                                     รายละเอียด
                                   </label>
                                 }
@@ -948,7 +950,7 @@ export default function AddListMissingItem() {
                           ไม่สามารถทำรายการได้
                         </h1>
                         <p className="mt-3 text-xl">
-                          กรุณาเข้าสู่ระบบก่อน! <span className="text-purple-600 cursor-pointer" onClick={() => navigate('/login')}>เข้าสู่ระบบ</span>
+                          กรุณาเข้าสู่ระบบก่อน! <span className="text-purple-600 cursor-pointer hover:text-purple-800" onClick={() => navigate('/login')}>เข้าสู่ระบบ</span>
                         </p>
                       </div>
                       <img
@@ -963,8 +965,10 @@ export default function AddListMissingItem() {
               </Row>
             </Form>
           </section>
+
         </div>
       </motion.div>
+      <Footer />
     </div>
   );
 }

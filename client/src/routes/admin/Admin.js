@@ -1,15 +1,42 @@
-import { BankOutlined, DashboardOutlined, FilePptOutlined, LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { BankOutlined, BellOutlined, DashboardOutlined, FilePptOutlined, LogoutOutlined, NotificationOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { Card, Layout, Menu } from 'antd'
-import React, { useEffect } from 'react'
-import { Link, Outlet, useLocation } from 'react-router-dom';
+import React, { useCallback, useEffect } from 'react'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Topbar from '../../components/Topbar'
+import { useSelector } from 'react-redux';
+import { authSelector } from '../../store/slices/authSlice';
+import axios from 'axios';
 
 const { Sider } = Layout;
 
 export default function Admin() {
     const location = useLocation()
+    const navigate = useNavigate()
+    const authReducer = useSelector(authSelector)
+    const { token } = authReducer
+
+    const getUserCurrent = useCallback(async () => {
+        const config = {
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        }
+        const result = await axios.get(`${process.env.REACT_APP_DOMAINENDPOINT}/api/users/me`, config)
+            .then(res => res)
+            .catch(error => error.response)
+
+        if (result.status === 200) {
+            // setUserInfo(result.data)
+            const { Role } = result.data
+            if(Role.id !== 1) {
+                navigate('/')
+            }
+        }
+    }, [token])
+
     useEffect(() => {
         document.body.style.background = "#ececec"
+        getUserCurrent()
     }, [])
 
     function getItem(label, key, icon, children, type) {
@@ -25,14 +52,20 @@ export default function Admin() {
     const menuAdmin = [
         getItem((<Link to="/admin/dashboard">Dashboard</Link>), '1', <DashboardOutlined />),
         getItem((<Link to="/admin/users">ข้อมูลผู่ใช้</Link>), '2', <UserOutlined />),
-        getItem((<Link to="/admin">ข้อมูลสถานที่</Link>), '3', <BankOutlined />),
-        getItem((<Link to="/admin">พิมพ์รายงาน</Link>), '4', <FilePptOutlined />),
-        getItem((<Link to="/admin">ตั้งค่าระบบ</Link>), '5', <SettingOutlined />),
-        getItem((<Link to="/admin">ออกจากระบบ</Link>), '6', <LogoutOutlined />),
+        getItem((<Link to="/admin/location">ข้อมูลสถานที่</Link>), '3', <BankOutlined />),
+        getItem((<Link to="/admin/report">พิมพ์รายงาน</Link>), '4', <FilePptOutlined />),
+        getItem((<Link to="/admin/listMissing">รายการแจ้งของหาย</Link>), '5', <BellOutlined />),
+        getItem((<Link to="/admin/listLosing">รายการประกาศหาของ</Link>), '6', <NotificationOutlined />),
+        getItem((<Link to="/admin">ตั้งค่าระบบ</Link>), '7', <SettingOutlined />),
+        getItem((<Link to="/admin">ออกจากระบบ</Link>), '8', <LogoutOutlined />),
     ]
 
     const activePage = location.pathname === "/admin/dashboard" ? "1" 
     : location.pathname === "/admin/users" ? "2" 
+    : location.pathname === "/admin/location" ? "3" 
+    : location.pathname === "/admin/report" ? "4" 
+    : location.pathname === "/admin/listMissing" ? "5" 
+    : location.pathname === "/admin/listLosing" ? "6"
     : "" 
 
     return (

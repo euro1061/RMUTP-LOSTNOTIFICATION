@@ -92,7 +92,6 @@ model Building {
 
   Campus      Campus        @relation(fields: [campus_id], references: [id])
   campus_id   Int
-  LosingItem  LosingItem[]
   MissingItem MissingItem[]
 
   @@map("buildings")
@@ -107,7 +106,6 @@ model Room {
 
   Building    Building      @relation(fields: [building_id], references: [id])
   building_id Int
-  LosingItem  LosingItem[]
   MissingItem MissingItem[]
 
   @@map("rooms")
@@ -237,7 +235,7 @@ model LosingItem {
   id          Int     @id @default(autoincrement())
   title       String
   description String?
-  imageItem   String
+  imageItem   String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -255,26 +253,23 @@ model LosingItem {
   LosingItemDrop         User?                    @relation("userDropId", fields: [userDrop_id], references: [id])
   userDrop_id            Int?
   UserLosingItemDrop     UserLosingItemDrop[]
-  Building               Building                 @relation(fields: [building_id], references: [id])
-  building_id            Int
-  Room                   Room                     @relation(fields: [room_id], references: [id])
-  room_id                Int
 
   @@map("losingItem")
 }
 
 model UserLosingItemDrop {
   id          Int     @id @default(autoincrement())
-  firstName   String
-  lastName    String
-  phone       String
+  firstName   String?
+  lastName    String?
+  phone       String?
   lineId      String?
   facebookUrl String?
+  email       String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  LosingItem    LosingItem @relation(fields: [losingItem_id], references: [id])
+  LosingItem    LosingItem @relation(fields: [losingItem_id], references: [id], onDelete: Cascade)
   losingItem_id Int
 
   @@map("userLosingItemDrops")

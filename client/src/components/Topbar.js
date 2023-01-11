@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Drawer, Button, Menu, Dropdown, Space, Avatar } from 'antd';
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseCircleOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux'
@@ -8,13 +8,15 @@ import { authSelector, logout } from '../store/slices/authSlice'
 
 export default function Topbar() {
     const [visible, setVisible] = useState(false)
+    const [visibleTheme, setVisibleTheme] = useState(false)
     const [userInfo, setUserInfo] = useState(null)
     const dispatch = useDispatch()
     const authReducer = useSelector(authSelector)
     const navigate = useNavigate()
-
+    const root = document.documentElement
     const { isLoggedIn, token } = authReducer
-
+    const [reload, setReload] = useState(false)
+    const themeColorDefault = JSON.parse(localStorage.getItem('themeColor'))
     const getUserCurrent = useCallback(async () => {
         const config = {
             headers: {
@@ -36,6 +38,14 @@ export default function Topbar() {
 
     const onClose = () => {
         setVisible(false);
+    };
+
+    const showDrawerTheme = () => {
+        setVisibleTheme(true);
+    };
+
+    const onCloseTheme = () => {
+        setVisibleTheme(false);
     };
 
     useEffect(() => {
@@ -69,6 +79,36 @@ export default function Topbar() {
         />
     );
 
+    const BoxColor = ({ primaryColor }) => {
+        return (
+          <div
+            style={{
+              width: 60,
+              height: 60,
+              background: primaryColor,
+              cursor: "pointer",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              margin:"5px",
+              borderRadius:"50%"
+            }}
+            onClick={() => {
+              root.style.setProperty('--primary-color', primaryColor)
+    
+              localStorage.setItem("themeColor", JSON.stringify({
+                primaryColor: primaryColor
+              }))
+              setReload(!reload)
+              window.location.reload()
+            }}
+          >
+            {themeColorDefault.primaryColor === primaryColor && <CheckOutlined style={{ color: "#fff", fontSize: 24 }} />}
+    
+          </div>
+        )
+      }
+
     return (
         <header className='bg-primaryTheme p-6'>
             <nav className='mx-auto w-12/12 lg:w-10/12 xl:w-10/12 flex justify-between items-center'>
@@ -89,23 +129,45 @@ export default function Topbar() {
                                     <span type='link'>
                                         <Space>
                                             <label className='text-white'>
-                                                {userInfo?.urlPicture ? <Avatar src={userInfo?.urlPicture} /> : <Avatar size={25} icon={<i className="fa-solid fa-user-gear"></i>} />} 
-                                                
-                                                </label>
+                                                {userInfo?.urlPicture ? <Avatar src={userInfo?.urlPicture} /> : <Avatar size={25} icon={<i className="fa-solid fa-user-gear"></i>} />}
+
+                                            </label>
                                             {userInfo?.firstName}
                                             <i className="fa-solid fa-caret-down text-white"></i>
                                         </Space>
                                     </span>
                                 </Dropdown>
                                 :
-                                <Link to="/login" className='py-3 px-6 bg-white text-black rounded-3xl hover:shadow-xl hover:bg-purple-500 hover:text-white ease-in-out duration-300'>เข้าสู่ระบบ</Link>
+                                <Link to="/login" className='py-3 px-6 bg-white text-black rounded-3xl hover:bg-white ease-in-out duration-300 hover:text-primaryTheme'>เข้าสู่ระบบ</Link>
                         }
 
                     </li>
+                    <li><button onClick={() => showDrawerTheme()} className='text-white ease-in-out duration-150' href="/#"><SettingOutlined /></button></li>
                 </ul>
 
                 <button onClick={() => showDrawer()} className='text-white text-2xl hover:text-purple-900 xl:hidden lg:hidden'><i className="fa-solid fa-bars"></i></button>
             </nav>
+            <Drawer
+                title={<label className='text-primaryTheme font-bold text-3xl'>THEME SETTING</label>}
+                placement={"right"}
+                closable={false}
+                onClose={onCloseTheme}
+                visible={visibleTheme}
+                key={"setting"}
+                extra={<Button onClick={() => onCloseTheme()} type="text" style={{ color: "red" }} icon={<CloseCircleOutlined />} />}
+            >
+                <div className='flex flex-wrap w-full'>
+                    <BoxColor primaryColor={'#5b21b6'}/>
+                    <BoxColor primaryColor={'#0A2647'}/>
+                    <BoxColor primaryColor={'#2B3A55'}/>
+                    <BoxColor primaryColor={'#222222'}/>
+                    <BoxColor primaryColor={'#FD8A8A'}/>
+                    <BoxColor primaryColor={'#CB1C8D'}/>
+                    <BoxColor primaryColor={'#DC0000'}/>
+                    <BoxColor primaryColor={'#FF7000'}/>
+                </div>
+            </Drawer>
+
             <Drawer
                 title={<label className='text-purple-700 font-bold text-3xl'>RMUTP LOGO</label>}
                 placement={"right"}

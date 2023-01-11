@@ -19,7 +19,7 @@ export class CloudinaryService {
     fileName: string,
   ): Promise<UploadApiResponse | UploadApiErrorResponse> {
     return new Promise((resolve, reject) => {
-      const deleteImage = v2.uploader.destroy(fileName, (error, result) => {
+      const deleteImage = v2.uploader.destroy("RMUTP/"+fileName, (error, result) => {
         if (error) return reject(error);
         resolve(result);
       });

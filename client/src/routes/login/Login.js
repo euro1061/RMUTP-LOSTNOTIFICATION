@@ -5,6 +5,8 @@ import Topbar from '../../components/Topbar'
 import { LoginAPI } from './API/LoginAPI'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
+import Lottie from 'react-lottie'
+import * as loginImage from "./loginImage.json";
 
 import { useDispatch } from 'react-redux'
 import { login } from '../../store/slices/authSlice'
@@ -26,18 +28,28 @@ export default function Login() {
 
     const navigate = useNavigate();
 
+    const defaultOptions = {
+        loop: false,
+        speed: 0.5,
+        autoplay: true,
+        animationData: loginImage.default,
+        rendererSettings: {
+            preserveAspectRatio: "xMidYMid slice"
+        }
+    };
+
     const onLogin = async (dataOnSubmit) => {
         const result = await LoginAPI(dataOnSubmit)
-        if(result.status === 200) {
-            dispatch(login({token: result.data.access_token}))
+        if (result.status === 200) {
+            dispatch(login({ token: result.data.access_token }))
             // sessionStorage.setItem('token', result.data.access_token)
             navigate('/')
-        }else if (result.status === 403) {
-            if(result.data.message.includes("ไม่พบข้อมูล")) {
+        } else if (result.status === 403) {
+            if (result.data.message.includes("ไม่พบข้อมูล")) {
                 setStuIdHasError(true)
                 setPwdHasError(false)
                 stuIdRef.current.focus()
-            }else if(result.data.message.includes("รหัสผ่านไม่")) {
+            } else if (result.data.message.includes("รหัสผ่านไม่")) {
                 setStuIdHasError(false)
                 setPwdHasError(true)
                 passwordRef.current.focus()
@@ -75,8 +87,34 @@ export default function Login() {
                                             {
                                                 required: true,
                                                 message: "กรุณากรอกรหัสนักศึกษา"
-                                            }
+                                            },
+                                            () => ({
+                                                validator(all, values) {
+                                                    if (!values) {
+                                                        return Promise.reject();
+                                                    } else {
+                                                        const stuId = values?.split('-')
+                                                        if (stuId.length !== 2) {
+                                                            return Promise.reject("Format ไม่ถูกต้อง");
+                                                        } else {
+                                                            if (stuId[0].length !== 12) {
+                                                                return Promise.reject("ตัวเลขด้านหน้าต้องมี 12 หลัก");
+                                                            } else {
+                                                                if (stuId[1].length !== 1) {
+                                                                    return Promise.reject("ตัวเลขด้านหลังต้องมีเลข 1 หลัก");
+                                                                } else {
+                                                                    if (isNaN(stuId[0]) || isNaN(stuId[1])) {
+                                                                        return Promise.reject("Format ไม่ถูกต้อง");
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    return Promise.resolve();
+                                                },
+                                            }),
                                         ]}
+
                                     >
                                         <Input
                                             ref={stuIdRef}
@@ -84,7 +122,7 @@ export default function Login() {
                                             size='large'
                                             onChange={() => setStuIdHasError(false)}
                                             onPressEnter={(ev) => {
-                                                if(ev.code === "Enter" || ev.code === "NumpadEnter") {
+                                                if (ev.code === "Enter" || ev.code === "NumpadEnter") {
                                                     form.submit()
                                                 }
                                             }}
@@ -95,14 +133,14 @@ export default function Login() {
                                     <AnimatePresence>
                                         {stuIdHasError
                                             ?
-                                                <motion.div
-                                                    initial={{ x: 0, y: -10, opacity: 0 }}
-                                                    animate={{ x: 0, y: 0, opacity: 1 }}
-                                                    exit={{ x: 0, y: -10, opacity: 0 }}
-                                                    transition={{ duration: 0.2, ease: "easeOut" }}
-                                                >
-                                                    <Text type="danger">{messageError}</Text>
-                                                </motion.div>
+                                            <motion.div
+                                                initial={{ x: 0, y: -10, opacity: 0 }}
+                                                animate={{ x: 0, y: 0, opacity: 1 }}
+                                                exit={{ x: 0, y: -10, opacity: 0 }}
+                                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                            >
+                                                <Text type="danger">{messageError}</Text>
+                                            </motion.div>
                                             : null
                                         }
                                     </AnimatePresence>
@@ -125,7 +163,7 @@ export default function Login() {
                                             size='large'
                                             status={pwdHasError ? 'error' : ""}
                                             onPressEnter={(ev) => {
-                                                if(ev.code === "Enter" || ev.code === "NumpadEnter") {
+                                                if (ev.code === "Enter" || ev.code === "NumpadEnter") {
                                                     form.submit()
                                                 }
                                             }}
@@ -138,14 +176,14 @@ export default function Login() {
                                     <AnimatePresence>
                                         {pwdHasError
                                             ?
-                                                <motion.div
-                                                    initial={{ x: 0, y: -10, opacity: 0 }}
-                                                    animate={{ x: 0, y: 0, opacity: 1 }}
-                                                    exit={{ x: 0, y: -10, opacity: 0 }}
-                                                    transition={{ duration: 0.2, ease: "easeOut" }}
-                                                >
-                                                    <Text type="danger">{messageError}</Text>
-                                                </motion.div>
+                                            <motion.div
+                                                initial={{ x: 0, y: -10, opacity: 0 }}
+                                                animate={{ x: 0, y: 0, opacity: 1 }}
+                                                exit={{ x: 0, y: -10, opacity: 0 }}
+                                                transition={{ duration: 0.2, ease: "easeOut" }}
+                                            >
+                                                <Text type="danger">{messageError}</Text>
+                                            </motion.div>
                                             : null
                                         }
                                     </AnimatePresence>
@@ -157,7 +195,7 @@ export default function Login() {
                         </Form>
                     </div>
                     <div className='hidden lg:block xl:block w-1/2'>
-                        <img alt="login" width={"100%"} height={'100%'} src="https://www.gossipto.com/loginimg.jpg" />
+                        <Lottie options={defaultOptions} height="430px" width="100%" />
                     </div>
                 </div>
             </section>
