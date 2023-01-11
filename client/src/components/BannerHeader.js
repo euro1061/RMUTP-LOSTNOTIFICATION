@@ -14,7 +14,7 @@ export default function BannerHeader() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.5 }}
                     >
-                        <h1 className='text-3xl xl:text-5xl lg:text-5xl font-bold text-white'>RMUTP LOST NOTIFICATION SYSTEM</h1>
+                        <h1 className='text-4xl xl:text-5xl lg:text-5xl font-bold text-white' style={{textShadow: "0px 4px 3px rgba(0,0,0,0.4), 0px 8px 13px rgba(0,0,0,0.1), 0px 18px 23px rgba(0,0,0,0.1)"}}>RMUTP LOST NOTIFICATION SYSTEM</h1>
                     </motion.div>
                     <motion.div
                         initial={{ opacity: 0, y: 100 }}

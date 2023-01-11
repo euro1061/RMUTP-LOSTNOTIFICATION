@@ -6,12 +6,11 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primaryTheme: "#5b21b6"
+        primaryTheme: "var(--primary-color)",
       }
     },
-    
   },
   plugins: [
-    require('@tailwindcss/line-clamp')
+    require('@tailwindcss/line-clamp'),
   ],
 }

@@ -210,13 +210,13 @@ export default function AdminUser() {
     const onDeleteUser = async (record) => {
         const res = await deleteUserAPI(record.id)
         const { isSuccess } = res
-        if(isSuccess) {
+        if (isSuccess) {
             GetAllUsers("")
             notification['success']({
                 message: 'ลบข้อมูลสำเร็จ',
                 description: 'ลบข้อมูลสำเร็จ',
             })
-        }else{
+        } else {
             notification['error']({
                 message: 'ลบข้อมูลไม่สำเร็จ',
                 description: 'ลบข้อมูลไม่สำเร็จ',
@@ -235,7 +235,7 @@ export default function AdminUser() {
         <>
             <Content>
                 <Card
-                    title={<label className='text-xl font-bold text-purple-700'>จัดการข้อมูลผู่ใช้</label>}
+                    title={<label className='text-xl font-bold text-primaryTheme'>จัดการข้อมูลผู่ใช้ {usersList.length !== 0 ? `(${usersList.length} รายการ)` : null}</label>}
                     extra={
                         <>
                             <div className='flex'>
@@ -347,13 +347,13 @@ export default function AdminUser() {
                                         <Row gutter={[4, 4]}>
                                             <Col span={24}>
                                                 <Divider>
-                                                    <span className='text-2xl font-bold text-purple-700'>ข้อมูลที่ใช้ Login</span>
+                                                    <span className='text-2xl font-bold text-primaryTheme'>ข้อมูลที่ใช้ Login</span>
                                                 </Divider>
                                             </Col>
                                             <Col xl={24}>
                                                 <Form.Item
                                                     name="stuId"
-                                                    label={<label className=' font-semibold text-purple-500'>รหัสนักศึกษา</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>รหัสนักศึกษา</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -361,7 +361,32 @@ export default function AdminUser() {
                                                         {
                                                             required: true,
                                                             message: "กรุณากรอกรหัสนักศึกษา"
-                                                        }
+                                                        },
+                                                        () => ({
+                                                            validator(all, values) {
+                                                                if (!values) {
+                                                                    return Promise.reject();
+                                                                } else {
+                                                                    const stuId = values?.split('-')
+                                                                    if (stuId.length !== 2) {
+                                                                        return Promise.reject("Format ไม่ถูกต้อง");
+                                                                    } else {
+                                                                        if (stuId[0].length !== 12) {
+                                                                            return Promise.reject("ตัวเลขด้านหน้าต้องมี 12 หลัก");
+                                                                        } else {
+                                                                            if (stuId[1].length !== 1) {
+                                                                                return Promise.reject("ตัวเลขด้านหลังต้องมีเลข 1 หลัก");
+                                                                            } else {
+                                                                                if (isNaN(stuId[0]) || isNaN(stuId[1])) {
+                                                                                    return Promise.reject("Format ไม่ถูกต้อง");
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                                return Promise.resolve();
+                                                            },
+                                                        }),
                                                     ]}
                                                 >
                                                     <Input
@@ -373,7 +398,7 @@ export default function AdminUser() {
                                             <Col xl={24}>
                                                 <Form.Item
                                                     name="password"
-                                                    label={<label className=' font-semibold text-purple-500'>รหัสผ่าน</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>รหัสผ่าน</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     rules={
@@ -393,13 +418,13 @@ export default function AdminUser() {
                                             </Col>
                                             <Col span={24}>
                                                 <Divider>
-                                                    <span className='text-2xl font-bold text-purple-700'>ข้อมูลทั่วไป</span>
+                                                    <span className='text-2xl font-bold text-primaryTheme'>ข้อมูลทั่วไป</span>
                                                 </Divider>
                                             </Col>
                                             <Col xl={5}>
                                                 <Form.Item
                                                     name="prefix_id"
-                                                    label={<label className=' font-semibold text-purple-500'>คำนำหน้า</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>คำนำหน้า</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -429,7 +454,7 @@ export default function AdminUser() {
 
                                             <Col xl={10}>
                                                 <Form.Item
-                                                    label={<label className=' font-semibold text-purple-500'>ชื่อ</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>ชื่อ</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -452,7 +477,7 @@ export default function AdminUser() {
                                             <Col xl={9}>
                                                 <Form.Item
                                                     name="lastName"
-                                                    label={<label className=' font-semibold text-purple-500'>นามสกุล</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>นามสกุล</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -474,7 +499,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     name="department_id"
-                                                    label={<label className=' font-semibold text-purple-500'>คณะ</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>คณะ</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -505,7 +530,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     name="phone"
-                                                    label={<label className=' font-semibold text-purple-500'>เบอร์โทร</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>เบอร์โทร</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -519,7 +544,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     name="email"
-                                                    label={<label className=' font-semibold text-purple-500'>E-Mail</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>E-Mail</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -534,7 +559,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     initialValue={"3"}
-                                                    label={<label className=' font-semibold text-purple-500'>สิทธิการใช้งาน</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>สิทธิการใช้งาน</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -566,7 +591,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     name="lineId"
-                                                    label={<label className=' font-semibold text-purple-500'>Line ID</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>Line ID</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -580,7 +605,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     name="facebookUrl"
-                                                    label={<label className=' font-semibold text-purple-500'>Facebook</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>Facebook</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -692,13 +717,13 @@ export default function AdminUser() {
                                         <Row gutter={[4, 4]}>
                                             <Col span={24}>
                                                 <Divider>
-                                                    <span className='text-2xl font-bold text-purple-700'>ข้อมูลที่ใช้ Login</span>
+                                                    <span className='text-2xl font-bold text-primaryTheme'>ข้อมูลที่ใช้ Login</span>
                                                 </Divider>
                                             </Col>
                                             <Col xl={24}>
                                                 <Form.Item
                                                     name="stuId"
-                                                    label={<label className=' font-semibold text-purple-500'>รหัสนักศึกษา</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>รหัสนักศึกษา</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -717,13 +742,13 @@ export default function AdminUser() {
                                             </Col>
                                             <Col span={24}>
                                                 <Divider>
-                                                    <span className='text-2xl font-bold text-purple-700'>ข้อมูลทั่วไป</span>
+                                                    <span className='text-2xl font-bold text-primaryTheme'>ข้อมูลทั่วไป</span>
                                                 </Divider>
                                             </Col>
                                             <Col xl={5}>
                                                 <Form.Item
                                                     name="prefix_id"
-                                                    label={<label className=' font-semibold text-purple-500'>คำนำหน้า</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>คำนำหน้า</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -753,7 +778,7 @@ export default function AdminUser() {
 
                                             <Col xl={10}>
                                                 <Form.Item
-                                                    label={<label className=' font-semibold text-purple-500'>ชื่อ</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>ชื่อ</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -776,7 +801,7 @@ export default function AdminUser() {
                                             <Col xl={9}>
                                                 <Form.Item
                                                     name="lastName"
-                                                    label={<label className=' font-semibold text-purple-500'>นามสกุล</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>นามสกุล</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -798,7 +823,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     name="department_id"
-                                                    label={<label className=' font-semibold text-purple-500'>คณะ</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>คณะ</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -829,7 +854,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     name="phone"
-                                                    label={<label className=' font-semibold text-purple-500'>เบอร์โทร</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>เบอร์โทร</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -843,7 +868,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     name="email"
-                                                    label={<label className=' font-semibold text-purple-500'>E-Mail</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>E-Mail</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -864,7 +889,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     initialValue={"3"}
-                                                    label={<label className=' font-semibold text-purple-500'>สิทธิการใช้งาน</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>สิทธิการใช้งาน</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -896,7 +921,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     name="lineId"
-                                                    label={<label className=' font-semibold text-purple-500'>Line ID</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>Line ID</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -910,7 +935,7 @@ export default function AdminUser() {
                                             <Col xl={8}>
                                                 <Form.Item
                                                     name="facebookUrl"
-                                                    label={<label className=' font-semibold text-purple-500'>Facebook</label>}
+                                                    label={<label className=' font-semibold text-primaryTheme'>Facebook</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}
                                                     style={{ marginBottom: 0 }}
@@ -962,7 +987,7 @@ export default function AdminUser() {
                                     <Popconfirm placement="top" title={"คุณต้องการลบข้อมูลจริงหรือไม่?"} onConfirm={() => onDeleteUser(record)} okText="ใช่" cancelText="ไม่">
                                         <Button type="danger">ลบ</Button>
                                     </Popconfirm>
-                                    
+
                                 </div>
                             </>)}
                         />

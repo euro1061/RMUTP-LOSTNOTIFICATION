@@ -27,8 +27,12 @@ export class UserService {
                             throw new BadRequestException('Invalid file type.')
                         })
                         urlImage = resUploadImage.url
+                        console.log(urlImage)
                     } else {
-                        urlImage = null
+                        resUploadImage = await this.cloudinary.uploadImage(file).catch(() => {
+                            throw new BadRequestException('Invalid file type.')
+                        })
+                        urlImage = resUploadImage.url
                     }
                 } else {
                     resUploadImage = await this.cloudinary.uploadImage(file).catch(() => {
@@ -323,9 +327,7 @@ export class UserService {
             console.log(findUser.urlPicture)
             if (findUser.urlPicture !== null && findUser.urlPicture !== "") {
                 next = false
-                console.log("asdsads")
                 const oldPicture = "RMUTP/"+findUser.urlPicture.split('/').pop().split('.')[0]
-                console.log(oldPicture)
                 let resDeleteImage = await this.cloudinary.deleteImage(oldPicture)
                 if (resDeleteImage.result === "ok") next = true
             }

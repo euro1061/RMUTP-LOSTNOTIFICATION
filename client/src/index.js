@@ -8,10 +8,20 @@ import { AuthContextProvider } from './store/auth-context';
 import { store } from './store/store'
 import { Provider } from 'react-redux'
 
+const themeColorDefault = JSON.parse(localStorage.getItem('themeColor'))
+const rootEle = document.documentElement
+if (themeColorDefault === null) {
+    localStorage.setItem("themeColor", JSON.stringify({
+        primaryColor: "#5b21b6",
+    }))
+} else {
+    rootEle.style.setProperty('--primary-color', themeColorDefault.primaryColor)
+}
+
 ConfigProvider.config({
     theme: {
         // primaryColor: '#5b21b6',
-        primaryColor: '#5b21b6',
+        primaryColor: themeColorDefault?.primaryColor ? themeColorDefault.primaryColor : '#5b21b6',
     },
 });
 

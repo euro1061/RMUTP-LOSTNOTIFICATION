@@ -1,8 +1,8 @@
 import { Type } from "class-transformer";
 import { IsEmail, IsInt, IsNotEmpty, IsOptional, IsString } from "class-validator"
 export class UserProfileEdit {
-    @IsEmail()
-    @IsNotEmpty()
+    @IsString()
+    @IsOptional()
     email: string;
 
     @IsString()

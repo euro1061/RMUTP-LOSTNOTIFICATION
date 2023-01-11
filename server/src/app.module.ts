@@ -13,18 +13,26 @@ import { CampusModule } from './campus/campus.module';
 import { BuildingModule } from './building/building.module';
 import { RoomModule } from './room/room.module';
 import { DepartmentModule } from './department/department.module';
+import { LosingItemModule } from './losing-item/losing-item.module';
+import { PdfServiceService } from './pdf-service/pdf-service.service';
+import { PdfServiceModule } from './pdf-service/pdf-service.module';
+import { SendGridModule } from '@anchan828/nest-sendgrid';
+import { EmailServiceModule } from './email-service/email-service.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true
     }),
+    SendGridModule.forRoot({
+      apikey: process.env.SENDGRID_API_KEY,
+    }),
     TodoModule, 
     AuthModule, 
     UserModule,
-    PrismaModule, PrefixModule, RoleModule, MissingItemModule, CampusModule, BuildingModule, RoomModule, DepartmentModule
+    PrismaModule, PrefixModule, RoleModule, MissingItemModule, CampusModule, BuildingModule, RoomModule, DepartmentModule, LosingItemModule, PdfServiceModule, EmailServiceModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PdfServiceService],
 })
 export class AppModule {}
