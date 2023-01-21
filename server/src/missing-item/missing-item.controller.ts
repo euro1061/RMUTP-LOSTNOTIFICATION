@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseInterceptors, UploadedFile, Patch, Param, ParseIntPipe, Get, Put, Query } from '@nestjs/common';
+import { Body, Controller, Post, UseInterceptors, UploadedFile, Patch, Param, ParseIntPipe, Get, Put, Query, Delete } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createMissingItem, updateStatus } from './dto';
 import { MissingItemService } from './missing-item.service';
@@ -81,5 +81,10 @@ export class MissingItemController {
         @Query('campus') campus: string = "",
     ){
         return this.missingItemService.getReport(startDate, endDate, campus)
+    }
+
+    @Delete('delete/:id')
+    deleteMissingItem(@Param('id', ParseIntPipe) missingItemId: number) {
+        return this.missingItemService.deleteMissingItem(missingItemId)
     }
 }

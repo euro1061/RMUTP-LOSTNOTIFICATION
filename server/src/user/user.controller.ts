@@ -22,7 +22,6 @@ export class UserController {
         @Body() dto: UserProfileEdit,
         @GetUser('id') userId: Number,
         @UploadedFile() file: Express.Multer.File,
-
     ) {
         return this.userService.userEditProfile(dto, userId, file)
     }

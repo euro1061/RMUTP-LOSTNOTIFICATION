@@ -29,6 +29,7 @@ export class MissingItemService {
                 roomOther: dto.roomOther,
                 user_id: dto.user_id,
                 statusMissing_id: dto.statusMissing_id,
+                remarks: dto.remarks,
                 userMissingItemDrop_id: dto.userMissingItemDrop_id ? dto.userMissingItemDrop_id : null,
             }
 
@@ -118,6 +119,7 @@ export class MissingItemService {
             building_id: dto.building_id,
             room_id: dto.room_id,
             description: dto.description,
+            remarks: dto.remarks,
             userMissingItemDrop_id: dto.userMissingItemDrop_id ? dto.userMissingItemDrop_id : null,
             imageItem: urlImage === null ? findItem.imageItem : urlImage,
             roomOther: dto.room_id ? null : dto.roomOther ? dto.roomOther : findItem.roomOther,
@@ -178,18 +180,20 @@ export class MissingItemService {
     async getAllMissingItem(campus: string, query: string) {
         let condition
         if (campus === "") {
-            condition = [{
-                statusMissing_id: 1,
-            },
+            condition = [
+            // {
+            //     statusMissing_id: 1,
+            // },
             {
                 title: {
                     contains: `${query}`
                 },
             }]
         } else {
-            condition = [{
-                statusMissing_id: 1,
-            },
+            condition = [
+            // {
+            //     statusMissing_id: 1,
+            // },
             {
                 campus_id: Number(campus),
             },
@@ -543,5 +547,43 @@ export class MissingItemService {
         })
 
         return res
+    }
+
+    async deleteMissingItem(missingItemId: number) {
+        let response
+        const itemData = await this.prismaService.missingItem.findUnique({
+            where: {
+                id: missingItemId
+            }
+        })
+        if(itemData) {
+            if(itemData.imageItem !== null && itemData.imageItem !== "") {
+                const fileName = itemData.imageItem.split('/').pop().split('.')[0]
+                await this.cloudinary.deleteImage(fileName)
+            }
+            
+            const res = await this.prismaService.missingItem.delete({
+                where: {
+                    id: missingItemId
+                }
+            })
+            if(res) {
+                response = {
+                    isSuccess: true,
+                    message: "ลบข้อมูลสำเร็จ"
+                }
+            }else {
+                response = {
+                    isSuccess: false,
+                    message: "ลบข้อมูลไม่สำเร็จ"
+                }
+            }
+        }else{
+            response = {
+                isSuccess: false,
+                message: "ไม่พบข้อมูล"
+            }
+        }
+        return response
     }
 }

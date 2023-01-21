@@ -102,6 +102,7 @@ export default function InfoLosingItemEdit() {
 
     const getUserCurrent = async () => {
         const data = await getUserCurrentAPI();
+        console.log(data)
         setUserInfo(data);
         formCurrentUser.setFieldsValue(data);
         setUserImg(data.urlPicture);
@@ -166,7 +167,7 @@ export default function InfoLosingItemEdit() {
                 setDepositorImg(responseData.LosingItemDrop.urlPicture)
                 setNameOrStuId(responseData.LosingItemDrop.stuId)
                 await getBuildingByCampusId(responseData.campus_id)
-                
+
                 // console.log(responseData.imageItem)
                 setFileList([{
                     url: responseData.imageItem,
@@ -284,7 +285,7 @@ export default function InfoLosingItemEdit() {
                 placement: "bottomRight",
             });
             setLodaingSaveMissing(false);
-            navigate(`/infolosingitem/${itemId}`, { state: { fromPage: propsFrom.state.fromPage === "infolosingitem" ? "profileNotification" : "home" }})
+            navigate(`/infolosingitem/${itemId}`, { state: { fromPage: propsFrom.state.fromPage === "infolosingitem" ? "profileNotification" : "home" } })
         }
 
 
@@ -313,7 +314,7 @@ export default function InfoLosingItemEdit() {
                         <Button
                             size="middle"
                             icon={<i className="fa-solid fa-angle-left"></i>}
-                            onClick={() => navigate(`/infolosingitem/${itemId}`, { state: { fromPage: propsFrom.state.fromPage === "infolosingitem" ? "profileNotification" : "home" }})}
+                            onClick={() => navigate(`/infolosingitem/${itemId}`, { state: { fromPage: propsFrom.state.fromPage === "infolosingitem" ? "profileNotification" : "home" } })}
                         >
                             &nbsp; ย้อนกลับ
                         </Button>
@@ -354,7 +355,7 @@ export default function InfoLosingItemEdit() {
                             onFinish={(e) => onFinishMissingItem(e)}
                         >
                             <Row gutter={[8, 8]} align="top">
-                                {authReducer.isLoggedIn ? (
+                                {authReducer.isLoggedIn && userInfo?.role_id !== 1 ?
                                     <Col xl={24}>
                                         <Collapse activeKey={[activeKey]} bordered={true}>
                                             <Panel
@@ -583,7 +584,7 @@ export default function InfoLosingItemEdit() {
                                             </Panel>
                                         </Collapse>
                                     </Col>
-                                ) : null}
+                                    : null}
                                 <Col xl={24}>
                                     {authReducer.isLoggedIn ? (
                                         <Card>

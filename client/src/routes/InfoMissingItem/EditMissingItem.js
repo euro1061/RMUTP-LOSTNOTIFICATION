@@ -161,7 +161,8 @@ export default function EditMissingItem() {
 
                     title: responseData.title,
                     description: responseData.description,
-                    campus_id: responseData.campus_id
+                    campus_id: responseData.campus_id,
+                    remarks: responseData.remarks,
                 })
                 setDepositorImg(responseData.userMissingItemDrop.urlPicture)
                 setNameOrStuId(responseData.userMissingItemDrop.stuId)
@@ -208,7 +209,8 @@ export default function EditMissingItem() {
 
                     title: responseData.title,
                     description: responseData.description,
-                    campus_id: responseData.campus_id
+                    campus_id: responseData.campus_id,
+                    remarks: responseData.remarks,
                 })
                 setIsCampusSelected(true)
                 await getBuildingByCampusId(responseData.campus_id)
@@ -333,7 +335,7 @@ export default function EditMissingItem() {
                 placement: "bottomRight",
             });
             setLodaingSaveMissing(false);
-            navigate(`/infomissingitem/${itemId}`, { state: { fromPage: propsFrom.state.fromPage === "infomissingitem" ? "profileNotification" : "home" }})
+            navigate(`/infomissingitem/${itemId}`, { state: { fromPage: propsFrom.state.fromPage === "infomissingitem" ? "profileNotification" : "home" } })
         }
 
 
@@ -362,7 +364,7 @@ export default function EditMissingItem() {
                         <Button
                             size="middle"
                             icon={<i className="fa-solid fa-angle-left"></i>}
-                            onClick={() => navigate(`/infomissingitem/${itemId}`, { state: { fromPage: propsFrom.state.fromPage === "infomissingitem" ? "profileNotification" : "home" }})}
+                            onClick={() => navigate(`/infomissingitem/${itemId}`, { state: { fromPage: propsFrom.state.fromPage === "infomissingitem" ? "profileNotification" : "home" } })}
                         >
                             &nbsp; ย้อนกลับ
                         </Button>
@@ -854,6 +856,23 @@ export default function EditMissingItem() {
                                                                         อัพโหลดรูปภาพ
                                                                     </Button>
                                                                 </Upload>
+                                                            </Form.Item>
+                                                        </Col>
+
+                                                        <Col xl={24}>
+                                                            <Form.Item
+                                                                name="remarks"
+                                                                labelCol={{ span: 24 }}
+                                                                label={
+                                                                    <label className="text-primaryTheme font-bold">
+                                                                        ตำหนิ
+                                                                    </label>
+                                                                }
+                                                            >
+                                                                <Input
+                                                                    size="large"
+                                                                    placeholder="ตำหนิของสิ่งของที่เก็บได้"
+                                                                />
                                                             </Form.Item>
                                                         </Col>
                                                     </Row>

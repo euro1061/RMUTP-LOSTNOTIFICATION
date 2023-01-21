@@ -485,4 +485,42 @@ export class LosingItemService {
         }).sort((a, b) => a.id - b.id)
         return mergeCampus
     }
+
+    async deleteLosing(losingItemId: number) {
+        let response
+        const itemData = await this.prismaService.losingItem.findUnique({
+            where: {
+                id: losingItemId
+            }
+        })
+        if(itemData) {
+            if(itemData.imageItem !== null && itemData.imageItem !== "") {
+                const fileName = itemData.imageItem.split('/').pop().split('.')[0]
+                await this.cloudinary.deleteImage(fileName)
+            }
+            
+            const res = await this.prismaService.losingItem.delete({
+                where: {
+                    id: losingItemId
+                }
+            })
+            if(res) {
+                response = {
+                    isSuccess: true,
+                    message: "ลบข้อมูลสำเร็จ"
+                }
+            }else {
+                response = {
+                    isSuccess: false,
+                    message: "ลบข้อมูลไม่สำเร็จ"
+                }
+            }
+        }else{
+            response = {
+                isSuccess: false,
+                message: "ไม่พบข้อมูล"
+            }
+        }
+        return response
+    }
 }

@@ -9,6 +9,10 @@ export class createMissingItem {
     @IsString()
     @IsOptional()
     description?: string
+
+    @IsString()
+    @IsOptional()
+    remarks?: string
     
     @IsString()
     @IsOptional()

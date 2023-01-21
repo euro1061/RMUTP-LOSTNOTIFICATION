@@ -22,6 +22,8 @@ import Location from './routes/admin/location/location';
 import Report from './routes/admin/report/Report';
 import ListMissing from './routes/admin/listMissing/ListMissing';
 import ListLosing from './routes/admin/listLosing/ListLosing';
+import Profile from './routes/profile/Profile';
+import Help from './routes/help/Help';
 
 function App() {
   const authReducer = useSelector(authSelector)
@@ -86,6 +88,7 @@ function App() {
           {authReducer.isLoggedIn &&
             <>
               <Route path="/profileNotification" element={<ProfileNotification />} />
+              <Route path="/profile" element={<Profile />} />
 
               <Route path="/admin" element={<Admin />}>
                 <Route path='dashboard' element={<Dashboard />} />
@@ -105,6 +108,7 @@ function App() {
           <Route path="/infomissingitem/:itemId" element={<InfoMissingItem />} />
           <Route path="/infomissingitem/:itemId/edit" element={<EditMissingItem />} />
           <Route path="/addlistlostitem" element={<AddListLostItem />} />
+          <Route path="/help" element={<Help />} />
 
           <Route path="*" element={<Navigate to="/" />}></Route>
         </Routes>}

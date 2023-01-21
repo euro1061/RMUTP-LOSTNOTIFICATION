@@ -4,6 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from "react-chartjs-2";
 import { getLosingStaticAPI, getMissingStaticAPI } from './API/DashboardAPI';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
@@ -11,6 +12,8 @@ const { RangePicker } = DatePicker;
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function Dashboard() {
+    const navigate = useNavigate()
+
     const [missingStaticData, setMissingStaticData] = useState({})
     const [listCampusStatic, setListCampusStatic] = useState([])
     const [pieCountMissing, setPieCountMissing] = useState([0, 0])
@@ -95,9 +98,9 @@ export default function Dashboard() {
         getLosingStatic()
     }, [])
 
-    const MenuBox = ({ text, bgBorder, shortKey, hoverBg }) => {
-        return <div className={`border-b-4 bg-white ${bgBorder} rounded-md text-center p-4 cursor-pointer drop-shadow-md ${hoverBg} transition duration-200`}>
-            <h1 className='text-gray-700 text-2xl mb-0'>{text} <span className='text-sm text-gray-400'>{shortKey}</span></h1>
+    const MenuBox = ({ text, bgBorder, shortKey, hoverBg, gotoPage }) => {
+        return <div onClick={gotoPage} className={`border-b-4 bg-white ${bgBorder} rounded-md text-center p-4 cursor-pointer drop-shadow-md ${hoverBg} transition duration-200`}>
+            <h1 className='text-gray-700 text-2xl mb-0'>{text}</h1>
         </div>
     }
 
@@ -117,6 +120,7 @@ export default function Dashboard() {
                                         bgBorder={"border-purple-600"}
                                         shortKey={"F1"}
                                         hoverBg={"hover:bg-purple-200"}
+                                        gotoPage={() => { navigate('/admin/dashboard') }}
                                     />
                                 </Col>
                                 <Col xl={4}>
@@ -125,6 +129,7 @@ export default function Dashboard() {
                                         bgBorder={"border-lime-600"}
                                         shortKey={"F2"}
                                         hoverBg={"hover:bg-lime-200"}
+                                        gotoPage={() => { navigate('/admin/users') }}
                                     />
                                 </Col>
                                 <Col xl={4}>
@@ -133,6 +138,7 @@ export default function Dashboard() {
                                         bgBorder={"border-green-600"}
                                         shortKey={"F3"}
                                         hoverBg={"hover:bg-green-200"}
+                                        gotoPage={() => { navigate('/admin/location') }}
                                     />
                                 </Col>
                                 <Col xl={4}>
@@ -141,6 +147,7 @@ export default function Dashboard() {
                                         bgBorder={"border-blue-600"}
                                         shortKey={"F4"}
                                         hoverBg={"hover:bg-blue-200"}
+                                        gotoPage={() => { navigate('/admin/report') }}
                                     />
                                 </Col>
                                 <Col xl={4}>
@@ -149,6 +156,7 @@ export default function Dashboard() {
                                         bgBorder={"border-orange-600"}
                                         shortKey={"F5"}
                                         hoverBg={"hover:bg-orange-200"}
+                                        // gotoPage={() => { navigate('/admin/location') }}
                                     />
                                 </Col>
                                 <Col xl={4}>
@@ -165,6 +173,7 @@ export default function Dashboard() {
                                         bgBorder={"border-fuchsia-600"}
                                         shortKey={"F7"}
                                         hoverBg={"hover:bg-fuchsia-200"}
+                                        gotoPage={() => { navigate('/admin/listMissing') }}
                                     />
                                 </Col>
                                 <Col xl={12}>
@@ -173,6 +182,7 @@ export default function Dashboard() {
                                         bgBorder={"border-teal-600"}
                                         shortKey={"F8"}
                                         hoverBg={"hover:bg-teal-200"}
+                                        gotoPage={() => { navigate('/admin/listLosing') }}
                                     />
                                 </Col>
                             </Row>

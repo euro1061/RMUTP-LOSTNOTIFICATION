@@ -1,5 +1,5 @@
 import { LosingItemService } from './losing-item.service';
-import { Body, Controller, Post, UseInterceptors, UploadedFile, Patch, Param, ParseIntPipe, Get, Put, Query } from '@nestjs/common';
+import { Body, Controller, Post, UseInterceptors, UploadedFile, Patch, Delete, Param, ParseIntPipe, Get, Put, Query } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createLosingItem, updateLosingItem } from './dto';
 
@@ -76,5 +76,10 @@ export class LosingItemController {
         @Query('campus') campus: string = "",
     ){
         return this.losingItemService.getReport(startDate, endDate, campus)
+    }
+
+    @Delete('delete/:id')
+    deleteLosingItem(@Param('id', ParseIntPipe) losingItemId: number) {
+        return this.losingItemService.deleteLosing(losingItemId)
     }
 }

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Avatar, Modal, notification, Popconfirm } from 'antd'
+import { Avatar, Modal, notification, Popconfirm, Button, Col, Divider, Form, Image, Input, Row } from 'antd'
 import TextArea from 'antd/lib/input/TextArea';
-import { Button, Col, Divider, Form, Image, Input, Row } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import moment from 'moment';
 import { useSelector } from 'react-redux';
@@ -10,6 +9,7 @@ import { CheckCircleFilled, ClearOutlined, DeleteOutlined, EditOutlined, Exclama
 import SearchStudent from '../routes/addListMissingItem/Components/SearchStudent';
 import { getStudentByNameOrStuIdAPI } from '../routes/addListMissingItem/API/AddListMissingItem';
 import axios from 'axios';
+import { getUserCurrentAPI } from '../util/Functions/userFunction';
 
 const { Search } = Input;
 const { confirm } = Modal;
@@ -30,6 +30,9 @@ export default function ModalItem(props) {
     const [loadingListSearchStudent, setLoadingListSearchStudent] = useState(false)
     const [listSearchStudent, setListSearchStudent] = useState([])
 
+    const [sendEmailLoading, setSendEmailLoading] = useState(false)
+    const [deleteLoading, setDeleteLoading] = useState(false)
+
     const navigate = useNavigate()
     const pathname = window.location.pathname
 
@@ -39,6 +42,64 @@ export default function ModalItem(props) {
             setIsModalVisible(false)
         }, 200);
     };
+
+    const handleDelete = async (id) => {
+        setDeleteLoading(true)
+        try {
+            const { data } = await axios.delete(
+                `${process.env.REACT_APP_DOMAINENDPOINT}/api/missing-item/delete/${id}`
+            )
+            const { isSuccess } = data;
+            if (isSuccess) {
+                handleCancel();
+                GetUserCurrent();
+                notification['success']({
+                    message: 'ลบสำเร็จ',
+                    description: "ลบข้อมูลสำเร็จแล้ว"
+                })
+                setTimeout(() => {
+                    setIsModalVisible(false)
+                }, 200);
+            } else {
+                notification['error']({
+                    message: 'Error',
+                    description: 'Delete failed',
+                })
+            }
+        } catch (error) {
+            return error
+        }
+        setDeleteLoading(false)
+    }
+    
+    const handleDeleteLosing = async (id) => {
+        setDeleteLoading(true)
+        try {
+            const { data } = await axios.delete(
+                `${process.env.REACT_APP_DOMAINENDPOINT}/api/losing-item/delete/${id}`
+            )
+            const { isSuccess } = data;
+            if (isSuccess) {
+                handleCancel();
+                GetUserCurrent();
+                notification['success']({
+                    message: 'ลบสำเร็จ',
+                    description: "ลบข้อมูลสำเร็จแล้ว"
+                })
+                setTimeout(() => {
+                    setIsModalVisible(false)
+                }, 200);
+            } else {
+                notification['error']({
+                    message: 'Error',
+                    description: 'Delete failed',
+                })
+            }
+        } catch (error) {
+            return error
+        }
+        setDeleteLoading(false)
+    }
 
     useEffect(() => {
 
@@ -59,6 +120,11 @@ export default function ModalItem(props) {
             setLoadingListSearchStudent(false);
         }
     };
+
+    const GetUserCurrentLogin = async () => {
+        const res = await getUserCurrentAPI()
+        return res
+    }
 
     const onFinishUpdateStatus = async () => {
         // handleCancelUpdate();
@@ -123,7 +189,7 @@ export default function ModalItem(props) {
             `${process.env.REACT_APP_DOMAINENDPOINT}/api/losing-item/updateStatus/${id}`,
         )
 
-        if(data.isSuccess) {
+        if (data.isSuccess) {
             notification['success']({
                 message: 'บันทึกสำเร็จ',
                 description: "อัพเดทสถานะเรียบร้อยแล้ว"
@@ -166,10 +232,10 @@ export default function ModalItem(props) {
                         <button
                             type="link"
                             className='hover:text-gray-500 text-primaryTheme'
-                            onClick={() => {
-                                handleCancel()
-                                navigate('/profileNotification')
-                            }}
+                        // onClick={() => {
+                        //     handleCancel()
+                        //     navigate('/profileNotification')
+                        // }}
                         >
                             {itemModal?.User?.firstName} {itemModal?.User?.lastName}
                         </button>
@@ -238,7 +304,6 @@ export default function ModalItem(props) {
     }
 
     const ShowMenuLeftSide = (item) => {
-        console.log(item)
         if (item?.StatusMissingItem) {
             return <>
                 <Button
@@ -248,28 +313,47 @@ export default function ModalItem(props) {
                 >
                     ดูข้อมูลแบบเต็ม
                 </Button>
-                <Button
-                    disabled={itemModal?.StatusMissingItem?.id !== 1}
-                    block icon={<EditOutlined
-                        style={{ display: "inline-grid" }} />}
-                    onClick={() => {
-                        navigate(`/infomissingitem/${itemModal?.id}/edit`, { state: { fromPage: "infomissingitem" } });
-                    }}
-                >
-                    แก้ไขข้อมูล
-                </Button>
-                <Button
-                    block
-                    disabled={itemModal?.StatusMissingItem?.id !== 1}
-                    type="primary"
-                    icon={<SendOutlined style={{ display: "inline-grid" }} />}
-                    onClick={() => setIsModalUpdateStatusVisible(true)}
-                >
-                    อัพเดทสถานะ
-                </Button>
-                <Popconfirm disabled={itemModal?.StatusMissingItem?.id !== 1} title="คุณต้องการลบประกาศนี้?">
-                    <Button disabled={itemModal?.StatusMissingItem?.id !== 1} type="danger" block icon={<DeleteOutlined style={{ display: "inline-grid" }} />}>ลบประกาศนี้</Button>
-                </Popconfirm>
+                {pathname === "/profileNotification" ?
+                    <>
+                        <Button
+                            disabled={itemModal?.StatusMissingItem?.id !== 1}
+                            block icon={<EditOutlined
+                                style={{ display: "inline-grid" }} />}
+                            onClick={() => {
+                                navigate(`/infomissingitem/${itemModal?.id}/edit`, { state: { fromPage: "infomissingitem" } });
+                            }}
+                        >
+                            แก้ไขข้อมูล
+                        </Button>
+                        <Button
+                            block
+                            disabled={itemModal?.StatusMissingItem?.id !== 1}
+                            type="primary"
+                            icon={<SendOutlined style={{ display: "inline-grid" }} />}
+                            onClick={() => setIsModalUpdateStatusVisible(true)}
+                        >
+                            อัพเดทสถานะ
+                        </Button>
+                        <Popconfirm 
+                            disabled={itemModal?.StatusMissingItem?.id !== 1} 
+                            title="คุณต้องการลบประกาศนี้?"
+                            onConfirm={() => {
+                                handleDelete(itemModal?.id)
+                            }}
+                        >
+                            <Button 
+                                loading={deleteLoading}
+                                disabled={itemModal?.StatusMissingItem?.id !== 1} 
+                                type="danger" block icon={<DeleteOutlined 
+                                style={{ display: "inline-grid" }} />}
+                            >
+                                ลบประกาศนี้
+                            </Button>
+                        </Popconfirm>
+                    </> :
+                    null
+                }
+
             </>
         }
 
@@ -313,15 +397,57 @@ export default function ModalItem(props) {
                 >
                     อัพเดทสถานะ
                 </Button>
-                <Popconfirm disabled={itemModal?.StatusLosingItem?.id !== 1} title="คุณต้องการลบประกาศนี้?">
-                    <Button disabled={itemModal?.StatusLosingItem?.id !== 1} type="danger" block icon={<DeleteOutlined style={{ display: "inline-grid" }} />}>ลบประกาศนี้</Button>
+                <Popconfirm disabled={itemModal?.StatusLosingItem?.id !== 1} title="คุณต้องการลบประกาศนี้?" onConfirm={() => handleDeleteLosing(itemModal?.id)}>
+                    <Button loading={deleteLoading} disabled={itemModal?.StatusLosingItem?.id !== 1} type="danger" block icon={<DeleteOutlined style={{ display: "inline-grid" }} />}>ลบประกาศนี้</Button>
                 </Popconfirm>
             </>
         }
     }
 
-    const onFinishSendMail = (values) => {
-        console.log(values)
+    const onFinishSendMail = async (values) => {
+        let req
+        if (!authReducer.isLoggedIn) {
+            req = {
+                name: values.nameSender,
+                email_sender: values.emailSender,
+                phone: values.phoneSender,
+                message: values.messageSender,
+                itemId: itemModal.id + '',
+                typeEmail: itemModal?.StatusMissingItem ? "1" : "2"
+            }
+        } else {
+            const user = await GetUserCurrentLogin()
+            req = {
+                name: `${user.firstName} ${user.lastName}`,
+                email_sender: itemModal?.User?.email,
+                phone: user.phone,
+                message: values.messageSender,
+                itemId: itemModal.id + '',
+                typeEmail: itemModal?.StatusMissingItem ? "1" : "2"
+            }
+        }
+
+        // console.log(req)
+        setSendEmailLoading(true)
+        try {
+            const res = await axios.post(`${process.env.REACT_APP_DOMAINENDPOINT}/api/email-service/sendEmail`, req)
+            if (res.data.isSuccess) {
+                Modal.success({
+                    title: "Success",
+                    content: res.data.message
+                });
+                formSendMail.resetFields()
+            } else {
+                Modal.warning({
+                    title: "Failed",
+                    content: res.data.message
+                });
+                formSendMail.resetFields()
+            }
+        } catch (error) {
+            return error
+        }
+        setSendEmailLoading(false)
     }
 
     return (
@@ -556,11 +682,9 @@ export default function ModalItem(props) {
                     />
                     <Divider />
                     {
-                        pathname === "/profileNotification" ?
-                            <div className='flex flex-col gap-2'>
-                                {ShowMenuLeftSide(itemModal)}
-                            </div>
-                            : null
+                        <div className='flex flex-col gap-2'>
+                            {ShowMenuLeftSide(itemModal)}
+                        </div>
                     }
                 </Col>
                 <Col xl={15} sm={15} xs={24}>
@@ -583,7 +707,7 @@ export default function ModalItem(props) {
                     <Divider style={{ margin: 10 }} />
                     {ShowPhoneAndEmail(itemModal)}
                     <Divider style={{ margin: 10 }} />
-                    <h1 className='font-light'><i className="fa-solid fa-message text-blue-600"></i> <b>ส่งข้อความหาเจ้าของกระทู้</b></h1>
+                    <h1 className='font-light'><i className="fa-solid fa-message text-blue-600"></i> <b>ส่งข้อความหาเจ้าของโพสต์</b></h1>
                     <Form
                         form={formSendMail}
                         onFinish={onFinishSendMail}
@@ -601,10 +725,19 @@ export default function ModalItem(props) {
                                                 label={<label className='text-gray-500'>ชื่อ - นามสกุล</label>}
                                                 rules={[{ required: true, message: 'กรุณากรอกชื่อ - นามสกุล' }]}
                                             >
-                                                <Input
-                                                    disabled={itemModal?.StatusMissingItem?.id !== 1 || !itemModal?.User?.email}
-                                                    placeholder='ชื่อ - นามสกุล'
-                                                />
+                                                {
+                                                    itemModal?.StatusMissingItem ?
+                                                        <Input
+                                                            disabled={itemModal?.StatusMissingItem?.id !== 1 || !itemModal?.User?.email}
+                                                            placeholder='ชื่อ - นามสกุล'
+                                                        />
+                                                        :
+                                                        <Input
+                                                            disabled={itemModal?.StatusLosingItem?.id !== 1 || !itemModal?.LosingItem?.email}
+                                                            placeholder='ชื่อ - นามสกุล'
+                                                        />
+                                                }
+
                                             </Form.Item>
                                         </Col>
                                         <Col span={12}>
@@ -616,10 +749,19 @@ export default function ModalItem(props) {
                                                 label={<label className='text-gray-500'>เบอร์โทร</label>}
                                                 tooltip={{ title: "เบอร์โทรสำหรับติดต่อกลับ", placement: 'right', color: "gray" }}
                                             >
-                                                <Input
-                                                    placeholder='เบอร์โทรศัพท์'
-                                                    disabled={itemModal?.StatusMissingItem?.id !== 1 || !itemModal?.User?.email}
-                                                />
+                                                {
+                                                    itemModal?.StatusMissingItem ?
+                                                        <Input
+                                                            placeholder='เบอร์โทรศัพท์'
+                                                            disabled={itemModal?.StatusMissingItem?.id !== 1 || !itemModal?.User?.email}
+                                                        />
+                                                        :
+                                                        <Input
+                                                            placeholder='เบอร์โทรศัพท์'
+                                                            disabled={itemModal?.StatusLosingItem?.id !== 1 || !itemModal?.LosingItem?.email}
+                                                        />
+                                                }
+
                                             </Form.Item>
                                         </Col>
                                         <Col span={24}>
@@ -631,10 +773,19 @@ export default function ModalItem(props) {
                                                 label={<label className='text-gray-500'>Email</label>}
                                                 tooltip={{ title: "Email สำหรับติดต่อกลับ", placement: 'right', color: "gray" }}
                                             >
-                                                <Input
-                                                    placeholder='email@example.com'
-                                                    disabled={itemModal?.StatusMissingItem?.id !== 1 || !itemModal?.User?.email}
-                                                />
+                                                {
+                                                    itemModal?.StatusMissingItem ?
+                                                        <Input
+                                                            placeholder='email@example.com'
+                                                            disabled={itemModal?.StatusMissingItem?.id !== 1 || !itemModal?.User?.email}
+                                                        />
+                                                        :
+                                                        <Input
+                                                            placeholder='email@example.com'
+                                                            disabled={itemModal?.StatusLosingItem?.id !== 1 || !itemModal?.LosingItem?.email}
+                                                        />
+                                                }
+
                                             </Form.Item>
                                         </Col>
                                     </>
@@ -650,23 +801,49 @@ export default function ModalItem(props) {
                                         labelCol={{ span: 24, style: { paddingBottom: 0 } }}
                                         label={<label className='text-gray-500'>ข้อความ</label>}
                                     >
-                                        <TextArea
-                                            rows={4}
-                                            disabled={pathname === "/profileNotification" || itemModal?.StatusMissingItem?.id !== 1 || !itemModal?.User?.email}
-                                            placeholder="ข้อความ"
-                                        />
+                                        {
+                                            itemModal?.StatusMissingItem ?
+                                                <TextArea
+                                                    rows={4}
+                                                    disabled={pathname === "/profileNotification" || itemModal?.StatusMissingItem?.id !== 1 || !itemModal?.User?.email}
+                                                    placeholder="ข้อความ"
+                                                />
+                                                :
+                                                <TextArea
+                                                    rows={4}
+                                                    disabled={pathname === "/profileNotification" || itemModal?.StatusLosingItem?.id !== 1 || !itemModal?.LosingItem?.email}
+                                                    placeholder="ข้อความ"
+                                                />
+                                        }
+
                                     </Form.Item>
                                 </Col>
                                 <Col span={24} style={{ marginTop: 10 }}>
-                                    <Button
-                                        block
-                                        type="primary"
-                                        size='large'
-                                        onClick={() => formSendMail.submit()}
-                                        disabled={pathname === "/profileNotification" || itemModal?.StatusMissingItem?.id !== 1 || !itemModal?.User?.email}
-                                    >
-                                        ส่งข้อความ
-                                    </Button>
+                                    {
+                                        itemModal?.StatusMissingItem ?
+                                            <Button
+                                                loading={sendEmailLoading}
+                                                block
+                                                type="primary"
+                                                size='large'
+                                                onClick={() => formSendMail.submit()}
+                                                disabled={pathname === "/profileNotification" || itemModal?.StatusMissingItem?.id !== 1 || !itemModal?.User?.email}
+                                            >
+                                                ส่งข้อความ
+                                            </Button>
+                                            :
+                                            <Button
+                                                loading={sendEmailLoading}
+                                                block
+                                                type="primary"
+                                                size='large'
+                                                onClick={() => formSendMail.submit()}
+                                                disabled={pathname === "/profileNotification" || itemModal?.StatusLosingItem?.id !== 1 || !itemModal?.LosingItem?.email}
+                                            >
+                                                ส่งข้อความ
+                                            </Button>
+                                    }
+
                                 </Col>
                             </>
 
