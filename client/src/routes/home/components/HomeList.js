@@ -44,7 +44,24 @@ export default function HomeList(props) {
     const getAllMissingItem = (campus, query) => {
         GetAllMissingItem(campus, query).then((res) => {
             setLoadingItem(true)
-            setMissingItem(res)
+            const customData = res.map((item) => {
+                if(item.title.includes("บัตร")) {
+                    const splitImageItem = item.imageItem.split("/")
+                    splitImageItem[6] = "e_blur:800"
+                    // console.log(splitImageItem.join('/'))
+                    return {
+                        ...item,
+                        title: item.title,
+                        imageItem: splitImageItem.join('/')
+                    }
+                }else{
+                    return {
+                        ...item,
+                        title: item.title
+                    }
+                }
+            })
+            setMissingItem(customData)
             setLoadingItem(false)
         })
     }
@@ -141,7 +158,7 @@ export default function HomeList(props) {
                         <div className='flex flex-col xl:flex-row lg:flex-row lg:justify-between xl:justify-between'>
                             {!loadingItem ?
                                 <>
-                                    <h1 className='text-3xl m-0 text-center mb-5 lg:mb-0 xl:mb-0'>รายการแจ้งพบเห็นของหาย
+                                    <h1 className='text-lg xl:text-3xl m-0 text-center mb-5 lg:mb-0 xl:mb-0'>รายการแจ้งพบเห็นของหาย
                                         <small className='text-sm text-primaryTheme'> ({missingItem.length} รายการ)</small>
                                     </h1>
                                     <div className='flex flex-col lg:flex-row xl:flex-row justify-center items-center gap-3'>
@@ -191,7 +208,7 @@ export default function HomeList(props) {
                             {
                                 missingItem.length > 0 && !loadingItem ?
                                     missingItem.map((item, index) => (
-                                        <Col xl={6} xs={24} key={index}>
+                                        <Col xl={6} xs={24} sm={24} key={index}>
                                             <Tooltip
                                                 zIndex={1}
                                                 title={
@@ -208,7 +225,7 @@ export default function HomeList(props) {
                                                                         src={item.User.urlPicture}
                                                                     />
                                                                     <div className="font-light text-xs dark:text-white">
-                                                                        <Link to="/profileNotification" className='hover:text-gray-500'>{item.User.firstName} {item.User.lastName}</Link>
+                                                                        <Link to="/" className='hover:text-gray-500'>{item.User.firstName} {item.User.lastName}</Link>
                                                                     </div>
                                                                 </div>
                                                                 <div className="text-slate-900 font-light text-xs dark:text-white">วันที่แจ้ง : {moment(item.updatedAt).format("DD/MM/YYYY")}</div>
@@ -236,7 +253,7 @@ export default function HomeList(props) {
                                                 color='#f7f7f7'
                                             >
                                                 <div
-                                                    className="max-w-sm bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                                                    className="max-w-sm bg-white rounded-lg border border-gray-200 shadow-sm dark:bg-gray-800 dark:border-gray-700 w-full">
                                                     <button onClick={() => {
                                                         setItemModal(item)
                                                         showModal()

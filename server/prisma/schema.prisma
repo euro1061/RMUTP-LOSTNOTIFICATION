@@ -152,6 +152,8 @@ model MissingItem {
   Room        Room?     @relation(fields: [room_id], references: [id])
   room_id     Int?
 
+  remarks String?
+
   @@map("missingItems")
 }
 

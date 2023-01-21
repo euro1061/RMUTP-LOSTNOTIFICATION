@@ -1,8 +1,9 @@
-import { Button, Card, Form, Input, Modal, Select, Table } from 'antd'
+import { Button, Card, Form, Input, Modal, Select, Table, notification } from 'antd'
 import { Content } from 'antd/lib/layout/layout'
 import React, { useEffect, useState } from 'react'
 import { GetAllMissingItem, getAllCampusAPI } from './API/listMissingAPI';
 import moment from 'moment';
+import axios from 'axios';
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, EyeOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
@@ -17,6 +18,7 @@ export default function ListMissing() {
 
     const [queryTitle, setQueryTitle] = useState("")
     const [selectedCampus, setselectedCampus] = useState("")
+    const [deleteLoading ,setDeleteLoading] = useState(false)
 
     const getAllMissingItem = async (selectedCampus, queryTitle) => {
         setLoading(true)
@@ -54,6 +56,31 @@ export default function ListMissing() {
             getAllMissingItem(selectedCampus, queryTitle)
         }
     }, [selectedCampus, queryTitle])
+
+    const handleDelete = async (id) => {
+        setDeleteLoading(true)
+        try {
+            const { data } = await axios.delete(
+                `${process.env.REACT_APP_DOMAINENDPOINT}/api/missing-item/delete/${id}`
+            )
+            const { isSuccess } = data;
+            if (isSuccess) {
+                getAllMissingItem("", "")
+                notification['success']({
+                    message: 'ลบสำเร็จ',
+                    description: "ลบข้อมูลสำเร็จแล้ว"
+                })
+            } else {
+                notification['error']({
+                    message: 'Error',
+                    description: 'Delete failed',
+                })
+            }
+        } catch (error) {
+            return error
+        }
+        setDeleteLoading(false)
+    }
 
     return (
         <Content>
@@ -149,18 +176,18 @@ export default function ListMissing() {
                                         แก้ไข
                                     </Button>
                                     <Button
+                                        loading={deleteLoading}
                                         icon={<DeleteOutlined style={{ display: "inline-grid" }} />}
                                         type='danger'
                                         onClick={() => {
                                             confirm({
-                                                title: 'Are you sure delete this task?',
+                                                title: 'คุณต้องการลบประกาศนี้หรือไม่?',
                                                 icon: <ExclamationCircleFilled />,
-                                                content: 'Some descriptions',
                                                 okText: 'Yes',
                                                 okType: 'danger',
                                                 cancelText: 'No',
                                                 onOk() {
-                                                    console.log('OK');
+                                                    handleDelete(record.id)
                                                 },
                                                 onCancel() {
                                                     console.log('Cancel');

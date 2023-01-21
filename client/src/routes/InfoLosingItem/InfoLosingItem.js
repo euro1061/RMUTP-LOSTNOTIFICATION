@@ -18,6 +18,7 @@ import {
     Spin,
     notification,
     Modal,
+    Popconfirm,
 } from "antd";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getUserCurrentAPI } from "../../util/Functions/userFunction";
@@ -60,6 +61,8 @@ export default function InfoLosingItem() {
     const [nameOrStuId, setNameOrStuId] = useState(null)
     const [userMissingItemDrop, setUserMissingItemDrop] = useState(null)
 
+    const [deleteLoading, setDeleteLoading] = useState(false)
+
 
 
     const handleCancelUpdate = async () => {
@@ -99,61 +102,61 @@ export default function InfoLosingItem() {
         setLoading(false)
     }
 
-    const onFinishUpdateStatus = async () => {
-        // handleCancelUpdate();
-        const dataForm = form.getFieldValue()
-        let request
-        if (userMissingItemDrop !== null) {
-            request = {
-                firstName: dataForm.firstNameDrop,
-                lastName: dataForm.lastNameDrop,
-                phone: dataForm.phoneDrop,
-                email: dataForm.emailDrop,
-                lineId: dataForm.lineIdDrop,
-                facebookUrl: dataForm.facebookUrlDrop,
-                userMissingItemReceive: userMissingItemDrop,
-                missingItem_id: dataMissingItem?.id,
-            }
-        } else {
-            request = {
-                firstName: dataForm.firstNameDrop,
-                lastName: dataForm.lastNameDrop,
-                phoneDrop: dataForm.phoneDrop,
-                emailDrop: dataForm.emailDrop,
-                lineIdDrop: dataForm.lineIdDrop,
-                facebookUrlDrop: dataForm.facebookUrlDrop,
-                userMissingItemReceive: null,
-                missingItem_id: dataMissingItem?.id,
-            }
-        }
+    // const onFinishUpdateStatus = async () => {
+    //     // handleCancelUpdate();
+    //     const dataForm = form.getFieldValue()
+    //     let request
+    //     if (userMissingItemDrop !== null) {
+    //         request = {
+    //             firstName: dataForm.firstNameDrop,
+    //             lastName: dataForm.lastNameDrop,
+    //             phone: dataForm.phoneDrop,
+    //             email: dataForm.emailDrop,
+    //             lineId: dataForm.lineIdDrop,
+    //             facebookUrl: dataForm.facebookUrlDrop,
+    //             userMissingItemReceive: userMissingItemDrop,
+    //             missingItem_id: dataMissingItem?.id,
+    //         }
+    //     } else {
+    //         request = {
+    //             firstName: dataForm.firstNameDrop,
+    //             lastName: dataForm.lastNameDrop,
+    //             phoneDrop: dataForm.phoneDrop,
+    //             emailDrop: dataForm.emailDrop,
+    //             lineIdDrop: dataForm.lineIdDrop,
+    //             facebookUrlDrop: dataForm.facebookUrlDrop,
+    //             userMissingItemReceive: null,
+    //             missingItem_id: dataMissingItem?.id,
+    //         }
+    //     }
 
-        const { data } = await axios.put(
-            `${process.env.REACT_APP_DOMAINENDPOINT}/api/missing-item/updateStatus`,
-            request
-        )
+    //     const { data } = await axios.put(
+    //         `${process.env.REACT_APP_DOMAINENDPOINT}/api/missing-item/updateStatus`,
+    //         request
+    //     )
 
-        const { isSuccess } = data;
-        if (isSuccess) {
-            handleCancelUpdate();
-            // handleCancel();
-            // setIsModalVisible(false);
-            setDisabledDepositorForm(false);
-            // GetUserCurrent();
-            setNameOrStuId(null);
-            setReceivedImg(null);
-            notification['success']({
-                message: 'บันทึกสำเร็จ',
-                description: "อัพเดทสถานะเรียบร้อยแล้ว"
-            })
-            form.resetFields()
+    //     const { isSuccess } = data;
+    //     if (isSuccess) {
+    //         handleCancelUpdate();
+    //         // handleCancel();
+    //         // setIsModalVisible(false);
+    //         setDisabledDepositorForm(false);
+    //         // GetUserCurrent();
+    //         setNameOrStuId(null);
+    //         setReceivedImg(null);
+    //         notification['success']({
+    //             message: 'บันทึกสำเร็จ',
+    //             description: "อัพเดทสถานะเรียบร้อยแล้ว"
+    //         })
+    //         form.resetFields()
 
-        } else {
-            notification['error']({
-                message: 'Error',
-                description: 'Update status failed',
-            })
-        }
-    }
+    //     } else {
+    //         notification['error']({
+    //             message: 'Error',
+    //             description: 'Update status failed',
+    //         })
+    //     }
+    // }
 
     const onFinishUpdateStatusLosingItem = async (id) => {
         const { data } = await axios.put(
@@ -180,6 +183,31 @@ export default function InfoLosingItem() {
     const onFinishMissingItem = async () => {
 
     };
+
+    const handleDeleteLosing = async (id) => {
+        setDeleteLoading(true)
+        try {
+            const { data } = await axios.delete(
+                `${process.env.REACT_APP_DOMAINENDPOINT}/api/losing-item/delete/${id}`
+            )
+            const { isSuccess } = data;
+            if (isSuccess) {
+                notification['success']({
+                    message: 'ลบสำเร็จ',
+                    description: "ลบข้อมูลสำเร็จแล้ว"
+                })
+                navigate('/profileNotification')
+            } else {
+                notification['error']({
+                    message: 'Error',
+                    description: 'Delete failed',
+                })
+            }
+        } catch (error) {
+            return error
+        }
+        setDeleteLoading(false)
+    }
 
     return (
         <div>
@@ -225,7 +253,7 @@ export default function InfoLosingItem() {
                             </h1>
                         </div>
                         <Divider style={{ margin: 15 }} />
-                        
+
                         <Spin spinning={loading} tip="กำลังโหลด" size="large">
                             {fetchSuccess ?
                                 <Form
@@ -273,6 +301,13 @@ export default function InfoLosingItem() {
                                                                     &nbsp;
                                                                     อัพเดทสถานะ
                                                                 </button>
+                                                                <Popconfirm title="คุณต้องการลบประกาศนี้หรือไม่?" onConfirm={() => handleDeleteLosing(dataMissingItem.id)}>
+                                                                    <button type="button" className="w-full bg-red-500 text-white rounded-lg p-3 text-xl hover:bg-red-600 transition duration-300">
+                                                                        <DeleteOutlined style={{ display: "inline-grid" }} />
+                                                                        &nbsp;
+                                                                        ลบประกาศ
+                                                                    </button>
+                                                                </Popconfirm>
                                                             </>
                                                             :
                                                             <>
@@ -292,12 +327,16 @@ export default function InfoLosingItem() {
                                                                     &nbsp;
                                                                     อัพเดทสถานะ
                                                                 </button>
+                                                                <button 
+                                                                    disabled 
+                                                                    type="button" 
+                                                                    className="w-full bg-gray-500 cursor-not-allowed text-white disabled:opacity-50 rounded-lg p-3 text-xl">
+                                                                        <DeleteOutlined style={{ display: "inline-grid" }} />
+                                                                        &nbsp;
+                                                                        ลบประกาศ
+                                                                </button>
                                                             </>}
-                                                        <button type="button" className="w-full bg-red-500 text-white rounded-lg p-3 text-xl hover:bg-red-600 transition duration-300">
-                                                            <DeleteOutlined style={{ display: "inline-grid" }} />
-                                                            &nbsp;
-                                                            ลบประกาศ
-                                                        </button>
+
                                                     </div>
                                                 </motion.div>
 

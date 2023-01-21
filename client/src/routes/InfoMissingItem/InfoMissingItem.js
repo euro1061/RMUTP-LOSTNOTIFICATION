@@ -18,6 +18,7 @@ import {
   Spin,
   notification,
   Modal,
+  Popconfirm,
 } from "antd";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getUserCurrentAPI } from "../../util/Functions/userFunction";
@@ -38,6 +39,7 @@ export default function InfoMissingItem() {
   const [formCreatedUser] = Form.useForm();
   const [formMissingItem] = Form.useForm();
   const [formDropInfo] = Form.useForm();
+  const [formReceive] = Form.useForm();
   const [form] = Form.useForm();
 
   const navigate = useNavigate();
@@ -62,6 +64,8 @@ export default function InfoMissingItem() {
   const [loadingListSearchStudent, setLoadingListSearchStudent] = useState(false)
   const [listSearchStudent, setListSearchStudent] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const [deleteLoading, setDeleteLoading] = useState(false)
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -95,8 +99,14 @@ export default function InfoMissingItem() {
   const getMissingItemById = async (id) => {
     setLoading(true)
     const data = await getMissingItemByIdAPI(id)
+    // console.log(data)
     if (data.isSuccess) {
-      setDataMissingItem(data.responseData)
+      const customData = data.responseData;
+      const splitImageItem = data.responseData.imageItem.split("/")
+      splitImageItem[6] = "e_blur:800"
+
+      customData.imageItem = splitImageItem.join("/")
+      setDataMissingItem(customData)
       formCreatedUser.setFieldsValue(data.responseData.User)
 
       if (data?.responseData?.userMissingItemDrop_id !== null) {
@@ -104,6 +114,12 @@ export default function InfoMissingItem() {
         setUserDropImg(data.responseData.userMissingItemDrop?.urlPicture)
       } else {
         formDropInfo.setFieldsValue(data.responseData.UserMissingItemDrop[0])
+      }
+
+      if (data?.responseData?.userMissingItemReceived !== null) {
+        formReceive.setFieldsValue(data.responseData.userMissingItemReceived)
+      } else {
+        formReceive.setFieldsValue(data.responseData.UserMissingItemReceived[0])
       }
 
       setUserImg(data.responseData.User.urlPicture)
@@ -170,6 +186,31 @@ export default function InfoMissingItem() {
     }
   }
 
+  const handleDelete = async (id) => {
+    setDeleteLoading(true)
+    try {
+      const { data } = await axios.delete(
+        `${process.env.REACT_APP_DOMAINENDPOINT}/api/missing-item/delete/${id}`
+      )
+      const { isSuccess } = data;
+      if (isSuccess) {
+        notification['success']({
+          message: 'ลบสำเร็จ',
+          description: "ลบข้อมูลสำเร็จแล้ว"
+        })
+        navigate('/profileNotification')
+      } else {
+        notification['error']({
+          message: 'Error',
+          description: 'Delete failed',
+        })
+      }
+    } catch (error) {
+      return error
+    }
+    setDeleteLoading(false)
+  }
+
   /*eslint-disable */
   useEffect(() => {
     getUserCurrent();
@@ -224,7 +265,7 @@ export default function InfoMissingItem() {
                 {fetchSuccess ? dataMissingItem.title : "ไม่พบข้อมูล"}
               </h1>
             </div>
-            <Divider style={{margin: 15}} />
+            <Divider style={{ margin: 15 }} />
             <Modal
               width={900}
               visible={isModalUpdateStatusVisible}
@@ -453,7 +494,7 @@ export default function InfoMissingItem() {
                               <>
                                 <button
                                   onClick={() => {
-                                    navigate(`/infomissingitem/${dataMissingItem?.id}/edit`, { state: {fromPage : "infomissingitem"}});
+                                    navigate(`/infomissingitem/${dataMissingItem?.id}/edit`, { state: { fromPage: "infomissingitem" } });
                                   }}
                                   type="button" className="w-full bg-orange-500 text-white rounded-lg p-3 text-xl hover:bg-orange-600 transition duration-300">
                                   <EditOutlined style={{ display: "inline-grid" }} />
@@ -467,6 +508,13 @@ export default function InfoMissingItem() {
                                   &nbsp;
                                   อัพเดทสถานะ
                                 </button>
+                                <Popconfirm title="คุณต้องการลบประกาศนี้หรือไม่?" onConfirm={() => handleDelete(dataMissingItem.id)}>
+                                  <button type="button" className="w-full bg-red-500 text-white rounded-lg p-3 text-xl hover:bg-red-600 transition duration-300">
+                                    <DeleteOutlined style={{ display: "inline-grid" }} />
+                                    &nbsp;
+                                    ลบประกาศ
+                                  </button>
+                                </Popconfirm>
                               </>
                               :
                               <>
@@ -486,12 +534,14 @@ export default function InfoMissingItem() {
                                   &nbsp;
                                   อัพเดทสถานะ
                                 </button>
+
+                                <button type="button" className="w-full bg-gray-500 cursor-not-allowed text-white disabled:opacity-50 rounded-lg p-3 text-xl">
+                                  <DeleteOutlined style={{ display: "inline-grid" }} />
+                                  &nbsp;
+                                  ลบประกาศ
+                                </button>
                               </>}
-                            <button type="button" className="w-full bg-red-500 text-white rounded-lg p-3 text-xl hover:bg-red-600 transition duration-300">
-                              <DeleteOutlined style={{ display: "inline-grid" }} />
-                              &nbsp;
-                              ลบประกาศ
-                            </button>
+
                           </div>
                         </motion.div>
 
@@ -737,6 +787,27 @@ export default function InfoMissingItem() {
                                   </Card>
                                 </Form.Item>
                               </Col>
+                              {userInfo?.id === dataMissingItem?.user_id || userInfo?.Role.id === 1 ?
+                                <Col xl={24}>
+                                  <Form.Item
+                                    label={
+                                      <label className="text-purple-600 font-bold">
+                                        ตำหนิ
+                                      </label>
+                                    }
+                                    labelCol={{ span: 24 }}
+                                    name="remarks"
+                                  >
+                                    <Card
+                                      bodyStyle={{ padding: 10 }}
+                                    >
+                                      <h3>{dataMissingItem?.remarks}</h3>
+                                    </Card>
+                                  </Form.Item>
+                                </Col> :
+                                null
+                              }
+
                             </Row>
                           </Col>
                         </Row>
@@ -859,6 +930,128 @@ export default function InfoMissingItem() {
                         </Panel>
                       </Collapse>
                     </Col>
+                    {
+                      dataMissingItem?.statusMissing_id === 2 ?
+                        <Col xl={24}>
+                          <Collapse
+                            activeKey={1}
+                          >
+                            <Panel
+                              key="1"
+                              showArrow={false}
+                              header={
+                                <label className="text-purple-800">
+                                  ข้อมูลผู้ที่มารับของ
+                                </label>
+                              }
+                            >
+                              {/* <Button type="primary" onClick={() => {
+                                            console.log("asdasd")
+                                            showModal()
+                                        }} icon={<SearchOutlined style={{ display: "inline-grid" }} />}>ค้นหาข้อมูลนักศึกษา</Button> */}
+
+
+                              <div className="mb-4"></div>
+                              <Row gutter={[0, 6]}>
+                                <Col xl={2}>
+                                  {dataMissingItem?.userMissingItemReceived !== null ? (
+                                    <Avatar
+                                      size={80}
+                                      src={dataMissingItem?.userMissingItemReceived?.urlPicture}
+                                      icon={
+                                        <i className="fa-solid fa-user-astronaut"></i>
+                                      }
+                                    />
+                                  ) : (
+                                    <Avatar
+                                      size={80}
+                                      icon={
+                                        <i className="fa-solid fa-user-astronaut"></i>
+                                      }
+                                    />
+                                  )}
+                                </Col>
+                                <Col xl={22}>
+                                  <Form
+                                    form={formReceive}
+                                  >
+                                    <Row gutter={[6, 6]}>
+                                      <Col xl={8}>
+                                        <Form.Item
+                                          style={{ marginBottom: 5 }}
+                                          name="firstName"
+                                        >
+                                          <Input
+                                            placeholder="ชื่อ"
+                                            disabled={true}
+                                          />
+                                        </Form.Item>
+                                      </Col>
+                                      <Col xl={8}>
+                                        <Form.Item
+                                          style={{ marginBottom: 5 }}
+                                          name="lastName"
+                                        >
+                                          <Input
+                                            placeholder="นามสกุล"
+                                            disabled={true}
+                                          />
+                                        </Form.Item>
+                                      </Col>
+                                      <Col xl={8}>
+                                        <Form.Item
+                                          style={{ marginBottom: 5 }}
+                                          name="phone"
+                                        >
+                                          <Input
+                                            // prefix={
+                                            //   <i className="fa-solid fa-phone text-green-500"></i>
+                                            // }
+                                            placeholder="เบอร์โทร"
+                                            disabled={true}
+                                          />
+                                        </Form.Item>
+                                      </Col>
+                                      <Col xl={8}>
+                                        <Form.Item name="email">
+                                          <Input
+                                            placeholder="Email"
+                                            disabled={true}
+                                          />
+                                        </Form.Item>
+                                      </Col>
+                                      <Col xl={8}>
+                                        <Form.Item name="lineId">
+                                          <Input
+                                            // prefix={
+                                            //   <i className="fa-brands fa-line text-green-400"></i>
+                                            // }
+                                            placeholder="Line (ใส่หรือไม่ก็ได้)"
+                                            disabled={true}
+                                          />
+                                        </Form.Item>
+                                      </Col>
+                                      <Col xl={8}>
+                                        <Form.Item name="facebookUrl">
+                                          <Input
+                                            // prefix={
+                                            //   <i className="fa-brands fa-facebook text-blue-400"></i>
+                                            // }
+                                            placeholder="Facebook (ใส่หรือไม่ก็ได้)"
+                                            disabled={true}
+                                          />
+                                        </Form.Item>
+                                      </Col>
+                                    </Row>
+                                  </Form>
+                                </Col>
+                              </Row>
+                            </Panel>
+                          </Collapse>
+                        </Col> :
+                        null
+                    }
+
 
 
                   </Row>

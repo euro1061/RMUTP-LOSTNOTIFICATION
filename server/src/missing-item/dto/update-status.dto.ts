@@ -9,6 +9,10 @@ export class updateStatus {
     @IsString()
     @IsOptional()
     lastName?: string
+
+    @IsString()
+    @IsOptional()
+    remarks?: string
     
     @IsString()
     @IsOptional()

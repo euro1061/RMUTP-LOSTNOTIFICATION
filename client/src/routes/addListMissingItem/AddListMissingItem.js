@@ -910,6 +910,23 @@ export default function AddListMissingItem() {
                                 </Upload>
                               </Form.Item>
                             </Col>
+
+                            <Col xl={24}>
+                              <Form.Item
+                                name="remarks"
+                                labelCol={{ span: 24 }}
+                                label={
+                                  <label className="text-primaryTheme font-bold">
+                                    ตำหนิ
+                                  </label>
+                                }
+                              >
+                                <Input 
+                                  size="large"
+                                  placeholder="ตำหนิของสิ่งของที่เก็บได้"
+                                />
+                              </Form.Item>
+                            </Col>
                           </Row>
                         </Col>
                         <Col xl={12} style={{ marginTop: 10 }}>

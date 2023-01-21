@@ -1,10 +1,10 @@
-import { Button, Card, Form, Input, Modal, Select, Table } from 'antd'
+import { Button, Card, Form, Input, Modal, Select, Table, notification } from 'antd'
 import { Content } from 'antd/lib/layout/layout'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { GetAllLosingItem, getAllCampusAPI } from './API/listLosingAPI'
 import { DeleteOutlined, EditOutlined, ExclamationCircleFilled, EyeOutlined } from '@ant-design/icons'
-
+import axios from 'axios'
 const { Column } = Table 
 const { confirm } = Modal
 const { Option } = Select
@@ -16,6 +16,8 @@ export default function ListLosing() {
 
     const [queryTitle, setQueryTitle] = useState("")
     const [selectedCampus, setselectedCampus] = useState("")
+
+    const [deleteLoading, setDeleteLoading] = useState(false)
 
     const getAllLosingItem = async (selectedCampus, queryTitle) => {
         setLoading(true)
@@ -53,6 +55,31 @@ export default function ListLosing() {
             getAllLosingItem(selectedCampus, queryTitle)
         }
     }, [selectedCampus, queryTitle])
+
+    const handleDeleteLosing = async (id) => {
+        setDeleteLoading(true)
+        try {
+            const { data } = await axios.delete(
+                `${process.env.REACT_APP_DOMAINENDPOINT}/api/losing-item/delete/${id}`
+            )
+            const { isSuccess } = data;
+            if (isSuccess) {
+                getAllLosingItem("", "")
+                notification['success']({
+                    message: 'ลบสำเร็จ',
+                    description: "ลบข้อมูลสำเร็จแล้ว"
+                })
+            } else {
+                notification['error']({
+                    message: 'Error',
+                    description: 'Delete failed',
+                })
+            }
+        } catch (error) {
+            return error
+        }
+        setDeleteLoading(false)
+    }
 
     return (
         <Content>
@@ -150,16 +177,16 @@ export default function ListLosing() {
                                     <Button
                                         icon={<DeleteOutlined style={{ display: "inline-grid" }} />}
                                         type='danger'
+                                        loading={deleteLoading}
                                         onClick={() => {
                                             confirm({
-                                                title: 'Are you sure delete this task?',
+                                                title: 'คุณต้องการลบประกาศนี้หรือไม่',
                                                 icon: <ExclamationCircleFilled />,
-                                                content: 'Some descriptions',
                                                 okText: 'Yes',
                                                 okType: 'danger',
                                                 cancelText: 'No',
                                                 onOk() {
-                                                    console.log('OK');
+                                                    handleDeleteLosing(record?.id)
                                                 },
                                                 onCancel() {
                                                     console.log('Cancel');

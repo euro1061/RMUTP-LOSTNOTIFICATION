@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux'
 import { authSelector, logout } from '../store/slices/authSlice'
+import fs from 'fs';
 
 export default function Topbar() {
     const [visible, setVisible] = useState(false)
@@ -65,12 +66,18 @@ export default function Topbar() {
                 {
                     key: '1',
                     label: (
-                        <Link rel="noopener noreferrer" to="/">ข้อมูลส่วนตัว</Link>
+                        <Link rel="noopener noreferrer" to="/profile">ข้อมูลส่วนตัว</Link>
                     ),
                     icon: (<i className="fa-solid fa-user-gear text-black">&nbsp;</i>)
+                }, {
+                    key: '2',
+                    label: (
+                        <Link rel="noopener noreferrer" to="/profileNotification">รายการประกาศของฉัน</Link>
+                    ),
+                    icon: (<i className="fa-solid fa-list text-black">&nbsp;</i>)
                 },
                 {
-                    key: '2',
+                    key: '3',
                     danger: true,
                     label: (<button type='link' onClick={onLogoutHanlder}>ออกจากระบบ</button>),
                     icon: (<i className="fa-solid fa-arrow-right-from-bracket">&nbsp;</i>)
@@ -81,33 +88,33 @@ export default function Topbar() {
 
     const BoxColor = ({ primaryColor }) => {
         return (
-          <div
-            style={{
-              width: 60,
-              height: 60,
-              background: primaryColor,
-              cursor: "pointer",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              margin:"5px",
-              borderRadius:"50%"
-            }}
-            onClick={() => {
-              root.style.setProperty('--primary-color', primaryColor)
-    
-              localStorage.setItem("themeColor", JSON.stringify({
-                primaryColor: primaryColor
-              }))
-              setReload(!reload)
-              window.location.reload()
-            }}
-          >
-            {themeColorDefault.primaryColor === primaryColor && <CheckOutlined style={{ color: "#fff", fontSize: 24 }} />}
-    
-          </div>
+            <div
+                style={{
+                    width: 60,
+                    height: 60,
+                    background: primaryColor,
+                    cursor: "pointer",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    margin: "5px",
+                    borderRadius: "50%"
+                }}
+                onClick={() => {
+                    root.style.setProperty('--primary-color', primaryColor)
+
+                    localStorage.setItem("themeColor", JSON.stringify({
+                        primaryColor: primaryColor
+                    }))
+                    setReload(!reload)
+                    window.location.reload()
+                }}
+            >
+                {themeColorDefault.primaryColor === primaryColor && <CheckOutlined style={{ color: "#fff", fontSize: 24 }} />}
+
+            </div>
         )
-      }
+    }
 
     return (
         <header className='bg-primaryTheme p-6'>
@@ -119,7 +126,7 @@ export default function Topbar() {
                     <li><Link className='text-white ease-in-out duration-150' to="/"><i className="fa-solid fa-house"></i> หน้าแรก</Link></li>
                     {/* <li><Link className='hover:text-purple-900 text-white ease-in-out duration-150' to="/addlistmissingitem"><i className="fa-solid fa-bell"></i> แจ้งพบเห็นของหาย</Link></li>
                     <li><Link className='hover:text-purple-900 text-white ease-in-out duration-150' to="/addlistlostitem"><i className="fa-solid fa-bullhorn"></i> ประกาศตามหาของหาย</Link></li> */}
-                    <li><a className='text-white ease-in-out duration-150' href="/#"><i className="fa-solid fa-circle-question"></i> วิธีใช้งาน</a></li>
+                    <li><Link className='text-white ease-in-out duration-150' to="/help"><i className="fa-solid fa-circle-question"></i> คำถามที่พบบ่อย</Link></li>
                     <li>
                         {
                             isLoggedIn
@@ -148,7 +155,7 @@ export default function Topbar() {
                 <button onClick={() => showDrawer()} className='text-white text-2xl hover:text-purple-900 xl:hidden lg:hidden'><i className="fa-solid fa-bars"></i></button>
             </nav>
             <Drawer
-                title={<label className='text-primaryTheme font-bold text-3xl'>THEME SETTING</label>}
+                title={<label className='text-primaryTheme font-bold text-3xl'>การตั้งค่าต่าง ๆ</label>}
                 placement={"right"}
                 closable={false}
                 onClose={onCloseTheme}
@@ -157,15 +164,30 @@ export default function Topbar() {
                 extra={<Button onClick={() => onCloseTheme()} type="text" style={{ color: "red" }} icon={<CloseCircleOutlined />} />}
             >
                 <div className='flex flex-wrap w-full'>
-                    <BoxColor primaryColor={'#5b21b6'}/>
-                    <BoxColor primaryColor={'#0A2647'}/>
-                    <BoxColor primaryColor={'#2B3A55'}/>
-                    <BoxColor primaryColor={'#222222'}/>
-                    <BoxColor primaryColor={'#FD8A8A'}/>
-                    <BoxColor primaryColor={'#CB1C8D'}/>
-                    <BoxColor primaryColor={'#DC0000'}/>
-                    <BoxColor primaryColor={'#FF7000'}/>
+                    <BoxColor primaryColor={'#5b21b6'} />
+                    <BoxColor primaryColor={'#0A2647'} />
+                    <BoxColor primaryColor={'#2B3A55'} />
+                    <BoxColor primaryColor={'#222222'} />
+                    <BoxColor primaryColor={'#FD8A8A'} />
+                    <BoxColor primaryColor={'#CB1C8D'} />
+                    <BoxColor primaryColor={'#DC0000'} />
+                    <BoxColor primaryColor={'#FF7000'} />
                 </div>
+                {userInfo?.role_id === 1 &&
+                    <>
+                        <hr className='mt-5 mb-5' />
+                        <Button
+                            block
+                            size='large'
+                            onClick={() => {
+                                navigate('/admin/dashboard')
+                            }}
+                        >
+                            แอดมินเมนู
+                        </Button>
+                    </>
+                }
+
             </Drawer>
 
             <Drawer
@@ -181,7 +203,7 @@ export default function Topbar() {
                     <Link className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' to="/"><i className="fa-solid fa-house"></i> หน้าแรก</Link>
                     {/* <a className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' href="/#"><i className="fa-solid fa-bell"></i> แจ้งพบเห็นของหาย</a>
                     <a className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' href="/#"><i className="fa-solid fa-bullhorn"></i> ประกาศตามหาของหาย</a> */}
-                    <a className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' href="/#"><i className="fa-solid fa-circle-question"></i> วิธีใช้งาน</a>
+                    <Link className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' to="/help"><i className="fa-solid fa-circle-question"></i> คำถามที่พบบ่อย</Link>
                     <a className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' href="/#"><i className="fa-solid fa-address-book"></i> ติดต่อเรา</a>
                     <Link className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' to="/login"><i className="fa-solid fa-arrow-right-to-bracket"></i> เข้าสู่ระบบ</Link>
                 </div>
