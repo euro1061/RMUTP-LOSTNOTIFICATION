@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import { useSelector, useDispatch } from 'react-redux'
 import { authSelector, logout } from '../store/slices/authSlice'
-import fs from 'fs';
+import { setAllSetting } from '../store/slices/settingSlice';
 
 export default function Topbar() {
     const [visible, setVisible] = useState(false)
@@ -13,6 +13,7 @@ export default function Topbar() {
     const [userInfo, setUserInfo] = useState(null)
     const dispatch = useDispatch()
     const authReducer = useSelector(authSelector)
+    const settings = useSelector(state => state.setting)
     const navigate = useNavigate()
     const root = document.documentElement
     const { isLoggedIn, token } = authReducer
@@ -54,6 +55,10 @@ export default function Topbar() {
             getUserCurrent()
         }
     }, [isLoggedIn, getUserCurrent])
+
+    useEffect(() => {
+        dispatch(setAllSetting())
+    }, [])
 
     const onLogoutHanlder = () => {
         dispatch(logout())
@@ -115,12 +120,14 @@ export default function Topbar() {
             </div>
         )
     }
-
+    // console.log(settings)
     return (
         <header className='bg-primaryTheme p-6'>
             <nav className='mx-auto w-12/12 lg:w-10/12 xl:w-10/12 flex justify-between items-center'>
                 <div className='text-2xl font-bold text-white'>
-                    RMUTP LOGO
+                    <Link to={'/'}>
+                        <img src={!settings.loading && settings.settings.logo} width={230}/>
+                    </Link>
                 </div>
                 <ul className='text-white gap-9 mb-0 text-base items-baseline hidden sm:hidden xl:flex lg:flex'>
                     <li><Link className='text-white ease-in-out duration-150' to="/"><i className="fa-solid fa-house"></i> หน้าแรก</Link></li>

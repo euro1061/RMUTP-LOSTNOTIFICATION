@@ -24,6 +24,7 @@ import ListMissing from './routes/admin/listMissing/ListMissing';
 import ListLosing from './routes/admin/listLosing/ListLosing';
 import Profile from './routes/profile/Profile';
 import Help from './routes/help/Help';
+import Setting from './routes/admin/setting/Setting';
 
 function App() {
   const authReducer = useSelector(authSelector)
@@ -98,6 +99,7 @@ function App() {
                 
                 <Route path='listMissing' element={<ListMissing />} />
                 <Route path='listLosing' element={<ListLosing />} />
+                <Route path='setting' element={<Setting />} />
               </Route>
             </>
           }

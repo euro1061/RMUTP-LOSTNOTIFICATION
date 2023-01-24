@@ -27,9 +27,9 @@ export class WebhookService {
                     "text": item.title,
                     "actions": [
                         {
-                            "type": "message",
+                            "type": "uri",
                             "label": "รายละเอียด",
-                            "text": "Action 1"
+                            "uri": `${process.env.CLIENT_HOST}/infomissingitem/${item.id}`
                         },
                     ],
                     "imageBackgroundColor": "#FFFFFF"
@@ -40,18 +40,24 @@ export class WebhookService {
             //     "type": "text",
             //     "text": `รายการของหาย ${customData.length} รายการล่าสุด หากต้องการดูข้อมูลทั้งหมดสามารถเข้าไปดูได้ใน Website`
             // });
-            await client.replyMessage(replyToken, 
+            await client.replyMessage(replyToken, [
                 {
-                "type": "template",
-                "altText": "this is a carousel template",
-                "template": {
-                    "type": "carousel",
-                    "imageSize": "cover",
-                    "columns": customData,
+                    "type": "text",
+                    "text": `รายการประกาศ ${customData.length} รายการล่าสุด หากต้องการดูข้อมูลทั้งหมดสามารถเข้าไปดูได้ใน Website`
+                },
+                {
+                    "type": "template",
+                    "altText": "this is a carousel template",
+                    "template": {
+                        "type": "carousel",
+                        "imageSize": "cover",
+                        "columns": customData,
+                    }
                 }
-            });
+            ]
+            );
             return 'ok';
-        }else if (event.queryResult.intent.displayName === 'losingItem') {
+        } else if (event.queryResult.intent.displayName === 'losingItem') {
             const dataItem = await this.prismaService.losingItem.findMany({
                 where: {
                     statusLosingItem_id: 1
@@ -64,9 +70,9 @@ export class WebhookService {
                     "text": item.title,
                     "actions": [
                         {
-                            "type": "message",
+                            "type": "uri",
                             "label": "รายละเอียด",
-                            "text": "Action 1"
+                            "uri": `${process.env.CLIENT_HOST}/infolosingitem/${item.id}`
                         },
                     ],
                     "imageBackgroundColor": "#FFFFFF"
@@ -77,16 +83,22 @@ export class WebhookService {
             //     "type": "text",
             //     "text": `รายการของหาย ${customData.length} รายการล่าสุด หากต้องการดูข้อมูลทั้งหมดสามารถเข้าไปดูได้ใน Website`
             // });
-            await client.replyMessage(replyToken, 
+
+            await client.replyMessage(replyToken, [
                 {
-                "type": "template",
-                "altText": "this is a carousel template",
-                "template": {
-                    "type": "carousel",
-                    "imageSize": "cover",
-                    "columns": customData,
+                    "type": "text",
+                    "text": `รายการประกาศ ${customData.length} รายการล่าสุด หากต้องการดูข้อมูลทั้งหมดสามารถเข้าไปดูได้ใน Website`
+                },
+                {
+                    "type": "template",
+                    "altText": "this is a carousel template",
+                    "template": {
+                        "type": "carousel",
+                        "imageSize": "cover",
+                        "columns": customData
+                    }
                 }
-            });
+            ]);
             return 'ok';
         }
     }

@@ -43,7 +43,7 @@ export default function ProfileList(props) {
 
     return (
         <section className='mx-auto w-10/12 p-6 mb-5 bg-white shadow-md rounded-lg min-h-fit mt-10'>
-            <div className='flex justify-center items-center w-full'>
+            <div className='flex flex-col xl:flex-row lg:flex-row justify-center items-center w-full gap-5 xl:gap-0 lg:gap-0'>
                 <div className='text-5xl font-bold pr-4'>
                     <span className='text-primaryTheme'>PRO</span>FILE
                 </div>

@@ -279,7 +279,7 @@ export default function InfoMissingItem() {
               ]}
             >
               <Row gutter={[8, 8]}>
-                <Col xl={4}>
+                <Col xl={4} xs={24}>
                   <div className='flex justify-center flex-col items-center'>
                     <Avatar
                       size={120}
@@ -322,7 +322,7 @@ export default function InfoMissingItem() {
                     <span className='text-2xl font-bold text-purple-700'>ข้อมูลผู้ที่มารับของ</span>
                   </Divider>
                   <Row>
-                    <Col xl={24}>
+                    <Col xl={24} xs={24}>
                       <Search
                         placeholder="ค้นหาด้วยชื่อหรือรหัสนักศึกษา"
                         enterButton="ค้นหา"
@@ -348,14 +348,14 @@ export default function InfoMissingItem() {
                         }}
                       />
                     </Col>
-                    <Col xl={24}>
+                    <Col xl={24} xs={24}>
                       <Divider />
                     </Col>
                     <Form form={form} onFinish={() => onFinishUpdateStatus()}>
                       <Row gutter={[0, 6]}>
-                        <Col xl={24}>
+                        <Col xl={24} xs={24}>
                           <Row gutter={[6, 6]}>
-                            <Col xl={8}>
+                            <Col xl={8} xs={24}>
                               <Form.Item
                                 style={{ marginBottom: 5 }}
                                 name="firstNameDrop"
@@ -375,7 +375,7 @@ export default function InfoMissingItem() {
                                 />
                               </Form.Item>
                             </Col>
-                            <Col xl={8}>
+                            <Col xl={8} xs={24}>
                               <Form.Item
                                 style={{ marginBottom: 5 }}
                                 name="lastNameDrop"
@@ -389,7 +389,7 @@ export default function InfoMissingItem() {
                                 />
                               </Form.Item>
                             </Col>
-                            <Col xl={8}>
+                            <Col xl={8} xs={24}>
                               <Form.Item
                                 style={{ marginBottom: 5 }}
                                 name="phoneDrop"
@@ -406,7 +406,7 @@ export default function InfoMissingItem() {
                                 />
                               </Form.Item>
                             </Col>
-                            <Col xl={8}>
+                            <Col xl={8} xs={24}>
                               <Form.Item
                                 labelCol={{ span: 24, style: { padding: 0 } }}
                                 wrapperCol={{ span: 24 }}
@@ -419,7 +419,7 @@ export default function InfoMissingItem() {
                                 />
                               </Form.Item>
                             </Col>
-                            <Col xl={8}>
+                            <Col xl={8} xs={24}>
                               <Form.Item
                                 name="lineIdDrop"
                                 labelCol={{ span: 24, style: { padding: 0 } }}
@@ -435,7 +435,7 @@ export default function InfoMissingItem() {
                                 />
                               </Form.Item>
                             </Col>
-                            <Col xl={8}>
+                            <Col xl={8} xs={24}>
                               <Form.Item
                                 name="facebookUrlDrop"
                                 labelCol={{ span: 24, style: { padding: 0 } }}
@@ -566,8 +566,11 @@ export default function InfoMissingItem() {
                               form={formCreatedUser}
                             >
                               <Row gutter={[0, 6]}>
-                                <Col xl={2}>
-                                  <Form.Item name="file">
+                                <Col xl={2} xs={24}>
+                                  <Form.Item 
+                                    name="file"
+                                    style={{textAlign: "center"}}
+                                  >
                                     {userImg ? (
                                       <Avatar
                                         size={80}
@@ -586,9 +589,9 @@ export default function InfoMissingItem() {
                                     )}
                                   </Form.Item>
                                 </Col>
-                                <Col xl={22}>
+                                <Col xl={22} xs={24}>
                                   <Row gutter={[6, 6]}>
-                                    <Col xl={8}>
+                                    <Col xl={8} xs={24}>
                                       <Form.Item
                                         style={{ marginBottom: 5 }}
                                         name="firstName"
@@ -605,7 +608,7 @@ export default function InfoMissingItem() {
                                         />
                                       </Form.Item>
                                     </Col>
-                                    <Col xl={8}>
+                                    <Col xl={8} xs={24}>
                                       <Form.Item
                                         style={{ marginBottom: 5 }}
                                         name="lastName"
@@ -622,7 +625,7 @@ export default function InfoMissingItem() {
                                         />
                                       </Form.Item>
                                     </Col>
-                                    <Col xl={8}>
+                                    <Col xl={8} xs={24}>
                                       <Form.Item
                                         style={{ marginBottom: 5 }}
                                         name="phone"
@@ -642,7 +645,7 @@ export default function InfoMissingItem() {
                                         />
                                       </Form.Item>
                                     </Col>
-                                    <Col xl={8}>
+                                    <Col xl={8} xs={24}>
                                       <Form.Item name="email">
                                         <Input
                                           placeholder="Email"
@@ -650,7 +653,7 @@ export default function InfoMissingItem() {
                                         />
                                       </Form.Item>
                                     </Col>
-                                    <Col xl={8}>
+                                    <Col xl={8} xs={24}>
                                       <Form.Item name="lineId">
                                         <Input
                                           prefix={
@@ -661,7 +664,7 @@ export default function InfoMissingItem() {
                                         />
                                       </Form.Item>
                                     </Col>
-                                    <Col xl={8}>
+                                    <Col xl={8} xs={24}>
                                       <Form.Item name="facebookUrl">
                                         <Input
                                           prefix={
@@ -683,9 +686,9 @@ export default function InfoMissingItem() {
                     <Col xl={24}>
                       <Card>
                         <Row gutter={[8, 8]}>
-                          <Col xl={24} style={{ marginTop: 10 }}>
+                          <Col xl={24} xs={24} style={{ marginTop: 10 }}>
                             <Row gutter={[8, 8]}>
-                              <Col xl={12}>
+                              <Col xl={12} xs={24}>
                                 <Form.Item
                                   name="title"
                                   label={
@@ -708,7 +711,7 @@ export default function InfoMissingItem() {
                                   </Card>
                                 </Form.Item>
                               </Col>
-                              <Col xl={12}>
+                              <Col xl={12} xs={24}>
                                 <Form.Item
                                   name="campus_id"
                                   style={{ marginBottom: 5 }}
@@ -736,7 +739,7 @@ export default function InfoMissingItem() {
                                   </Card>
                                 </Form.Item>
                               </Col>
-                              <Col xl={24}>
+                              <Col xl={24} xs={24}>
                                 <Form.Item
                                   label={
                                     <label className="text-purple-600 font-bold">
@@ -753,7 +756,7 @@ export default function InfoMissingItem() {
                                   </Card>
                                 </Form.Item>
                               </Col>
-                              <Col xl={24}>
+                              <Col xl={24} xs={24}>
                                 <Form.Item
                                   name="file"
                                   rules={[
@@ -774,7 +777,6 @@ export default function InfoMissingItem() {
                                   >
                                     {dataMissingItem?.imageItem ?
                                       <Image
-                                        width={400}
                                         src={dataMissingItem?.imageItem}
                                       />
                                       :
@@ -788,7 +790,7 @@ export default function InfoMissingItem() {
                                 </Form.Item>
                               </Col>
                               {userInfo?.id === dataMissingItem?.user_id || userInfo?.Role.id === 1 ?
-                                <Col xl={24}>
+                                <Col xl={24} xs={24}>
                                   <Form.Item
                                     label={
                                       <label className="text-purple-600 font-bold">
@@ -813,7 +815,7 @@ export default function InfoMissingItem() {
                         </Row>
                       </Card>
                     </Col>
-                    <Col xl={24}>
+                    <Col xl={24} xs={24}>
                       <Collapse
                         activeKey={1}
                       >
@@ -834,7 +836,7 @@ export default function InfoMissingItem() {
 
                           <div className="mb-4"></div>
                           <Row gutter={[0, 6]}>
-                            <Col xl={2}>
+                            <Col xl={2} xs={24} style={{textAlign: "center"}}>
                               {userDropImg ? (
                                 <Avatar
                                   size={80}
@@ -852,12 +854,12 @@ export default function InfoMissingItem() {
                                 />
                               )}
                             </Col>
-                            <Col xl={22}>
+                            <Col xl={22} xs={24}>
                               <Form
                                 form={formDropInfo}
                               >
                                 <Row gutter={[6, 6]}>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item
                                       style={{ marginBottom: 5 }}
                                       name="firstName"
@@ -868,7 +870,7 @@ export default function InfoMissingItem() {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item
                                       style={{ marginBottom: 5 }}
                                       name="lastName"
@@ -879,7 +881,7 @@ export default function InfoMissingItem() {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item
                                       style={{ marginBottom: 5 }}
                                       name="phone"
@@ -893,7 +895,7 @@ export default function InfoMissingItem() {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item name="email">
                                       <Input
                                         placeholder="Email"
@@ -901,7 +903,7 @@ export default function InfoMissingItem() {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item name="lineId">
                                       <Input
                                         // prefix={
@@ -912,7 +914,7 @@ export default function InfoMissingItem() {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item name="facebookUrl">
                                       <Input
                                         // prefix={
@@ -932,7 +934,7 @@ export default function InfoMissingItem() {
                     </Col>
                     {
                       dataMissingItem?.statusMissing_id === 2 ?
-                        <Col xl={24}>
+                        <Col xl={24} xs={24}>
                           <Collapse
                             activeKey={1}
                           >
@@ -953,7 +955,7 @@ export default function InfoMissingItem() {
 
                               <div className="mb-4"></div>
                               <Row gutter={[0, 6]}>
-                                <Col xl={2}>
+                                <Col xl={2} xs={24}>
                                   {dataMissingItem?.userMissingItemReceived !== null ? (
                                     <Avatar
                                       size={80}
@@ -971,12 +973,12 @@ export default function InfoMissingItem() {
                                     />
                                   )}
                                 </Col>
-                                <Col xl={22}>
+                                <Col xl={22} xs={24}>
                                   <Form
                                     form={formReceive}
                                   >
                                     <Row gutter={[6, 6]}>
-                                      <Col xl={8}>
+                                      <Col xl={8} xs={24}>
                                         <Form.Item
                                           style={{ marginBottom: 5 }}
                                           name="firstName"
@@ -987,7 +989,7 @@ export default function InfoMissingItem() {
                                           />
                                         </Form.Item>
                                       </Col>
-                                      <Col xl={8}>
+                                      <Col xl={8} xs={24}>
                                         <Form.Item
                                           style={{ marginBottom: 5 }}
                                           name="lastName"
@@ -998,7 +1000,7 @@ export default function InfoMissingItem() {
                                           />
                                         </Form.Item>
                                       </Col>
-                                      <Col xl={8}>
+                                      <Col xl={8} xs={24}>
                                         <Form.Item
                                           style={{ marginBottom: 5 }}
                                           name="phone"
@@ -1012,7 +1014,7 @@ export default function InfoMissingItem() {
                                           />
                                         </Form.Item>
                                       </Col>
-                                      <Col xl={8}>
+                                      <Col xl={8} xs={24}>
                                         <Form.Item name="email">
                                           <Input
                                             placeholder="Email"
@@ -1020,7 +1022,7 @@ export default function InfoMissingItem() {
                                           />
                                         </Form.Item>
                                       </Col>
-                                      <Col xl={8}>
+                                      <Col xl={8} xs={24}>
                                         <Form.Item name="lineId">
                                           <Input
                                             // prefix={
@@ -1031,7 +1033,7 @@ export default function InfoMissingItem() {
                                           />
                                         </Form.Item>
                                       </Col>
-                                      <Col xl={8}>
+                                      <Col xl={8} xs={24}>
                                         <Form.Item name="facebookUrl">
                                           <Input
                                             // prefix={

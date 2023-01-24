@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-
 const initalToken = sessionStorage.getItem('token');
 let token = initalToken;
 const userIsLoggedIn = !!token;

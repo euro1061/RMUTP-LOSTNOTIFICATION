@@ -19,6 +19,7 @@ import { PdfServiceModule } from './pdf-service/pdf-service.module';
 import { EmailServiceModule } from './email-service/email-service.module';
 import { WebhookController } from './webhook/webhook.controller';
 import { WebhookModule } from './webhook/webhook.module';
+import { OtherSettingModule } from './other-setting/other-setting.module';
 
 @Module({
   imports: [
@@ -39,7 +40,7 @@ import { WebhookModule } from './webhook/webhook.module';
     LosingItemModule, 
     PdfServiceModule,
     EmailServiceModule, 
-    WebhookModule
+    WebhookModule, OtherSettingModule
   ],
   controllers: [AppController],
   providers: [AppService, PdfServiceService],

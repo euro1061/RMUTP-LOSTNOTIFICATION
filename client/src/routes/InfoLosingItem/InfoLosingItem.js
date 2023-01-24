@@ -361,8 +361,8 @@ export default function InfoLosingItem() {
                                                             form={formCreatedUser}
                                                         >
                                                             <Row gutter={[0, 6]}>
-                                                                <Col xl={2}>
-                                                                    <Form.Item name="file">
+                                                                <Col xl={2} xs={24}>
+                                                                    <Form.Item name="file" style={{textAlign: "center"}}>
                                                                         {userImg ? (
                                                                             <Avatar
                                                                                 size={80}
@@ -381,9 +381,9 @@ export default function InfoLosingItem() {
                                                                         )}
                                                                     </Form.Item>
                                                                 </Col>
-                                                                <Col xl={22}>
+                                                                <Col xl={22} xs={24}>
                                                                     <Row gutter={[6, 6]}>
-                                                                        <Col xl={8}>
+                                                                        <Col xl={8} xs={24}>
                                                                             <Form.Item
                                                                                 style={{ marginBottom: 5 }}
                                                                                 name="firstName"
@@ -400,7 +400,7 @@ export default function InfoLosingItem() {
                                                                                 />
                                                                             </Form.Item>
                                                                         </Col>
-                                                                        <Col xl={8}>
+                                                                        <Col xl={8} xs={24}>
                                                                             <Form.Item
                                                                                 style={{ marginBottom: 5 }}
                                                                                 name="lastName"
@@ -417,7 +417,7 @@ export default function InfoLosingItem() {
                                                                                 />
                                                                             </Form.Item>
                                                                         </Col>
-                                                                        <Col xl={8}>
+                                                                        <Col xl={8} xs={24}>
                                                                             <Form.Item
                                                                                 style={{ marginBottom: 5 }}
                                                                                 name="phone"
@@ -437,7 +437,7 @@ export default function InfoLosingItem() {
                                                                                 />
                                                                             </Form.Item>
                                                                         </Col>
-                                                                        <Col xl={8}>
+                                                                        <Col xl={8} xs={24}>
                                                                             <Form.Item name="email">
                                                                                 <Input
                                                                                     placeholder="Email"
@@ -445,7 +445,7 @@ export default function InfoLosingItem() {
                                                                                 />
                                                                             </Form.Item>
                                                                         </Col>
-                                                                        <Col xl={8}>
+                                                                        <Col xl={8} xs={24}>
                                                                             <Form.Item name="lineId">
                                                                                 <Input
                                                                                     prefix={
@@ -456,7 +456,7 @@ export default function InfoLosingItem() {
                                                                                 />
                                                                             </Form.Item>
                                                                         </Col>
-                                                                        <Col xl={8}>
+                                                                        <Col xl={8} xs={24}>
                                                                             <Form.Item name="facebookUrl">
                                                                                 <Input
                                                                                     prefix={
@@ -475,12 +475,12 @@ export default function InfoLosingItem() {
                                                 </Panel>
                                             </Collapse>
                                         </Col>
-                                        <Col xl={24}>
+                                        <Col xl={24} xs={24}>
                                             <Card>
                                                 <Row gutter={[8, 8]}>
-                                                    <Col xl={24} style={{ marginTop: 10 }}>
+                                                    <Col xl={24} xs={24} style={{ marginTop: 10 }}>
                                                         <Row gutter={[8, 8]}>
-                                                            <Col xl={12}>
+                                                            <Col xl={12} xs={24}>
                                                                 <Form.Item
                                                                     name="title"
                                                                     label={
@@ -503,7 +503,7 @@ export default function InfoLosingItem() {
                                                                     </Card>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col xl={12}>
+                                                            <Col xl={12} xs={24}>
                                                                 <Form.Item
                                                                     name="campus_id"
                                                                     style={{ marginBottom: 5 }}
@@ -531,7 +531,7 @@ export default function InfoLosingItem() {
                                                                     </Card>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col xl={24}>
+                                                            <Col xl={24} xs={24}>
                                                                 <Form.Item
                                                                     label={
                                                                         <label className="text-purple-600 font-bold">
@@ -548,7 +548,7 @@ export default function InfoLosingItem() {
                                                                     </Card>
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col xl={24}>
+                                                            <Col xl={24} xs={24}>
                                                                 <Form.Item
                                                                     name="file"
                                                                     rules={[
@@ -569,7 +569,6 @@ export default function InfoLosingItem() {
                                                                     >
                                                                         {dataMissingItem?.imageItem ?
                                                                             <Image
-                                                                                width={400}
                                                                                 src={dataMissingItem?.imageItem}
                                                                             />
                                                                             :
@@ -587,7 +586,7 @@ export default function InfoLosingItem() {
                                                 </Row>
                                             </Card>
                                         </Col>
-                                        <Col xl={24}>
+                                        <Col xl={24} xs={24}>
                                             <Collapse
                                                 activeKey={1}
                                             >
@@ -608,7 +607,7 @@ export default function InfoLosingItem() {
 
                                                     <div className="mb-4"></div>
                                                     <Row gutter={[0, 6]}>
-                                                        <Col xl={2}>
+                                                        <Col xl={2} xs={24} style={{textAlign: "center"}}>
                                                             {userDropImg ? (
                                                                 <Avatar
                                                                     size={80}
@@ -626,12 +625,12 @@ export default function InfoLosingItem() {
                                                                 />
                                                             )}
                                                         </Col>
-                                                        <Col xl={22}>
+                                                        <Col xl={22} xs={24}>
                                                             <Form
                                                                 form={formDropInfo}
                                                             >
                                                                 <Row gutter={[6, 6]}>
-                                                                    <Col xl={8}>
+                                                                    <Col xl={8} xs={24}>
                                                                         <Form.Item
                                                                             style={{ marginBottom: 5 }}
                                                                             name="firstName"
@@ -642,7 +641,7 @@ export default function InfoLosingItem() {
                                                                             />
                                                                         </Form.Item>
                                                                     </Col>
-                                                                    <Col xl={8}>
+                                                                    <Col xl={8} xs={24}>
                                                                         <Form.Item
                                                                             style={{ marginBottom: 5 }}
                                                                             name="lastName"
@@ -653,7 +652,7 @@ export default function InfoLosingItem() {
                                                                             />
                                                                         </Form.Item>
                                                                     </Col>
-                                                                    <Col xl={8}>
+                                                                    <Col xl={8} xs={24}>
                                                                         <Form.Item
                                                                             style={{ marginBottom: 5 }}
                                                                             name="phone"
@@ -667,7 +666,7 @@ export default function InfoLosingItem() {
                                                                             />
                                                                         </Form.Item>
                                                                     </Col>
-                                                                    <Col xl={8}>
+                                                                    <Col xl={8} xs={24}>
                                                                         <Form.Item name="email">
                                                                             <Input
                                                                                 placeholder="Email"
@@ -675,7 +674,7 @@ export default function InfoLosingItem() {
                                                                             />
                                                                         </Form.Item>
                                                                     </Col>
-                                                                    <Col xl={8}>
+                                                                    <Col xl={8} xs={24}>
                                                                         <Form.Item name="lineId">
                                                                             <Input
                                                                                 // prefix={
@@ -686,7 +685,7 @@ export default function InfoLosingItem() {
                                                                             />
                                                                         </Form.Item>
                                                                     </Col>
-                                                                    <Col xl={8}>
+                                                                    <Col xl={8} xs={24}>
                                                                         <Form.Item name="facebookUrl">
                                                                             <Input
                                                                                 // prefix={
