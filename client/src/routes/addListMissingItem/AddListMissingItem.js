@@ -273,7 +273,7 @@ export default function AddListMissingItem() {
           </div>
           <section className="p-6 bg-white shadow-md rounded-lg  ">
             <div className="flex flex-col xl:flex-row lg:flex-row lg:justify-between xl:justify-between">
-              <h1 className="text-3xl m-0 text-center mb-5 lg:mb-0 xl:mb-0">
+              <h1 className="text-2xl lg:text-3xl xl:text-3xl m-0 text-center mb-5 lg:mb-0 xl:mb-0">
                 เพิ่มรายการแจ้งพบเห็นของหาย
               </h1>
               <Button
@@ -349,8 +349,11 @@ export default function AddListMissingItem() {
                             onFinish={() => onFinishCurrentUser()}
                           >
                             <Row gutter={[0, 6]}>
-                              <Col xl={2}>
-                                <Form.Item name="file">
+                              <Col xl={2} xs={24}>
+                                <Form.Item 
+                                  name="file"
+                                  style={{textAlign: "center"}}
+                                >
                                   {isUpdateProfile ? (
                                     <Upload
                                       multiple={false}
@@ -430,9 +433,9 @@ export default function AddListMissingItem() {
                                   )}
                                 </Form.Item>
                               </Col>
-                              <Col xl={22}>
+                              <Col xl={22} xs={24}>
                                 <Row gutter={[6, 6]}>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item
                                       style={{ marginBottom: 5 }}
                                       name="firstName"
@@ -449,7 +452,7 @@ export default function AddListMissingItem() {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item
                                       style={{ marginBottom: 5 }}
                                       name="lastName"
@@ -466,7 +469,7 @@ export default function AddListMissingItem() {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item
                                       style={{ marginBottom: 5 }}
                                       name="phone"
@@ -486,7 +489,7 @@ export default function AddListMissingItem() {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item name="email">
                                       <Input
                                         placeholder="Email"
@@ -494,7 +497,7 @@ export default function AddListMissingItem() {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item name="lineId">
                                       <Input
                                         prefix={
@@ -505,7 +508,7 @@ export default function AddListMissingItem() {
                                       />
                                     </Form.Item>
                                   </Col>
-                                  <Col xl={8}>
+                                  <Col xl={8} xs={24}>
                                     <Form.Item name="facebookUrl">
                                       <Input
                                         prefix={
@@ -525,7 +528,7 @@ export default function AddListMissingItem() {
                     </Collapse>
                   </Col>
                 ) : null}
-                <Col xl={24}>
+                <Col xl={24} xs={24}>
                   {authReducer.isLoggedIn ? (
                     <Collapse>
                       <Panel
@@ -542,7 +545,7 @@ export default function AddListMissingItem() {
                                               showModal()
                                           }} icon={<SearchOutlined style={{ display: "inline-grid" }} />}>ค้นหาข้อมูลนักศึกษา</Button> */}
                         <Row gutter={[8, 8]}>
-                          <Col xl={7}>
+                          <Col xl={7} xs={24}>
                             <Search
                               placeholder="ค้นหาด้วยชื่อหรือรหัสนักศึกษา"
                               enterButton="ค้นหา"
@@ -568,7 +571,7 @@ export default function AddListMissingItem() {
                               }}
                             />
                           </Col>
-                          <Col xl={3}>
+                          <Col xl={3} xs={24}>
                             <Button
                               onClick={() => {
                                 formMissingItem.setFieldsValue({
@@ -584,6 +587,7 @@ export default function AddListMissingItem() {
                                 setNameOrStuId(null);
                                 setUserMissingItemDrop(null);
                               }}
+                              block
                               icon={
                                 <ClearOutlined
                                   style={{ display: "inline-grid" }}
@@ -597,7 +601,11 @@ export default function AddListMissingItem() {
 
                         <div className="mb-4"></div>
                         <Row gutter={[0, 6]}>
-                          <Col xl={2}>
+                          <Col 
+                            xl={2} 
+                            xs={24}
+                            style={{textAlign: "center"}}
+                          >
                             {depositorImg ? (
                               <Avatar
                                 size={80}
@@ -615,9 +623,9 @@ export default function AddListMissingItem() {
                               />
                             )}
                           </Col>
-                          <Col xl={22}>
+                          <Col xl={22} xs={24}>
                             <Row gutter={[6, 6]}>
-                              <Col xl={8}>
+                              <Col xl={8} xs={24}>
                                 <Form.Item
                                   style={{ marginBottom: 5 }}
                                   name="firstNameDrop"
@@ -628,7 +636,7 @@ export default function AddListMissingItem() {
                                   />
                                 </Form.Item>
                               </Col>
-                              <Col xl={8}>
+                              <Col xl={8} xs={24}>
                                 <Form.Item
                                   style={{ marginBottom: 5 }}
                                   name="lastNameDrop"
@@ -639,7 +647,7 @@ export default function AddListMissingItem() {
                                   />
                                 </Form.Item>
                               </Col>
-                              <Col xl={8}>
+                              <Col xl={8} xs={24}>
                                 <Form.Item
                                   style={{ marginBottom: 5 }}
                                   name="phoneDrop"
@@ -653,7 +661,7 @@ export default function AddListMissingItem() {
                                   />
                                 </Form.Item>
                               </Col>
-                              <Col xl={8}>
+                              <Col xl={8} xs={24}>
                                 <Form.Item name="emailDrop">
                                   <Input
                                     placeholder="Email"
@@ -661,7 +669,7 @@ export default function AddListMissingItem() {
                                   />
                                 </Form.Item>
                               </Col>
-                              <Col xl={8}>
+                              <Col xl={8} xs={24}>
                                 <Form.Item name="lineIdDrop">
                                   <Input
                                     // prefix={
@@ -672,7 +680,7 @@ export default function AddListMissingItem() {
                                   />
                                 </Form.Item>
                               </Col>
-                              <Col xl={8}>
+                              <Col xl={8} xs={24}>
                                 <Form.Item name="facebookUrlDrop">
                                   <Input
                                     // prefix={
@@ -694,9 +702,9 @@ export default function AddListMissingItem() {
                   {authReducer.isLoggedIn ? (
                     <Card>
                       <Row gutter={[8, 8]}>
-                        <Col xl={12} style={{ marginTop: 10 }}>
+                        <Col xl={12} xs={24} style={{ marginTop: 10 }}>
                           <Row gutter={[0, 0]}>
-                            <Col xl={24}>
+                            <Col xl={24} xs={24}>
                               <Form.Item
                                 name="title"
                                 label={
@@ -720,7 +728,7 @@ export default function AddListMissingItem() {
                               </Form.Item>
                             </Col>
 
-                            <Col xl={24}>
+                            <Col xl={24} xs={24}>
                               <Form.Item
                                 name="campus_id"
                                 style={{ marginBottom: 5 }}
@@ -757,7 +765,7 @@ export default function AddListMissingItem() {
                                 </Select>
                               </Form.Item>
                             </Col>
-                            <Col xl={24}>
+                            <Col xl={24} xs={24}>
                               <Form.Item
                                 style={{ marginBottom: 5 }}
                                 labelCol={{ span: 24 }}
@@ -787,7 +795,7 @@ export default function AddListMissingItem() {
                             </Col>
                             {formMissingItem.getFieldValue().building_id ===
                               "9999" ? (
-                              <Col xl={24}>
+                              <Col xl={24} xs={24}>
                                 <Form.Item
                                   style={{ marginBottom: 5 }}
                                   labelCol={{ span: 24 }}
@@ -807,7 +815,7 @@ export default function AddListMissingItem() {
                             ) : null}
                             {formMissingItem.getFieldValue().building_id !==
                               "9999" && (
-                                <Col xl={24}>
+                                <Col xl={24} xs={24}>
                                   <Form.Item
                                     labelCol={{ span: 24 }}
                                     name="room_id"
@@ -833,7 +841,7 @@ export default function AddListMissingItem() {
 
                             {formMissingItem.getFieldValue().room_id ===
                               "9999" && (
-                                <Col xl={24}>
+                                <Col xl={24} xs={24}>
                                   <Form.Item
                                     style={{ marginBottom: 5 }}
                                     labelCol={{ span: 24 }}
@@ -852,7 +860,7 @@ export default function AddListMissingItem() {
                                 </Col>
                               )}
 
-                            <Col xl={24}>
+                            <Col xl={24} xs={24}>
                               <Form.Item
                                 name="file"
                                 rules={[
@@ -911,7 +919,7 @@ export default function AddListMissingItem() {
                               </Form.Item>
                             </Col>
 
-                            <Col xl={24}>
+                            <Col xl={24} xs={24}>
                               <Form.Item
                                 name="remarks"
                                 labelCol={{ span: 24 }}
@@ -929,9 +937,9 @@ export default function AddListMissingItem() {
                             </Col>
                           </Row>
                         </Col>
-                        <Col xl={12} style={{ marginTop: 10 }}>
+                        <Col xl={12} xs={24} style={{ marginTop: 10 }}>
                           <Row>
-                            <Col xl={24}>
+                            <Col xl={24} xs={24}>
                               <Form.Item
                                 label={
                                   <label className="text-primaryTheme font-bold">
@@ -966,13 +974,13 @@ export default function AddListMissingItem() {
                         <h1 className="text-[23px] text-center mt-8">
                           ไม่สามารถทำรายการได้
                         </h1>
-                        <p className="mt-3 text-xl">
+                        <p className="mt-3 text-xl text-center">
                           กรุณาเข้าสู่ระบบก่อน! <span className="text-purple-600 cursor-pointer hover:text-purple-800" onClick={() => navigate('/login')}>เข้าสู่ระบบ</span>
                         </p>
                       </div>
                       <img
                         src={`${process.env.PUBLIC_URL}/lgoho.png`}
-                        className="absolute top-5 right-5 opacity-20"
+                        className="absolute top-5 right-5 opacity-20 hidden lg:block xl:block"
                         width="250"
                         alt="test"
                       />

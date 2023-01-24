@@ -1,10 +1,13 @@
-import { Button, Card, Col, DatePicker, Divider, Layout, List, Row } from 'antd';
+import { Button, Card, Col, DatePicker, Divider, Layout, List, Modal, Row } from 'antd';
 import React, { useEffect, useState } from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { Doughnut } from "react-chartjs-2";
 import { getLosingStaticAPI, getMissingStaticAPI } from './API/DashboardAPI';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { logout } from '../../../store/slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 const { Content } = Layout;
 const { RangePicker } = DatePicker;
@@ -12,6 +15,7 @@ const { RangePicker } = DatePicker;
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function Dashboard() {
+    const dispatch = useDispatch()
     const navigate = useNavigate()
 
     const [missingStaticData, setMissingStaticData] = useState({})
@@ -156,7 +160,7 @@ export default function Dashboard() {
                                         bgBorder={"border-orange-600"}
                                         shortKey={"F5"}
                                         hoverBg={"hover:bg-orange-200"}
-                                        // gotoPage={() => { navigate('/admin/location') }}
+                                        gotoPage={() => { navigate('/admin/setting') }}
                                     />
                                 </Col>
                                 <Col xl={4}>
@@ -165,6 +169,19 @@ export default function Dashboard() {
                                         bgBorder={"border-red-600"}
                                         shortKey={"F6"}
                                         hoverBg={"hover:bg-red-200"}
+                                        gotoPage={() => {
+                                            Modal.confirm({
+                                                title: 'คุณต้องการออกจากระบบ?',
+                                                icon: <ExclamationCircleOutlined />,
+                                                content: 'คุณต้องการออกจากระบบใช่หรือไม่',
+                                                okText: 'ใช่',
+                                                cancelText: 'ไม่ใช่',
+                                                onOk() {
+                                                    dispatch(logout())
+                                                    navigate('/')
+                                                }
+                                            });
+                                        }}
                                     />
                                 </Col>
                                 <Col xl={12}>

@@ -405,7 +405,7 @@ export default function EditMissingItem() {
                             onFinish={(e) => onFinishMissingItem(e)}
                         >
                             <Row gutter={[8, 8]} align="top">
-                                {authReducer.isLoggedIn ? (
+                                {authReducer.isLoggedIn && userInfo?.role_id !== 1 ? (
                                     <Col xl={24}>
                                         <Collapse activeKey={[activeKey]} bordered={true}>
                                             <Panel
@@ -639,9 +639,9 @@ export default function EditMissingItem() {
                                     {authReducer.isLoggedIn ? (
                                         <Card>
                                             <Row gutter={[8, 8]}>
-                                                <Col xl={12} style={{ marginTop: 10 }}>
+                                                <Col xl={12} xs={24} style={{ marginTop: 10 }}>
                                                     <Row gutter={[0, 0]}>
-                                                        <Col xl={24}>
+                                                        <Col xl={24} xs={24}>
                                                             <Form.Item
                                                                 name="title"
                                                                 label={
@@ -665,7 +665,7 @@ export default function EditMissingItem() {
                                                             </Form.Item>
                                                         </Col>
 
-                                                        <Col xl={24}>
+                                                        <Col xl={24} xs={24}>
                                                             <Form.Item
                                                                 name="campus_id"
                                                                 style={{ marginBottom: 5 }}
@@ -702,7 +702,7 @@ export default function EditMissingItem() {
                                                                 </Select>
                                                             </Form.Item>
                                                         </Col>
-                                                        <Col xl={24}>
+                                                        <Col xl={24} xs={24}>
                                                             <Form.Item
                                                                 style={{ marginBottom: 5 }}
                                                                 labelCol={{ span: 24 }}
@@ -732,7 +732,7 @@ export default function EditMissingItem() {
                                                         </Col>
                                                         {formMissingItem.getFieldValue().building_id ===
                                                             "9999" ? (
-                                                            <Col xl={24}>
+                                                            <Col xl={24} xs={24}>
                                                                 <Form.Item
                                                                     style={{ marginBottom: 5 }}
                                                                     labelCol={{ span: 24 }}
@@ -752,7 +752,7 @@ export default function EditMissingItem() {
                                                         ) : null}
                                                         {formMissingItem.getFieldValue().building_id !==
                                                             "9999" && (
-                                                                <Col xl={24}>
+                                                                <Col xl={24} xs={24}>
                                                                     <Form.Item
                                                                         labelCol={{ span: 24 }}
                                                                         name="room_id"
@@ -778,7 +778,7 @@ export default function EditMissingItem() {
 
                                                         {formMissingItem.getFieldValue().room_id ===
                                                             "9999" && (
-                                                                <Col xl={24}>
+                                                                <Col xl={24} xs={24}>
                                                                     <Form.Item
                                                                         style={{ marginBottom: 5 }}
                                                                         labelCol={{ span: 24 }}
@@ -797,7 +797,7 @@ export default function EditMissingItem() {
                                                                 </Col>
                                                             )}
 
-                                                        <Col xl={24}>
+                                                        <Col xl={24} xs={24}>
                                                             <Form.Item
                                                                 name="file"
                                                                 rules={[
@@ -859,7 +859,7 @@ export default function EditMissingItem() {
                                                             </Form.Item>
                                                         </Col>
 
-                                                        <Col xl={24}>
+                                                        <Col xl={24} xs={24}>
                                                             <Form.Item
                                                                 name="remarks"
                                                                 labelCol={{ span: 24 }}
@@ -877,9 +877,9 @@ export default function EditMissingItem() {
                                                         </Col>
                                                     </Row>
                                                 </Col>
-                                                <Col xl={12} style={{ marginTop: 10 }}>
+                                                <Col xl={12} xs={24} style={{ marginTop: 10 }}>
                                                     <Row>
-                                                        <Col xl={24}>
+                                                        <Col xl={24} xs={24}>
                                                             <Form.Item
                                                                 label={
                                                                     <label className="text-purple-600 font-bold">
@@ -946,7 +946,7 @@ export default function EditMissingItem() {
                                               showModal()
                                           }} icon={<SearchOutlined style={{ display: "inline-grid" }} />}>ค้นหาข้อมูลนักศึกษา</Button> */}
                                                 <Row gutter={[8, 8]}>
-                                                    <Col xl={7}>
+                                                    <Col xl={7} xs={24}>
                                                         <Search
                                                             placeholder="ค้นหาด้วยชื่อหรือรหัสนักศึกษา"
                                                             enterButton="ค้นหา"
@@ -972,7 +972,7 @@ export default function EditMissingItem() {
                                                             }}
                                                         />
                                                     </Col>
-                                                    <Col xl={3}>
+                                                    <Col xl={3} xs={24}>
                                                         <Button
                                                             onClick={() => {
                                                                 formMissingItem.setFieldsValue({
@@ -993,6 +993,7 @@ export default function EditMissingItem() {
                                                                     style={{ display: "inline-grid" }}
                                                                 />
                                                             }
+                                                            block
                                                         >
                                                             ล้างข้อมูล
                                                         </Button>
@@ -1001,7 +1002,7 @@ export default function EditMissingItem() {
 
                                                 <div className="mb-4"></div>
                                                 <Row gutter={[0, 6]}>
-                                                    <Col xl={2}>
+                                                    <Col xl={2} xs={24} style={{textAlign: "center"}}>
                                                         {depositorImg ? (
                                                             <Avatar
                                                                 size={80}
@@ -1019,9 +1020,9 @@ export default function EditMissingItem() {
                                                             />
                                                         )}
                                                     </Col>
-                                                    <Col xl={22}>
+                                                    <Col xl={22} xs={24}>
                                                         <Row gutter={[6, 6]}>
-                                                            <Col xl={8}>
+                                                            <Col xl={8} xs={24}>
                                                                 <Form.Item
                                                                     style={{ marginBottom: 5 }}
                                                                     name="firstNameDrop"
@@ -1032,7 +1033,7 @@ export default function EditMissingItem() {
                                                                     />
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col xl={8}>
+                                                            <Col xl={8} xs={24}>
                                                                 <Form.Item
                                                                     style={{ marginBottom: 5 }}
                                                                     name="lastNameDrop"
@@ -1043,7 +1044,7 @@ export default function EditMissingItem() {
                                                                     />
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col xl={8}>
+                                                            <Col xl={8} xs={24}>
                                                                 <Form.Item
                                                                     style={{ marginBottom: 5 }}
                                                                     name="phoneDrop"
@@ -1057,7 +1058,7 @@ export default function EditMissingItem() {
                                                                     />
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col xl={8}>
+                                                            <Col xl={8} xs={24}>
                                                                 <Form.Item name="emailDrop">
                                                                     <Input
                                                                         placeholder="Email"
@@ -1065,7 +1066,7 @@ export default function EditMissingItem() {
                                                                     />
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col xl={8}>
+                                                            <Col xl={8} xs={24}>
                                                                 <Form.Item name="lineIdDrop">
                                                                     <Input
                                                                         // prefix={
@@ -1076,7 +1077,7 @@ export default function EditMissingItem() {
                                                                     />
                                                                 </Form.Item>
                                                             </Col>
-                                                            <Col xl={8}>
+                                                            <Col xl={8} xs={24}>
                                                                 <Form.Item name="facebookUrlDrop">
                                                                     <Input
                                                                         // prefix={
