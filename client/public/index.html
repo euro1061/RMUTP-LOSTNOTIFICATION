@@ -30,6 +30,24 @@
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      chat-icon="https://cdn.iconscout.com/icon/premium/png-256-thumb/send-message-6544300-5479431.png?f=avif"
+      intent="WELCOME"
+      chat-title="ระบบแจ้งเตือนของหายภายในมหาลัย 📢"
+      agent-id="b3998282-637c-43fe-9343-a79b4a68717b"
+      language-code="th"
+    ></df-messenger>
+    <style>
+      df-messenger {
+       --df-messenger-bot-message: #5741a5cb;
+       --df-messenger-button-titlebar-color: #5741a5;
+       --df-messenger-chat-background-color: #fafafa;
+       --df-messenger-font-color: white;
+       --df-messenger-send-icon: #878fac;
+       --df-messenger-user-message: #479b3d;
+      }
+    </style>
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
