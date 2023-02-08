@@ -1,0 +1,47 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - 3001:3001
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - 7999:7999 
+    networks:
+      - nestjsnetwork
+    environment:
+      - DATABASE_URL=postgresql://postgres:123456@db:5432/nestjs?schema=public
+      - JWT_SECRET='SUPER_MAN'
+      - PORT=3001
+
+      - FROM_EMAIL=poiuytrewqq1062@gmail.com
+      - PASSWORD_EMAIL=mmexwuhtijhkdovx
+      - SMTP_EMAIL=smtp.gmail.com
+
+      - HOST_CLIENT=https://lnwza007.live
+      - LINE_CHANNEL_SECRET=c3f1df14896a393cdf7836110a257922
+      - LINE_CHANNEL_ACCESS_TOKEN=1Qb10fOaoLy/Fqfv3Rgr8EQ6c07nmnSYtL6T5g23ElNHLMxXC18FMb/NqKPOqE2TMWTy8KTnUJgSPocByycDiL5epykvgrkxiguJDXG43MTSjPGjxQ1Aia9FtAWUGIMp0D7D0qt0088LHerHnJ5kTgdB04t89/1O/w1cDnyilFU=
+      - CLIENT_HOST=https://lnwza007.live
+  db:
+    image: postgres:13
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: nestjs
+    networks:
+      - nestjsnetwork
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+networks:
+  nestjsnetwork:
+volumes:
+  postgres-data:

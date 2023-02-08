@@ -993,7 +993,7 @@ export default function AddListMissingItem() {
 
         </div>
       </motion.div>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

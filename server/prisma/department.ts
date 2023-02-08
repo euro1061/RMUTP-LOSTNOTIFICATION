@@ -3,12 +3,33 @@ export const departments = [
         departmentTh: "วิทยาศาสตร์และเทคโนโลยี",
     },
     {
-        departmentTh: "วิศวกรรมศาสตร์",
+        departmentTh: "คณะครุศาสตร์อุตสาหกรรม",
     },
     {
-        departmentTh: "สถาปัตยกรรมศาสตร์",
+        departmentTh: "คณะวิศวกรรมศาสตร์",
     },
     {
-        departmentTh: "เทคโนโลยีสารสนเทศ",
-    }
+        departmentTh: "คณะศิลปศาสตร์",
+    },
+    {
+        departmentTh: "คณะเทคโนโลยีคหกรรมศาสตร์",
+    },
+    {
+        departmentTh: "คณะเทคโนโลยีสื่อสารมวลชน",
+    },
+    {
+        departmentTh: "คณะอุตสาหกรรมสิ่งทอและออกแบบแฟชั่น",
+    },
+    {
+        departmentTh: "คณะบริหารธุรกิจ",
+    },
+    {
+        departmentTh: "คณะสถาปัตยกรรมศาสตร์และการออกแบบ",
+    },
+    {
+        departmentTh: "สถาบัญอัญมณี เครื่องประการดับไทย และการออกแบบ",
+    },
+    {
+        departmentTh: "อื่น ๆ",
+    },
 ]

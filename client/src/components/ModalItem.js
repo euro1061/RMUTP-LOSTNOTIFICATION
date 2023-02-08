@@ -71,7 +71,7 @@ export default function ModalItem(props) {
         }
         setDeleteLoading(false)
     }
-    
+
     const handleDeleteLosing = async (id) => {
         setDeleteLoading(true)
         try {
@@ -102,7 +102,6 @@ export default function ModalItem(props) {
     }
 
     useEffect(() => {
-
 
     }, [itemModal])
 
@@ -334,18 +333,18 @@ export default function ModalItem(props) {
                         >
                             อัพเดทสถานะ
                         </Button>
-                        <Popconfirm 
-                            disabled={itemModal?.StatusMissingItem?.id !== 1} 
+                        <Popconfirm
+                            disabled={itemModal?.StatusMissingItem?.id !== 1}
                             title="คุณต้องการลบประกาศนี้?"
                             onConfirm={() => {
                                 handleDelete(itemModal?.id)
                             }}
                         >
-                            <Button 
+                            <Button
                                 loading={deleteLoading}
-                                disabled={itemModal?.StatusMissingItem?.id !== 1} 
-                                type="danger" block icon={<DeleteOutlined 
-                                style={{ display: "inline-grid" }} />}
+                                disabled={itemModal?.StatusMissingItem?.id !== 1}
+                                type="danger" block icon={<DeleteOutlined
+                                    style={{ display: "inline-grid" }} />}
                             >
                                 ลบประกาศนี้
                             </Button>
@@ -366,40 +365,45 @@ export default function ModalItem(props) {
                 >
                     ดูข้อมูลแบบเต็ม
                 </Button>
-                <Button
-                    disabled={itemModal?.StatusLosingItem?.id !== 1}
-                    block icon={<EditOutlined
-                        style={{ display: "inline-grid" }} />}
-                    onClick={() => {
-                        navigate(`/infolosingitem/${itemModal?.id}/edit`, { state: { fromPage: "infolosingitem" } });
-                    }}
-                >
-                    แก้ไขข้อมูล
-                </Button>
-                <Button
-                    block
-                    disabled={itemModal?.StatusLosingItem?.id !== 1}
-                    type="primary"
-                    icon={<SendOutlined style={{ display: "inline-grid" }} />}
-                    onClick={() => {
-                        confirm({
-                            title: 'คุณต้องการอัพเดทสถานะประกาศนี้ใช่หรือไม่?',
-                            icon: <CheckCircleFilled />,
-                            content: 'กด OK เพื่ออัพเดทสถานะประกาศนี้',
-                            onOk() {
-                                onFinishUpdateStatusLosingItem(itemModal.id)
-                            },
-                            // onCancel() {
-                            //     console.log('Cancel');
-                            // },
-                        });
-                    }}
-                >
-                    อัพเดทสถานะ
-                </Button>
-                <Popconfirm disabled={itemModal?.StatusLosingItem?.id !== 1} title="คุณต้องการลบประกาศนี้?" onConfirm={() => handleDeleteLosing(itemModal?.id)}>
-                    <Button loading={deleteLoading} disabled={itemModal?.StatusLosingItem?.id !== 1} type="danger" block icon={<DeleteOutlined style={{ display: "inline-grid" }} />}>ลบประกาศนี้</Button>
-                </Popconfirm>
+                {pathname === "/profileNotification" ?
+                    <>
+                        <Button
+                            disabled={itemModal?.StatusLosingItem?.id !== 1}
+                            block icon={<EditOutlined
+                                style={{ display: "inline-grid" }} />}
+                            onClick={() => {
+                                navigate(`/infolosingitem/${itemModal?.id}/edit`, { state: { fromPage: "infolosingitem" } });
+                            }}
+                        >
+                            แก้ไขข้อมูล
+                        </Button>
+                        <Button
+                            block
+                            disabled={itemModal?.StatusLosingItem?.id !== 1}
+                            type="primary"
+                            icon={<SendOutlined style={{ display: "inline-grid" }} />}
+                            onClick={() => {
+                                confirm({
+                                    title: 'คุณต้องการอัพเดทสถานะประกาศนี้ใช่หรือไม่?',
+                                    icon: <CheckCircleFilled />,
+                                    content: 'กด OK เพื่ออัพเดทสถานะประกาศนี้',
+                                    onOk() {
+                                        onFinishUpdateStatusLosingItem(itemModal.id)
+                                    },
+                                    // onCancel() {
+                                    //     console.log('Cancel');
+                                    // },
+                                });
+                            }}
+                        >
+                            อัพเดทสถานะ
+                        </Button>
+                        <Popconfirm disabled={itemModal?.StatusLosingItem?.id !== 1} title="คุณต้องการลบประกาศนี้?" onConfirm={() => handleDeleteLosing(itemModal?.id)}>
+                            <Button loading={deleteLoading} disabled={itemModal?.StatusLosingItem?.id !== 1} type="danger" block icon={<DeleteOutlined style={{ display: "inline-grid" }} />}>ลบประกาศนี้</Button>
+                        </Popconfirm>
+                    </>
+                    : null}
+
             </>
         }
     }
@@ -419,7 +423,7 @@ export default function ModalItem(props) {
             const user = await GetUserCurrentLogin()
             req = {
                 name: `${user.firstName} ${user.lastName}`,
-                email_sender: itemModal?.User?.email,
+                email_sender: user.email,
                 phone: user.phone,
                 message: values.messageSender,
                 itemId: itemModal.id + '',

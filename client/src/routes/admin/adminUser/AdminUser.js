@@ -558,7 +558,7 @@ export default function AdminUser() {
 
                                             <Col xl={8}>
                                                 <Form.Item
-                                                    initialValue={"3"}
+                                                    initialValue={"2"}
                                                     label={<label className=' font-semibold text-primaryTheme'>สิทธิการใช้งาน</label>}
                                                     labelCol={{ span: 24, style: { padding: 0 } }}
                                                     wrapperCol={{ span: 24 }}

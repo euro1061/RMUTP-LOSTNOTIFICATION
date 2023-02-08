@@ -47,7 +47,7 @@ export default function HomeList(props) {
             const customData = res.map((item) => {
                 if(item.title.includes("บัตร")) {
                     const splitImageItem = item.imageItem.split("/")
-                    splitImageItem[6] = "e_blur:800"
+                    splitImageItem[6] = "w_500,h_800,c_scale,e_blur:1500"
                     // console.log(splitImageItem.join('/'))
                     return {
                         ...item,
@@ -55,9 +55,13 @@ export default function HomeList(props) {
                         imageItem: splitImageItem.join('/')
                     }
                 }else{
+                    const splitImageItem = item.imageItem.split("/")
+                    splitImageItem[6] = "w_500,h_800,c_scale"
+                    // console.log(splitImageItem.join('/'))
                     return {
                         ...item,
-                        title: item.title
+                        title: item.title,
+                        imageItem: splitImageItem.join('/')
                     }
                 }
             })
@@ -69,7 +73,29 @@ export default function HomeList(props) {
     const getAllLosingItem = (campus, query) => {
         GetAllLosingItem(campus, query).then((res) => {
             setLoadingItemLosing(true)
-            setLosingItem(res)
+            const customData = res.map((item) => {
+                if(item.title.includes("บัตร")) {
+                    const splitImageItem = item.imageItem.split("/")
+                    splitImageItem[6] = "w_1000,h_1500,c_scale,e_blur:1500"
+                    // console.log(splitImageItem.join('/'))
+                    return {
+                        ...item,
+                        title: item.title,
+                        imageItem: splitImageItem.join('/')
+                    }
+                }else{
+                    const splitImageItem = item?.imageItem?.split("/")
+                    if(splitImageItem) splitImageItem[6] = "w_1000,h_1500,c_scale"
+                    
+                    // console.log(splitImageItem.join('/'))
+                    return {
+                        ...item,
+                        title: item.title,
+                        imageItem: splitImageItem ? splitImageItem.join('/') : null
+                    }
+                }
+            })
+            setLosingItem(customData)
             setLoadingItemLosing(false)
         })
     }
@@ -204,11 +230,11 @@ export default function HomeList(props) {
 
                         </div>
                         <Divider />
-                        <Row gutter={[8, 8]} align="middle">
+                        <Row gutter={[8, 8]} align="top">
                             {
                                 missingItem.length > 0 && !loadingItem ?
                                     missingItem.map((item, index) => (
-                                        <Col xl={6} xs={24} sm={24} key={index}>
+                                        <Col xl={4} xs={24} sm={24} key={index}>
                                             <Tooltip
                                                 zIndex={1}
                                                 title={
@@ -257,9 +283,9 @@ export default function HomeList(props) {
                                                     <button onClick={() => {
                                                         setItemModal(item)
                                                         showModal()
-                                                    }}>
-                                                        <div className='relative w-full h-56 overflow-hidden'>
-                                                            <img className="rounded-t-lg w-full h-fit hover:brightness-75 ease-in-out duration-300" src={`${item.imageItem}`} alt="" />
+                                                    }} className='w-full'>
+                                                        <div className='flex w-full h-fit justify-center overflow-hidden'>
+                                                            <img className="rounded-t-lg w-full h-fit hover:brightness-75 ease-in-out duration-300" width={"100%"} src={`${item.imageItem}`} alt="" />
                                                         </div>
                                                     </button>
                                                     <div className="p-3">
@@ -338,11 +364,11 @@ export default function HomeList(props) {
                             </div>
                         </div>
                         <Divider />
-                        <Row gutter={[8, 8]} align="middle">
+                        <Row gutter={[8, 8]} align="top">
                             {
                                 losingItem.length > 0 && !loadingItemLosing ?
                                     losingItem.map((item, index) => (
-                                        <Col xl={6} xs={12} key={index}>
+                                        <Col xl={4} xs={12} key={index}>
                                             <Tooltip
                                                 zIndex={1}
                                                 title={
@@ -391,8 +417,10 @@ export default function HomeList(props) {
                                                     <button onClick={() => {
                                                         setItemModal(item)
                                                         showModal()
-                                                    }}>
-                                                        <div className='relative w-full h-56 overflow-hidden'>
+                                                    }}
+                                                    className='w-full'
+                                                    >
+                                                        <div className='flex w-full h-fit justify-center overflow-hidden'>
                                                             <img className="rounded-t-lg w-full h-fit hover:brightness-75 ease-in-out duration-300" src={item.imageItem !== null ? item.imageItem : "https://propertywiselaunceston.com.au/wp-content/themes/property-wise/images/no-image.png"} alt="" />
                                                         </div>
                                                     </button>
