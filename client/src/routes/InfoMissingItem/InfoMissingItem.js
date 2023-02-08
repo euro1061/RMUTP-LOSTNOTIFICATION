@@ -567,9 +567,9 @@ export default function InfoMissingItem() {
                             >
                               <Row gutter={[0, 6]}>
                                 <Col xl={2} xs={24}>
-                                  <Form.Item 
+                                  <Form.Item
                                     name="file"
-                                    style={{textAlign: "center"}}
+                                    style={{ textAlign: "center" }}
                                   >
                                     {userImg ? (
                                       <Avatar
@@ -776,9 +776,19 @@ export default function InfoMissingItem() {
                                     bodyStyle={{ padding: 10 }}
                                   >
                                     {dataMissingItem?.imageItem ?
-                                      <Image
-                                        src={dataMissingItem?.imageItem}
-                                      />
+                                      <>
+                                        <div className="hidden lg:block">
+                                          <Image
+                                            width={400}
+                                            src={dataMissingItem?.imageItem}
+                                          />
+                                        </div>
+                                        <div className="block lg:hidden">
+                                          <Image
+                                            src={dataMissingItem?.imageItem}
+                                          />
+                                        </div>
+                                      </>
                                       :
                                       <Image
                                         width={400}
@@ -836,7 +846,7 @@ export default function InfoMissingItem() {
 
                           <div className="mb-4"></div>
                           <Row gutter={[0, 6]}>
-                            <Col xl={2} xs={24} style={{textAlign: "center"}}>
+                            <Col xl={2} xs={24} style={{ textAlign: "center" }}>
                               {userDropImg ? (
                                 <Avatar
                                   size={80}

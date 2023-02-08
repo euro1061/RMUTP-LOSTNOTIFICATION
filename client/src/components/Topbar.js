@@ -126,7 +126,7 @@ export default function Topbar() {
             <nav className='mx-auto w-12/12 lg:w-10/12 xl:w-10/12 flex justify-between items-center'>
                 <div className='text-2xl font-bold text-white'>
                     <Link to={'/'}>
-                        <img src={!settings.loading && settings.settings.logo} width={230}/>
+                        <img src={!settings.loading && settings.settings.logo} width={230} />
                     </Link>
                 </div>
                 <ul className='text-white gap-9 mb-0 text-base items-baseline hidden sm:hidden xl:flex lg:flex'>
@@ -207,12 +207,22 @@ export default function Topbar() {
                 extra={<Button onClick={() => onClose()} type="text" style={{ color: "red" }} icon={<CloseCircleOutlined />} />}
             >
                 <div className='flex flex-col gap-5 text-lg'>
-                    <Link className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' to="/"><i className="fa-solid fa-house"></i> หน้าแรก</Link>
+                    <Link className='hover:bg-primaryTheme p-3 hover:text-white ease-in-out duration-150' to="/"><i className="fa-solid fa-house"></i> หน้าแรก</Link>
                     {/* <a className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' href="/#"><i className="fa-solid fa-bell"></i> แจ้งพบเห็นของหาย</a>
                     <a className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' href="/#"><i className="fa-solid fa-bullhorn"></i> ประกาศตามหาของหาย</a> */}
-                    <Link className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' to="/help"><i className="fa-solid fa-circle-question"></i> คำถามที่พบบ่อย</Link>
-                    <a className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' href="/#"><i className="fa-solid fa-address-book"></i> ติดต่อเรา</a>
-                    <Link className='hover:bg-purple-700 p-3 hover:text-white ease-in-out duration-150' to="/login"><i className="fa-solid fa-arrow-right-to-bracket"></i> เข้าสู่ระบบ</Link>
+                    <Link className='hover:bg-primaryTheme p-3 hover:text-white ease-in-out duration-150' to="/help"><i className="fa-solid fa-circle-question"></i> คำถามที่พบบ่อย</Link>
+                    {
+                        isLoggedIn
+                            ?
+                            // <button className='py-3 px-6 bg-red-700 text-white rounded-3xl hover:shadow-xl hover:bg-white hover:text-black ease-in-out duration-300'>ออกจากระบบ</button>
+                            <>
+                                <Link to="/profileNotification" className='hover:bg-primaryTheme p-3 hover:text-white ease-in-out duration-150'>รายการประกาศของฉัน</Link>
+                                <Link to="" onClick={() => onLogoutHanlder()} className='hover:bg-red-600 p-3 hover:text-white ease-in-out duration-150'>ออกจากระบบ</Link>
+                            </>
+                            :
+                            <Link to="/login" className='hover:bg-primaryTheme p-3 hover:text-white ease-in-out duration-150'>เข้าสู่ระบบ</Link>
+
+                    }
                 </div>
             </Drawer>
         </header>

@@ -16,7 +16,27 @@ export const rooms = [
         building_id: 4
     },
     {
-        roomTh: "ห้อง 501",
+        roomTh: "ห้อง 9901",
         building_id: 5
-    }
+    },
+    {
+        roomTh: "ห้อง 9902",
+        building_id: 5
+    },
+    {
+        roomTh: "ห้อง 9903",
+        building_id: 5
+    },
+    {
+        roomTh: "ห้อง 9904",
+        building_id: 5
+    },
+    {
+        roomTh: "ห้อง 9801",
+        building_id: 5
+    },
+    {
+        roomTh: "ห้อง 9902",
+        building_id: 5
+    },
 ]

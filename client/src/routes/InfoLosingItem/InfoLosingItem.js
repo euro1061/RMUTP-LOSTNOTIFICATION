@@ -262,7 +262,7 @@ export default function InfoLosingItem() {
                                 >
                                     <Row gutter={[8, 8]} align="top">
                                         <Col xl={24}>
-                                            {userInfo?.id === dataMissingItem?.user_id ?
+                                            {userInfo?.id === dataMissingItem?.user_id || userInfo?.Role.id === 1 ?
                                                 <motion.div
                                                     initial={{ opacity: 0, y: 0 }}
                                                     animate={{ opacity: 1, y: 0 }}
@@ -327,13 +327,13 @@ export default function InfoLosingItem() {
                                                                     &nbsp;
                                                                     อัพเดทสถานะ
                                                                 </button>
-                                                                <button 
-                                                                    disabled 
-                                                                    type="button" 
+                                                                <button
+                                                                    disabled
+                                                                    type="button"
                                                                     className="w-full bg-gray-500 cursor-not-allowed text-white disabled:opacity-50 rounded-lg p-3 text-xl">
-                                                                        <DeleteOutlined style={{ display: "inline-grid" }} />
-                                                                        &nbsp;
-                                                                        ลบประกาศ
+                                                                    <DeleteOutlined style={{ display: "inline-grid" }} />
+                                                                    &nbsp;
+                                                                    ลบประกาศ
                                                                 </button>
                                                             </>}
 
@@ -362,7 +362,7 @@ export default function InfoLosingItem() {
                                                         >
                                                             <Row gutter={[0, 6]}>
                                                                 <Col xl={2} xs={24}>
-                                                                    <Form.Item name="file" style={{textAlign: "center"}}>
+                                                                    <Form.Item name="file" style={{ textAlign: "center" }}>
                                                                         {userImg ? (
                                                                             <Avatar
                                                                                 size={80}
@@ -568,9 +568,19 @@ export default function InfoLosingItem() {
                                                                         bodyStyle={{ padding: 10 }}
                                                                     >
                                                                         {dataMissingItem?.imageItem ?
-                                                                            <Image
-                                                                                src={dataMissingItem?.imageItem}
-                                                                            />
+                                                                            <>
+                                                                                <div className="hidden lg:block">
+                                                                                <Image
+                                                                                    width={400}
+                                                                                    src={dataMissingItem?.imageItem}
+                                                                                />
+                                                                                </div>
+                                                                                <div className="block lg:hidden">
+                                                                                <Image
+                                                                                    src={dataMissingItem?.imageItem}
+                                                                                />
+                                                                                </div>
+                                                                            </>
                                                                             :
                                                                             <Image
                                                                                 width={400}
@@ -607,7 +617,7 @@ export default function InfoLosingItem() {
 
                                                     <div className="mb-4"></div>
                                                     <Row gutter={[0, 6]}>
-                                                        <Col xl={2} xs={24} style={{textAlign: "center"}}>
+                                                        <Col xl={2} xs={24} style={{ textAlign: "center" }}>
                                                             {userDropImg ? (
                                                                 <Avatar
                                                                     size={80}

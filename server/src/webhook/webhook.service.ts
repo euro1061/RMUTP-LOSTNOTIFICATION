@@ -21,9 +21,14 @@ export class WebhookService {
                 },
                 take: 9,
             });
-            const customData = dataItem.map((item): line.TemplateColumn => (
-                {
-                    "thumbnailImageUrl": item.imageItem.replace('http', 'https'),
+            const customData = dataItem.map((item): line.TemplateColumn => {
+                let splitImageItem = item.imageItem.split("/")
+                if(item.title.includes("บัตร")) {
+                    splitImageItem[6] = "w_1000,h_1500,c_scale,e_blur:1500"
+                }
+                
+                return {
+                    "thumbnailImageUrl": splitImageItem.join('/').replace('http', 'https'),
                     "text": item.title,
                     "actions": [
                         {
@@ -34,7 +39,7 @@ export class WebhookService {
                     ],
                     "imageBackgroundColor": "#FFFFFF"
                 }
-            ))
+            })
             // return 'ok';
             // await client.replyMessage(replyToken, {
             //     "type": "text",
@@ -64,9 +69,13 @@ export class WebhookService {
                 },
                 take: 9,
             });
-            const customData = dataItem.map((item): line.TemplateColumn => (
-                {
-                    "thumbnailImageUrl": item.imageItem !== null ? item.imageItem.replace('http', 'https') : 'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg',
+            const customData = dataItem.map((item): line.TemplateColumn => {
+                let splitImageItem = item.imageItem !== null ? item.imageItem.split("/") : null
+                if(item.title.includes("บัตร")) {
+                    splitImageItem[6] = "w_1000,h_1500,c_scale,e_blur:1500"
+                }
+                return {
+                    "thumbnailImageUrl": item.imageItem !== null ? splitImageItem.join('/').replace('http', 'https') : 'https://t4.ftcdn.net/jpg/04/70/29/97/360_F_470299797_UD0eoVMMSUbHCcNJCdv2t8B2g1GVqYgs.jpg',
                     "text": item.title,
                     "actions": [
                         {
@@ -77,7 +86,7 @@ export class WebhookService {
                     ],
                     "imageBackgroundColor": "#FFFFFF"
                 }
-            ))
+            })
             // return 'ok';
             // await client.replyMessage(replyToken, {
             //     "type": "text",

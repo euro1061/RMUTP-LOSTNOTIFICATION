@@ -5,7 +5,10 @@ import puppeteer from 'puppeteer';
 export class PdfServiceService {
     async createPdf(data: any): Promise<Buffer> {
         const browser = await puppeteer.launch({
-            headless: true,
+            // headless: true,
+            executablePath: '/usr/bin/google-chrome',
+            ignoreDefaultArgs: ['--disable-extensions'],
+            args: ['--no-sandbox'],
         });
         const page = await browser.newPage();
 
@@ -15,16 +18,16 @@ export class PdfServiceService {
                 <td>${item.placeLocation}</td>
                 <td style="text-align: center"><b>${item.placeLocationCount}</b></td>
             </tr>`
-            if(item.children.length > 0) {
+            if (item.children.length > 0) {
                 item.children.forEach((child, index) => {
-                    
+
                     res += `<tr>
                         <td style="text-align: center"></td>
                         <td>- ${child.placeLocation}</td>
                         <td style="text-align: center">${child.placeLocationCount}</td>
                     </tr>`
 
-                    if(child.children?.length > 0) {
+                    if (child.children?.length > 0) {
                         child.children.forEach((child2, index) => {
                             res += `<tr>
                                 <td style="text-align: center"></td>
@@ -96,7 +99,10 @@ export class PdfServiceService {
 
     async createPdfLosing(data: any): Promise<Buffer> {
         const browser = await puppeteer.launch({
-            headless: true,
+            // headless: true,
+            executablePath: '/usr/bin/google-chrome',
+            ignoreDefaultArgs: ['--disable-extensions'],
+            args: ['--no-sandbox'],
         });
         const page = await browser.newPage();
 
