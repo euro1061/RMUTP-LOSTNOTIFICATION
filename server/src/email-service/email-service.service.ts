@@ -81,7 +81,7 @@ export class EmailServiceService {
         // send mail with defined transport object
         try {
             const info = await transporter.sendMail({
-                from: process.env.FROM_EMAIL, // sender address
+                from: dto.email_sender, // sender address
                 to: email_receiver,
                 subject: subject, // Subject line
                 html: messageHTML // html body

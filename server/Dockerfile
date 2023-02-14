@@ -29,6 +29,10 @@ COPY . .
 
 RUN pnpm prisma generate
 
+RUN pnpm prisma migrate dev --name init
+
+RUN pnpm prisma db seed
+
 # Build the application in the container
 RUN pnpm run build
 

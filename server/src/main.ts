@@ -21,6 +21,6 @@ async function bootstrap() {
     allowedHeaders: "*",
     origin: "*"
   });
-  await app.listen(7999);
+  await app.listen(process.env.PORT);
 }
 bootstrap();
